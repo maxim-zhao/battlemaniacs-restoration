@@ -2,3 +2,9 @@
 /src/Battlemaniacs Restoration.sym
 *.bin
 *.zx7
+/src/snm/*.txt
+/src/snm/*.vgm
+/src/snm/*.wav
+/src/vgms/music/*.psg
+*.psg
+/src/saves/
