@@ -16,7 +16,7 @@ The main aims of the project are:
 
 4- Some other minor fixes/additions.
 
-At the moment the project does not intend to modify the level themselves, despite the overall feeling that some of them are unpolished/unfinished compared to the original SNES game. But that possibility isn't completely discareded and anyone interested in investigating that and making it possible will be welcomed.
+At the moment the project does not intend to modify the level themselves, despite the overall feeling that some of them are unpolished/unfinished compared to the original SNES game. But that possibility is not completely discarded and anyone interested in investigating that and making it possible will be welcomed.
 
 Current project members:
 
@@ -26,4 +26,4 @@ S T ★ R - composer
 
 Wesker - coordinator
 
-We need an artist to convert to the Master System all the SNES intro (currently placed as sceencaps in src/images), ending (WIP) and possibly replace the artwork of the intermission scenes. Feel free to join to the project if you are have the skills and are interested.
+We need an artist to convert to the Master System format/palette all the SNES intro (currently placed as sceencaps in src/images), ending (WIP) and possibly replace the artwork for the intermission scenes. Feel free to join to the project if you have the skills and are interested.
