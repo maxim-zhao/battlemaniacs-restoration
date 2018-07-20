@@ -1,1 +1,4 @@
-/src/Battlemaniacs (BR).sms
+*.sms
+/src/Battlemaniacs Restoration.sym
+*.bin
+*.zx7
