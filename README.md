@@ -8,13 +8,13 @@ This project intends to restore most of the missing content by rewriting both th
 
 The main aims of the project are:
 
-1- Restore all the missing game music
+1- Restore all the missing game music.
 
-2- Restore the incomplete intro and the missing ending sequence
+2- Restore the incomplete intro and the missing ending sequence.
 
-3- Restore all the SNES random messages in the intermission scenes
+3- Restore all the SNES messages for the intermission scenes.
 
-4- Some other minor fixes/additions
+4- Some other minor fixes/additions.
 
 At the moment the project does not intend to modify the level themselves, despite the overall feeling that some of them are unpolished/unfinished compared to the original SNES game. But that possibility isn't completely discareded and anyone interested in investigating that and making it possible will be welcomed.
 
