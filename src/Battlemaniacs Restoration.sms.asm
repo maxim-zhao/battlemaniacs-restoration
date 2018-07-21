@@ -423,6 +423,7 @@ IntroTrampoline:
   INTRO_PICTURE db
   INTRO_WAIT db
   INTRO_TEXT db
+  INTRO_BLANK_TEXT db
 .ende
 
 Intro:
@@ -438,6 +439,8 @@ IntroLoop:
   jp z,_LoadPicture
   cp INTRO_WAIT
   jp z,_Wait
+  cp INTRO_BLANK_TEXT
+  jp z,_blank
   ; else it's text
   ; location is next, we need to put it in bc
   ld c,(hl)
@@ -459,6 +462,46 @@ _IntroSkipped:
 	ld a, 1
 	ld (IntroButtonPressed), a
   ret
+  
+_blank:
+  ; next byte is the row index
+  ld a,(hl)
+  inc hl
+  ; we want to multiply it by 64
+  push hl
+    ld b,a
+    ld l,a
+    ld h,0
+    add hl,hl
+    add hl,hl
+    add hl,hl
+    add hl,hl
+    add hl,hl
+    add hl,hl
+    ; and add to $3800
+    ld de,$7800
+    add hl,de
+    ; and set that address
+    di
+    ld c,$bf
+    out (c),l
+    out (c),h
+    ; and draw 24-a rows
+    ld a,24
+    sub b
+    ld c,a
+    xor a
+--: ld b,64
+-:  out ($be),a
+    push ix ; delay
+    pop ix
+    djnz -
+    dec c
+    jr nz,--
+    ei
+  pop hl
+  jp IntroLoop
+
   
 _LoadPicture:
   ; Clear the tilemap
@@ -485,7 +528,7 @@ _LoadPicture:
   push bc
   push hl
     ex de,hl
-    ld de,$4020 ; tile 1
+    ld de,$4000 ; tile 0
     call decompress
   pop hl
   pop bc
@@ -519,50 +562,150 @@ _End:
   
 IntroScript:
 ;    12345678901234567890123456789012
-.db INTRO_PICTURE
+.db INTRO_PICTURE ; Up to row 19
 .dw Intro1Palette
 .dw Intro1Tiles
 .db :Intro1Tiles
-.dw Intro1Tilemap
-.db INTRO_TEXT,6,21,    "THE 'TOADS ARE AT THE",0
-.db INTRO_TEXT,2,22,"GYACHUNG-LA FORTRESS LOCATED",0
-.db INTRO_TEXT,5,23,   "IN NORTHERN TIBET, ASIA",0
+.dw Intro1Tilemap  ; -123456789012345678901234567891
+.db INTRO_TEXT,6,21,      "THE 'TOADS ARE AT THE",0
+.db INTRO_TEXT,6,23,      "GYACHUNG-LA FORTRESS",0
+.db INTRO_WAIT
+
+.db INTRO_PICTURE ; Up to row 19
+.dw Intro2Palette
+.dw Intro2Tiles
+.db :Intro2Tiles
+.dw Intro2Tilemap  ; -123456789012345678901234567891
+.db INTRO_TEXT,11,21,           "LOCATED IN",0
+.db INTRO_TEXT,6,23,      "NORTHERN TIBET, ASIA",0
+.db INTRO_WAIT
+
+.db INTRO_PICTURE ; Up to row 19
+.dw Intro3Palette
+.dw Intro3Tiles
+.db :Intro3Tiles
+.dw Intro3Tilemap  ; -123456789012345678901234567891
+.db INTRO_TEXT,3,21,   "PROFESSOR T-BIRD STARTS...",0
+.db INTRO_WAIT
+.db INTRO_BLANK_TEXT 21
+.db INTRO_TEXT,3,21,   "'TOADS, I HAVE INVITED YOU",0
+.db INTRO_TEXT,4,23,    "HERE TO WITNESS THE FIRST",0
+.db INTRO_WAIT
+.db INTRO_BLANK_TEXT 21
+.db INTRO_TEXT,3,21,   "DEMONSTRATION OF PSICONE'S",0
+.db INTRO_TEXT,6,23,      "NEW GAMES GENERATOR.",0
+.db INTRO_WAIT
+
+.db INTRO_PICTURE ; Up to row 19
+.dw Intro4Palette
+.dw Intro4Tiles
+.db :Intro4Tiles
+.dw Intro4Tilemap  ; -123456789012345678901234567891
+.db INTRO_TEXT,12,21,           "TRIPS 21",0
+.db INTRO_WAIT
+.db INTRO_BLANK_TEXT 21
+.db INTRO_TEXT,4,21,    "TOTAL REALITY INTEGRATED",0
+.db INTRO_TEXT,9,23,         "PLAYING SYSTEM",0
+.db INTRO_WAIT
+.db INTRO_BLANK_TEXT 21
+.db INTRO_TEXT,3,21,"WE'VE NAMED ITS ARTIFICIAL",0
+.db INTRO_TEXT,5,23,"WORLD \"THE GAMESCAPE\".",0
+.db INTRO_WAIT
+
+.db INTRO_PICTURE ; Up to row 19
+.dw Intro5Palette
+.dw Intro5Tiles
+.db :Intro5Tiles
+.dw Intro5Tilemap  ; -123456789012345678901234567891
+.db INTRO_TEXT,2,21,"THIS APPROACHING IMAGE IS A",0
+.db INTRO_TEXT,5,23,"PIG OF THE APOCALYPSE,",0
+.db INTRO_WAIT
+.db INTRO_BLANK_TEXT 21
+.db INTRO_TEXT,5,21,"ONE OF THE GAMES T...",0
+.db INTRO_WAIT
+
+.db INTRO_PICTURE ; Up to row 15
+.dw Intro6Palette
+.dw Intro6Tiles
+.db :Intro6Tiles
+.dw Intro6Tilemap  ; -123456789012345678901234567891
+.db INTRO_TEXT,4,19,"BEFORE THE PROFESSOR CAN",0
+.db INTRO_TEXT,3,21,"FINISH, THE PIG LEAPS OUT",0
+.db INTRO_TEXT,8,23,"OF THE SCREEN!!",0
+.db INTRO_WAIT
+
+.db INTRO_PICTURE ; Up to row 15
+.dw Intro7Palette
+.dw Intro7Tiles
+.db :Intro7Tiles
+.dw Intro7Tilemap  ; -123456789012345678901234567891
+.db INTRO_TEXT,3,19,"IT GRABS MICHIKO TASHOKU,",0
+.db INTRO_TEXT,5,21,"DAUGHTER OF PSICONE'S",0
+.db INTRO_TEXT,9,23,"HEAD HONCHO!!",0
+.db INTRO_WAIT
+
+.db INTRO_PICTURE ; Up to row 15
+.dw Intro8Palette
+.dw Intro8Tiles
+.db :Intro8Tiles
+.dw Intro8Tilemap  ; -123456789012345678901234567891
+.db INTRO_TEXT,3,19,"ZITZ LEAPS TO HER RESCUE,",0
+.db INTRO_TEXT,1,21,"BUT HE TAKES A BEASTLY BASHING",0
+.db INTRO_TEXT,6,23,"AND IS CAPTURED TOO!",0
+.db INTRO_WAIT
+
+.db INTRO_PICTURE ; Up to row 15
+.dw Intro9Palette
+.dw Intro9Tiles
+.db :Intro9Tiles
+.dw Intro9Tilemap  ; -123456789012345678901234567891
+.db INTRO_TEXT,3,19,"WITH MICHIKO AND ZITZ ITS",0
+.db INTRO_TEXT,1,21,"PRISONER, THE EVIL PIG ESCAPES",0
+.db INTRO_TEXT,4,23,"BACK INTO THE GAMESCAPE!",0
+.db INTRO_WAIT
+
+.db INTRO_PICTURE ; Up to row 19
+.dw Intro10Palette
+.dw Intro10Tiles
+.db :Intro10Tiles
+.dw Intro10Tilemap  ; -123456789012345678901234567891
+.db INTRO_TEXT,3,21,"PAY ATTENTION BATTLEJERKS!",0
+.db INTRO_WAIT
+.db INTRO_BLANK_TEXT 21
+.db INTRO_TEXT,2,21,"I, SILAS VOLKMIRE, INTEND TO",0
+.db INTRO_TEXT,1,23,"TURN YOUR MISERABLE WORLD INTO",0
+.db INTRO_WAIT
+.db INTRO_BLANK_TEXT 21
+.db INTRO_TEXT,5,21,"MY VERY OWN GAMESCAPE!",0
+.db INTRO_WAIT                
+.db INTRO_BLANK_TEXT 21
+.db INTRO_TEXT,3,21,"THE DARK QUEEN HOLDS YOUR",0
+.db INTRO_TEXT,4,23,"FEEBLE FRIENDS CAPTIVE,",0
+.db INTRO_WAIT                
+.db INTRO_BLANK_TEXT 21
+.db INTRO_TEXT,4,21,"AND IF YOU TRY ANYTHING,",0
+.db INTRO_TEXT,2,23,"YOU'LL NEVER SEE THEM AGAIN!",0
+.db INTRO_WAIT
+.db INTRO_BLANK_TEXT 21
+.db INTRO_TEXT,9,21,"HA-HA-HA-HA!!",0
+.db INTRO_WAIT
+
+; ***********************************
+; Beginning of level 1 (I guess the easiest is to add this as a Prologue scene)
+; ***********************************
+
+.db INTRO_PICTURE ; Up to row 19
+.dw Intro11Palette
+.dw Intro11Tiles
+.db :Intro11Tiles
+.dw Intro11Tilemap  ; -123456789012345678901234567891
+.db INTRO_TEXT,4,21,"WE GOTTA GET 'EM BACK!!",0
+.db INTRO_WAIT
+.db INTRO_BLANK_TEXT 21
+.db INTRO_TEXT,1,21,"LET'S GATECRASH THE GAMESCAPE",0
+.db INTRO_TEXT,1,23,"AN' COOK SOME BEASTIN' BACON!",0
 .db INTRO_WAIT
 .db INTRO_END
-
-.db " PROFESSOR T-BIRD STARTS..      "
-.db "  'TOADS I HAVE INVITED YOU     "
-.db " HERE TO WITNESS THE FIRST      "
-.db "  DEMONSTRATION OF PSICONE'S    "
-.db "     NEW GAMES GENERATOR        "
-.db "           TRIDS 21",0
-.db "   TOTAL REALITY INTEGRATED",0
-.db "        PLAYING SYSTEM",0,
-.db $fe
-.db "  WE'VE NAMED ITS ARTIFICIAL",0
-.db "     WORLD THE GAMESCAPE",0,
-.db $fe
-.db "  THE APPROACHING IMAGE IS A",0
-.db " PIG OF THE APOCALYPSE, ONE OF",0
-.db "     THE GAMES T",0
-.db $fe
-.db "   BEFORE THE PROFESSOR CAN",0
-.db "    FINISH THE PIG LEAPS  OUT",0
-.db "         OF THE SCREEN !!",0,
-.db $fe
-.db "  IT GRABS MICHIKO TASHOKU,",0
-.db "    DAUGHTER OF PSICONE'S",0
-.db "       HEAD HONCHO!!",0,$fc
-.db "  ZITZ LEAPS TO HER RESCUE,",0
-.db "BUT HE TAKES A BEASTLY BASHING",0
-.db "    AND IS CAPTURED TOO!",0,$ff
-.db " WITH MICHIKO AND ZITZ IT'S",0
-.db "PRISONER THE EVIL PIG ESCAPES",0
-.db "   BACK INTO THE GAMESCAPE",0,$fe
-.db "  THE DARK QUEEN HOLDS YOUR",0
-.db "    FEEBLE FRIENDS CAPTIVE",0
-.db " IF YOU TRY ANYTHING, YOU'LL",0
-.db "    NEVER SEE THEM AGAIN!",0,$fe,0,$ff  
 
 decompress:
   ; page in data
@@ -582,9 +725,31 @@ decompress:
 
 ; Palettes need to be in the lower 32KB
 .bank 0 slot 0
-.section "Palettes" superfree
+.section "Palettes" free
 Intro1Palette:
 .incbin "images\intro1.png.palette.bin"
+Intro2Palette:
+.incbin "images\intro2.png.palette.bin"
+Intro3Palette:
+.incbin "images\intro3.png.palette.bin"
+Intro4Palette:
+.incbin "images\intro4.png.palette.bin"
+Intro5Palette:
+.incbin "images\intro5.png.palette.bin"
+Intro6Palette:
+.incbin "images\intro6.png.palette.bin"
+Intro7Palette:
+.incbin "images\intro7.png.palette.bin"
+Intro8Palette:
+.incbin "images\intro8.png.palette.bin"
+Intro9Palette:
+.incbin "images\intro9.png.palette.bin"
+Intro10Palette:
+.incbin "images\intro10.png.palette.bin"
+.ends
+.section "Palettes part 2" free
+Intro11Palette:
+.incbin "images\intro11.png.palette.bin"
 .ends
 
 ; compressed data needs to be in slot 1
@@ -595,5 +760,64 @@ Intro1Tiles:
 .incbin "images\intro1.png.tiles.zx7"
 Intro1Tilemap:
 .incbin "images\intro1.png.tilemap.zx7"
-_:
+.ends
+.section "image 2" superfree
+Intro2Tiles:
+.incbin "images\intro2.png.tiles.zx7"
+Intro2Tilemap:
+.incbin "images\intro2.png.tilemap.zx7"
+.ends
+.section "image 3" superfree
+Intro3Tiles:
+.incbin "images\intro3.png.tiles.zx7"
+Intro3Tilemap:
+.incbin "images\intro3.png.tilemap.zx7"
+.ends
+.section "image 4" superfree
+Intro4Tiles:
+.incbin "images\intro4.png.tiles.zx7"
+Intro4Tilemap:
+.incbin "images\intro4.png.tilemap.zx7"
+.ends
+.section "image 5" superfree
+Intro5Tiles:
+.incbin "images\intro5.png.tiles.zx7"
+Intro5Tilemap:
+.incbin "images\intro5.png.tilemap.zx7"
+.ends
+.section "image 6" superfree
+Intro6Tiles:
+.incbin "images\intro6.png.tiles.zx7"
+Intro6Tilemap:
+.incbin "images\intro6.png.tilemap.zx7"
+.ends
+.section "image 7" superfree
+Intro7Tiles:
+.incbin "images\intro7.png.tiles.zx7"
+Intro7Tilemap:
+.incbin "images\intro7.png.tilemap.zx7"
+.ends
+.section "image 8" superfree
+Intro8Tiles:
+.incbin "images\intro8.png.tiles.zx7"
+Intro8Tilemap:
+.incbin "images\intro8.png.tilemap.zx7"
+.ends
+.section "image 9" superfree
+Intro9Tiles:
+.incbin "images\intro9.png.tiles.zx7"
+Intro9Tilemap:
+.incbin "images\intro9.png.tilemap.zx7"
+.ends
+.section "image 10" superfree
+Intro10Tiles:
+.incbin "images\intro10.png.tiles.zx7"
+Intro10Tilemap:
+.incbin "images\intro10.png.tilemap.zx7"
+.ends
+.section "image 11" superfree
+Intro11Tiles:
+.incbin "images\intro11.png.tiles.zx7"
+Intro11Tilemap:
+.incbin "images\intro11.png.tilemap.zx7"
 .ends
