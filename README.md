@@ -26,4 +26,4 @@ S T ★ R - composer
 
 Wesker - coordinator
 
-We need an artist to convert to the Master System format/palette all the SNES intro (currently placed as sceencaps in src/images), ending (WIP) and possibly replace the artwork for the intermission scenes. Feel free to join to the project if you have the skills and are interested.
+We need an artist to convert to the Master System format/palette all the SNES intro and ending (placed as sceencaps in src/images) and possibly replace the artwork for the intermission scenes. Feel free to join to the project if you have the skills and are interested.
