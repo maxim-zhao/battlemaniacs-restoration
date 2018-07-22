@@ -69,7 +69,7 @@ CurrentMusicBank  db
 .define TextToVRAM                  $5790 ; write ASCII from ix to VRAM starting at loction (b,c), until a zero is encountered
 .define CheckForButton1             $0E7A ; returns nz if pressed
 .define ResetScrollTile0AndTilemap  $04EA ; resets scrolling, blanks tile 0 and fills tilemap with that index
-.define LoadPalettes                $1583 ; loads paletes from RAM pointers to VRAM
+.define LoadPalettes                $1583 ; loads palettes from RAM pointers to VRAM
 ;.define EmitTilemapRect             $0D4D ; emits tilemap data from hl to vram address de with dimensions bxc
 .define SkippableDelay              $0E9C ; delays for b*20ms, e.g. $64 => 2s
 
@@ -547,8 +547,8 @@ _LoadPicture:
   jp IntroLoop
   
 _Wait:
-  ; TODO make it configurable?
-	ld b, $64
+	ld b, (hl)
+  inc hl
 	call SkippableDelay
   jp IntroLoop
 
@@ -558,153 +558,134 @@ _End:
 	xor a
 	ld (IntroButtonPressed), a
   ret
-  
-  
+
+; Macros for scripts
+
+; Adds a picture 
+.macro Picture args palette, tiles, tilemap
+  .db INTRO_PICTURE
+  .dw palette
+  .dw tiles
+  .db :tiles
+  .dw tilemap
+.endm
+
+; Draws some text at the given location
+.macro Text args x, y, text
+  .db INTRO_TEXT,x,y,text,0
+.endm
+
+; Pauses for the given length of time
+.macro Wait args seconds
+  .db INTRO_WAIT, seconds*50
+.endm
+
+; Clears the screen from the given row onwards
+.macro Clear args row
+  .db INTRO_BLANK_TEXT, row
+.endm  
+
 IntroScript:
-;    12345678901234567890123456789012
-.db INTRO_PICTURE ; Up to row 19
-.dw Intro1Palette
-.dw Intro1Tiles
-.db :Intro1Tiles
-.dw Intro1Tilemap  ; -123456789012345678901234567891
-.db INTRO_TEXT,6,21,      "THE 'TOADS ARE AT THE",0
-.db INTRO_TEXT,6,23,      "GYACHUNG-LA FORTRESS",0
-.db INTRO_WAIT
+  Picture Intro1Palette, Intro1Tiles, Intro1Tilemap
+  Text 7,21, "THE 'TOADS ARE AT THE"
+  Text 7,23, "GYACHUNG-LA FORTRESS"
+  Wait 2
 
-.db INTRO_PICTURE ; Up to row 19
-.dw Intro2Palette
-.dw Intro2Tiles
-.db :Intro2Tiles
-.dw Intro2Tilemap  ; -123456789012345678901234567891
-.db INTRO_TEXT,11,21,           "LOCATED IN",0
-.db INTRO_TEXT,6,23,      "NORTHERN TIBET, ASIA",0
-.db INTRO_WAIT
+  Picture Intro2Palette, Intro2Tiles, Intro2Tilemap
+  Text 12,21,"LOCATED IN"
+  Text 7,23, "NORTHERN TIBET, ASIA"
+  Wait 2
 
-.db INTRO_PICTURE ; Up to row 19
-.dw Intro3Palette
-.dw Intro3Tiles
-.db :Intro3Tiles
-.dw Intro3Tilemap  ; -123456789012345678901234567891
-.db INTRO_TEXT,3,21,   "PROFESSOR T-BIRD STARTS...",0
-.db INTRO_WAIT
-.db INTRO_BLANK_TEXT 21
-.db INTRO_TEXT,3,21,   "'TOADS, I HAVE INVITED YOU",0
-.db INTRO_TEXT,4,23,    "HERE TO WITNESS THE FIRST",0
-.db INTRO_WAIT
-.db INTRO_BLANK_TEXT 21
-.db INTRO_TEXT,3,21,   "DEMONSTRATION OF PSICONE'S",0
-.db INTRO_TEXT,6,23,      "NEW GAMES GENERATOR.",0
-.db INTRO_WAIT
+  Picture Intro3Palette, Intro3Tiles, Intro3Tilemap
+  Text 4,21, "PROFESSOR T-BIRD STARTS..."
+  Wait 1
+  Clear 21
+  Text 4,21, "'TOADS, I HAVE INVITED YOU"
+  Text 5,23, "HERE TO WITNESS THE FIRST"
+  Wait 2
+  Clear 21
+  Text 4,21, "DEMONSTRATION OF PSICONE'S"
+  Text 7,23, "NEW GAMES GENERATOR."
+  Wait 2
 
-.db INTRO_PICTURE ; Up to row 19
-.dw Intro4Palette
-.dw Intro4Tiles
-.db :Intro4Tiles
-.dw Intro4Tilemap  ; -123456789012345678901234567891
-.db INTRO_TEXT,12,21,           "TRIPS 21",0
-.db INTRO_WAIT
-.db INTRO_BLANK_TEXT 21
-.db INTRO_TEXT,4,21,    "TOTAL REALITY INTEGRATED",0
-.db INTRO_TEXT,9,23,         "PLAYING SYSTEM",0
-.db INTRO_WAIT
-.db INTRO_BLANK_TEXT 21
-.db INTRO_TEXT,3,21,"WE'VE NAMED ITS ARTIFICIAL",0
-.db INTRO_TEXT,5,23,"WORLD \"THE GAMESCAPE\".",0
-.db INTRO_WAIT
+  Picture Intro4Palette, Intro4Tiles, Intro4Tilemap
+  Text 13,21,"TRIPS 21"
+  Wait 1
+  Clear 21
+  Text 5,21, "TOTAL REALITY INTEGRATED"
+  Text 10,23,"PLAYING SYSTEM"
+  Wait 2
+  Clear 21
+  Text 4,21, "WE'VE NAMED ITS ARTIFICIAL"
+  Text 6,23, "WORLD \"THE GAMESCAPE\"."
+  Wait 2
 
-.db INTRO_PICTURE ; Up to row 19
-.dw Intro5Palette
-.dw Intro5Tiles
-.db :Intro5Tiles
-.dw Intro5Tilemap  ; -123456789012345678901234567891
-.db INTRO_TEXT,2,21,"THIS APPROACHING IMAGE IS A",0
-.db INTRO_TEXT,5,23,"PIG OF THE APOCALYPSE,",0
-.db INTRO_WAIT
-.db INTRO_BLANK_TEXT 21
-.db INTRO_TEXT,5,21,"ONE OF THE GAMES T...",0
-.db INTRO_WAIT
+  Picture Intro5Palette, Intro5Tiles, Intro5Tilemap
 
-.db INTRO_PICTURE ; Up to row 15
-.dw Intro6Palette
-.dw Intro6Tiles
-.db :Intro6Tiles
-.dw Intro6Tilemap  ; -123456789012345678901234567891
-.db INTRO_TEXT,4,19,"BEFORE THE PROFESSOR CAN",0
-.db INTRO_TEXT,3,21,"FINISH, THE PIG LEAPS OUT",0
-.db INTRO_TEXT,8,23,"OF THE SCREEN!!",0
-.db INTRO_WAIT
+  Text 3,21, "THIS APPROACHING IMAGE IS A"
+  Text 6,23, "PIG OF THE APOCALYPSE,"
+  Wait 2
+  Clear 21
+  Text 6,21, "ONE OF THE GAMES T..."
+  Wait 1
 
-.db INTRO_PICTURE ; Up to row 15
-.dw Intro7Palette
-.dw Intro7Tiles
-.db :Intro7Tiles
-.dw Intro7Tilemap  ; -123456789012345678901234567891
-.db INTRO_TEXT,3,19,"IT GRABS MICHIKO TASHOKU,",0
-.db INTRO_TEXT,5,21,"DAUGHTER OF PSICONE'S",0
-.db INTRO_TEXT,9,23,"HEAD HONCHO!!",0
-.db INTRO_WAIT
+  Picture Intro6Palette, Intro6Tiles, Intro6Tilemap
+  Text 5,19, "BEFORE THE PROFESSOR CAN"
+  Text 4,21, "FINISH, THE PIG LEAPS OUT"
+  Text 9,23, "OF THE SCREEN!!"
+  Wait 3
 
-.db INTRO_PICTURE ; Up to row 15
-.dw Intro8Palette
-.dw Intro8Tiles
-.db :Intro8Tiles
-.dw Intro8Tilemap  ; -123456789012345678901234567891
-.db INTRO_TEXT,3,19,"ZITZ LEAPS TO HER RESCUE,",0
-.db INTRO_TEXT,1,21,"BUT HE TAKES A BEASTLY BASHING",0
-.db INTRO_TEXT,6,23,"AND IS CAPTURED TOO!",0
-.db INTRO_WAIT
+  Picture Intro7Palette, Intro7Tiles, Intro7Tilemap
+  Text 4,19, "IT GRABS MICHIKO TASHOKU,"
+  Text 6,21, "DAUGHTER OF PSICONE'S"
+  Text 10,23,"HEAD HONCHO!!"
+  Wait 3
 
-.db INTRO_PICTURE ; Up to row 15
-.dw Intro9Palette
-.dw Intro9Tiles
-.db :Intro9Tiles
-.dw Intro9Tilemap  ; -123456789012345678901234567891
-.db INTRO_TEXT,3,19,"WITH MICHIKO AND ZITZ ITS",0
-.db INTRO_TEXT,1,21,"PRISONER, THE EVIL PIG ESCAPES",0
-.db INTRO_TEXT,4,23,"BACK INTO THE GAMESCAPE!",0
-.db INTRO_WAIT
+  Picture Intro8Palette, Intro8Tiles, Intro8Tilemap
+  Text 4,19, "ZITZ LEAPS TO HER RESCUE,"
+  Text 2,21, "BUT HE TAKES A BEASTLY BASHING"
+  Text 7,23, "AND IS CAPTURED TOO!"
+  Wait 3
 
-.db INTRO_PICTURE ; Up to row 19
-.dw Intro10Palette
-.dw Intro10Tiles
-.db :Intro10Tiles
-.dw Intro10Tilemap  ; -123456789012345678901234567891
-.db INTRO_TEXT,3,21,"PAY ATTENTION BATTLEJERKS!",0
-.db INTRO_WAIT
-.db INTRO_BLANK_TEXT 21
-.db INTRO_TEXT,2,21,"I, SILAS VOLKMIRE, INTEND TO",0
-.db INTRO_TEXT,1,23,"TURN YOUR MISERABLE WORLD INTO",0
-.db INTRO_WAIT
-.db INTRO_BLANK_TEXT 21
-.db INTRO_TEXT,5,21,"MY VERY OWN GAMESCAPE!",0
-.db INTRO_WAIT                
-.db INTRO_BLANK_TEXT 21
-.db INTRO_TEXT,3,21,"THE DARK QUEEN HOLDS YOUR",0
-.db INTRO_TEXT,4,23,"FEEBLE FRIENDS CAPTIVE,",0
-.db INTRO_WAIT                
-.db INTRO_BLANK_TEXT 21
-.db INTRO_TEXT,4,21,"AND IF YOU TRY ANYTHING,",0
-.db INTRO_TEXT,2,23,"YOU'LL NEVER SEE THEM AGAIN!",0
-.db INTRO_WAIT
-.db INTRO_BLANK_TEXT 21
-.db INTRO_TEXT,9,21,"HA-HA-HA-HA!!",0
-.db INTRO_WAIT
+  Picture Intro9Palette, Intro9Tiles, Intro9Tilemap
+  Text 4,19, "WITH MICHIKO AND ZITZ ITS"
+  Text 2,21, "PRISONER, THE EVIL PIG ESCAPES"
+  Text 5,23, "BACK INTO THE GAMESCAPE!"
+  Wait 3
+
+  Picture Intro10Palette, Intro10Tiles, Intro10Tilemap
+  Text 4,21, "PAY ATTENTION BATTLEJERKS!"
+  Wait 2
+  Clear 21
+  Text 3,21, "I, SILAS VOLKMIRE, INTEND TO"
+  Text 2,23, "TURN YOUR MISERABLE WORLD INTO"
+  Wait 2
+  Clear 21
+  Text 6,21, "MY VERY OWN GAMESCAPE!"
+  Wait 1                
+  Clear 21
+  Text 4,21, "THE DARK QUEEN HOLDS YOUR"
+  Text 5,23, "FEEBLE FRIENDS CAPTIVE,"
+  Wait 2                
+  Clear 21
+  Text 5,21, "AND IF YOU TRY ANYTHING,"
+  Text 3,23, "YOU'LL NEVER SEE THEM AGAIN!"
+  Wait 2
+  Clear 21
+  Text 10,21,"HA-HA-HA-HA!!"
+  Wait 1
 
 ; ***********************************
 ; Beginning of level 1 (I guess the easiest is to add this as a Prologue scene)
 ; ***********************************
 
-.db INTRO_PICTURE ; Up to row 19
-.dw Intro11Palette
-.dw Intro11Tiles
-.db :Intro11Tiles
-.dw Intro11Tilemap  ; -123456789012345678901234567891
-.db INTRO_TEXT,4,21,"WE GOTTA GET 'EM BACK!!",0
-.db INTRO_WAIT
-.db INTRO_BLANK_TEXT 21
-.db INTRO_TEXT,1,21,"LET'S GATECRASH THE GAMESCAPE",0
-.db INTRO_TEXT,1,23,"AN' COOK SOME BEASTIN' BACON!",0
-.db INTRO_WAIT
+  Picture Intro11Palette, Intro11Tiles, Intro11Tilemap
+  Text 5,21, "WE GOTTA GET 'EM BACK!!"
+  Wait 1
+  Clear 21
+  Text 2,21, "LET'S GATECRASH THE GAMESCAPE"
+  Text 2,23, "AN' COOK SOME BEASTIN' BACON!"
+  Wait 2
 .db INTRO_END
 
 decompress:
