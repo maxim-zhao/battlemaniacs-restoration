@@ -63,6 +63,8 @@ _signalbit:
 _setvramaddress:
   ld c,$bf
   out (c),e
+  push ix ; Delay
+  pop ix
   out (c),d
   dec c ; data port
 .endif
@@ -168,6 +170,10 @@ _ldirvramtovram:
       di
 .endif
 -:    out (c),l
+.ifdef ZX7ToVRAMScreenOn
+      push ix
+      pop ix
+.endif
       out (c),h
       inc hl ; 6 cycles
 .ifdef ZX7ToVRAMScreenOn
@@ -177,8 +183,15 @@ _ldirvramtovram:
       inc hl     ; 1/6 - undone later
 .endif
       in a,($be)
-      ; no delay needed here
+.ifdef ZX7ToVRAMScreenOn
+      push ix
+      pop ix
+.endif
       out (c),e
+.ifdef ZX7ToVRAMScreenOn
+      push ix
+      pop ix
+.endif
       out (c),d
       inc de ; 6 cycles
 .ifdef ZX7ToVRAMScreenOn
@@ -188,6 +201,10 @@ _ldirvramtovram:
       dec hl     ; 1/6 - undoing extra inc      
 .endif
       out ($be),a
+.ifdef ZX7ToVRAMScreenOn
+      push ix
+      pop ix
+.endif
       djnz -
     pop af
 
