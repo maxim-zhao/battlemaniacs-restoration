@@ -296,7 +296,7 @@ _RAM_C774_ db
 _RAM_C775_ db
 _RAM_C776_ db
 _RAM_C777_ dw
-_RAM_C779_ db
+_RAM_C779_GameState db
 _RAM_C77A_ db
 _RAM_C77B_ dsb $4
 _RAM_C77F_ db
@@ -1469,7 +1469,7 @@ _LABEL_561_:
 	or h
 	ret nz
 	ld a, $81
-	ld (_RAM_C779_), a
+	ld (_RAM_C779_GameState), a
 	ret
 
 _LABEL_610_:
@@ -4826,7 +4826,7 @@ _LABEL_1B6A_:
 	cp $13
 	jr nz, +
 	ld a, $02
-	ld (_RAM_C779_), a
+	ld (_RAM_C779_GameState), a
 +:
 	call _LABEL_2F72_
 	call _LABEL_4D6D_
@@ -5913,7 +5913,7 @@ _LABEL_2411_:
 	ld a, $01
 	ld (_RAM_C86E_), a
 	ld a, $02
-	ld (_RAM_C779_), a
+	ld (_RAM_C779_GameState), a
 +:
 	call _LABEL_4D6D_
 	jp _LABEL_2DFF_
@@ -7198,7 +7198,7 @@ _LABEL_2DCE_:
 
 +:
 	ld a, $02
-	ld (_RAM_C779_), a
+	ld (_RAM_C779_GameState), a
 	jp _LABEL_2DFF_
 
 _LABEL_2DF3_:
@@ -7531,15 +7531,15 @@ _LABEL_30B4_:
 	ld a, $01
 	ld (_RAM_C85C_AudioEnabled), a
 
-	ld hl, _RAM_C779_
-	ld de, _RAM_C779_ + 1
+	ld hl, _RAM_C779_GameState
+	ld de, _RAM_C779_GameState + 1
 	ld bc, $0021
 	ld (hl), $00
 	ldir
 
 	call _LABEL_3F74_ShowMenus
 
-	ld a, (_RAM_C779_)
+	ld a, (_RAM_C779_GameState)
 	cp $80
 	jp z, _LABEL_3101_
 	cp $81
@@ -7565,7 +7565,7 @@ _LABEL_3101_:
 	call _LABEL_50D1_
 	xor a
 	ld (_RAM_C821_), a
-	ld (_RAM_C779_), a
+	ld (_RAM_C779_GameState), a
 	call _LABEL_557D_
 	call _LABEL_346B_
 	call _LABEL_1583_LoadPalettes
@@ -7725,7 +7725,7 @@ _LABEL_31C2_:
 	jr ++++
 
 +:
-	ld a, (_RAM_C779_)
+	ld a, (_RAM_C779_GameState)
 	cp $01
 	jr nz, +++
 	ld hl, (_RAM_C792_)
@@ -7733,7 +7733,7 @@ _LABEL_31C2_:
 	ld de, _DATA_719E_
 	add hl, de
 	ld a, (hl)
-	ld (_RAM_C779_), a
+	ld (_RAM_C779_GameState), a
 	ld e, a
 	ld a, (_RAM_C792_)
 	cp $0A
@@ -7751,7 +7751,7 @@ _LABEL_31C2_:
 	call _LABEL_E7A_CheckForButton1
 	jp z, _LABEL_319B_
 	ld a, $81
-	ld (_RAM_C779_), a
+	ld (_RAM_C779_GameState), a
 +:
 	and a
 	jp nz, +++++
@@ -7769,7 +7769,7 @@ _LABEL_31C2_:
 	call _LABEL_1583_LoadPalettes
 	call _LABEL_C6C_
 	call _LABEL_3E4_
-	ld a, (_RAM_C779_)
+	ld a, (_RAM_C779_GameState)
 	cp $01
 	jr z, _LABEL_332D_
 	cp $80
@@ -7822,7 +7822,7 @@ _LABEL_31C2_:
 	ei
 	call _LABEL_3B8E_
 _LABEL_331B_:
-	ld a, (_RAM_C779_)
+	ld a, (_RAM_C779_GameState)
 	cp $81
 	jp z, _LABEL_33C7_
 	cp $02
@@ -7831,12 +7831,12 @@ _LABEL_331B_:
 	jp z, +
 _LABEL_332D_:
 	xor a
-	ld (_RAM_C779_), a
+	ld (_RAM_C779_GameState), a
 	jp _LABEL_311A_
 
 +:
 	xor a
-	ld (_RAM_C779_), a
+	ld (_RAM_C779_GameState), a
 	ld a, $01
 	call _LABEL_6D54_AudioPlayMusic
 	call _LABEL_3A6E_GameOver
@@ -7888,7 +7888,7 @@ _LABEL_332D_:
 
 _LABEL_33A6_:
 	xor a
-	ld (_RAM_C779_), a
+	ld (_RAM_C779_GameState), a
 	ld a, $00
 	call _LABEL_6D54_AudioPlayMusic
 	ld a, (_RAM_C792_)
@@ -7905,7 +7905,7 @@ _LABEL_33A6_:
 
 _LABEL_33C7_:
 	xor a
-	ld (_RAM_C779_), a
+	ld (_RAM_C779_GameState), a
 	ld (_RAM_C81C_), a
 	jp _LABEL_30B4_
 
@@ -8452,7 +8452,7 @@ _LABEL_37DA_:
 	or (ix+8)
 	ret nz
 	ld a, $02
-	ld (_RAM_C779_), a
+	ld (_RAM_C779_GameState), a
 	ret
 
 ; Data from 380D to 3830 (36 bytes)
@@ -8864,110 +8864,123 @@ _LABEL_3B78_:
 	ld (_RAM_C822_IntroButtonPressed), a
 	ret
 
+/******************************************************/
 _LABEL_3B8E_:
 	ld a, $06
 	ld (_RAM_FFFF_), a
-	ld hl, $899D
-	ld a, (_RAM_C779_)
+	ld hl, $899D ; Only used when _DATA_1896D_= 3, leads to "continue" message
+	ld a, (_RAM_C779_GameState) ; ???
 	cp $03
 	jr z, +
-	ld a, (_RAM_C792_)
+  
+	ld a, (_RAM_C792_) ; Stage?
 	add a, a
 	add a, a
 	ld e, a
 	ld d, $00
-	ld hl, _DATA_1896D_
+	ld hl, _DATA_1896D_ ; Lookup table for text
 	add hl, de
-	ld a, (hl)
+	ld a, (hl) ; Zero means no text
 	inc hl
 	or (hl)
 	ret z
 	dec hl
 +:
 	push hl
-	call _LABEL_4EA_ResetScrollTile0AndTilemap
-	ld ix, $2020
-	call _LABEL_1557_LoadFont
+    ; Load tiles
+    call _LABEL_4EA_ResetScrollTile0AndTilemap
+    ld ix, $2020 ; Tile 257(!)
+    call _LABEL_1557_LoadFont
 	pop hl
 	push hl
-	ld a, (_RAM_C779_)
-	cp $03
-	jr z, +
-	ld a, $0E
-	ld (_RAM_FFFF_), a
-	ld hl, $A8A0
-	ld de, $0020
-	call _LABEL_69_DecompressToVRAMTrampoline
-	ld hl, _DATA_3AFC6_
-	ld de, $388C
-	ld bc, $0C16
-	call _LABEL_D4D_EmitTilemapRect
-	ld hl, _DATA_1AB41_
-	ld (_RAM_C7C7_TilePalettePointer), hl
-	ld hl, _DATA_1AC41_TitleScreenSpritePalette
-	ld (_RAM_C769_SpritePalettePointer), hl
-	call _LABEL_1583_LoadPalettes
-	call _LABEL_295_ScreenOn
-	ld bc, $1002
+    ld a, (_RAM_C779_GameState)
+    cp $03
+    jr z, +
+    
+    ld a, $0E
+    ld (_RAM_FFFF_), a
+    ld hl, $A8A0 ; Tile data
+    ld de, $0020
+    call _LABEL_69_DecompressToVRAMTrampoline
+    ld hl, _DATA_3AFC6_ ; Tilemap data
+    ld de, $388C
+    ld bc, $0C16
+    call _LABEL_D4D_EmitTilemapRect
+    ld hl, _DATA_1AB41_ ; Palette
+    ld (_RAM_C7C7_TilePalettePointer), hl
+    ld hl, _DATA_1AC41_TitleScreenSpritePalette
+    ld (_RAM_C769_SpritePalettePointer), hl
+    call _LABEL_1583_LoadPalettes
+    call _LABEL_295_ScreenOn
+    ld bc, $1002
 	pop hl
-	call _LABEL_3C38_
+	call _LABEL_3C38_InterstitialText
+  
+  ; Repeat for T-Bird character
 	push hl
-	call _LABEL_282_ScreenOff
-	call _LABEL_4EA_ResetScrollTile0AndTilemap
-+:
-	ld a, $0E
-	ld (_RAM_FFFF_), a
-	ld hl, $9D48
-	ld de, $0020
-	call _LABEL_69_DecompressToVRAMTrampoline
-	ld a, $0C
-	ld (_RAM_FFFF_), a
-	ld hl, _DATA_3235F_
-	ld de, $3882
-	ld bc, $1420
-	call _LABEL_D4D_EmitTilemapRect
-	ld hl, _DATA_1AB31_
-	ld (_RAM_C7C7_TilePalettePointer), hl
-	ld hl, _DATA_1AC41_TitleScreenSpritePalette
-	ld (_RAM_C769_SpritePalettePointer), hl
-	call _LABEL_1583_LoadPalettes
-	call _LABEL_295_ScreenOn
-	ld bc, $1002
+    call _LABEL_282_ScreenOff
+    call _LABEL_4EA_ResetScrollTile0AndTilemap
++:  ld a, $0E
+    ld (_RAM_FFFF_), a
+    ld hl, $9D48
+    ld de, $0020
+    call _LABEL_69_DecompressToVRAMTrampoline
+    ld a, $0C
+    ld (_RAM_FFFF_), a
+    ld hl, _DATA_3235F_
+    ld de, $3882
+    ld bc, $1420
+    call _LABEL_D4D_EmitTilemapRect
+    ld hl, _DATA_1AB31_
+    ld (_RAM_C7C7_TilePalettePointer), hl
+    ld hl, _DATA_1AC41_TitleScreenSpritePalette
+    ld (_RAM_C769_SpritePalettePointer), hl
+    call _LABEL_1583_LoadPalettes
+    call _LABEL_295_ScreenOn
+    ld bc, $1002 ; Drawing location?
 	pop hl
-	call _LABEL_3C38_
+	call _LABEL_3C38_InterstitialText
 	call _LABEL_282_ScreenOff
 	ret
 
-_LABEL_3C38_:
+_LABEL_3C38_InterstitialText:
+  ; Draws five lines of text from hl
 	push hl
-	ld a, $06
-	ld (_RAM_FFFF_), a
-	ld e, (hl)
-	inc hl
-	ld d, (hl)
-	push de
-	pop ix
-	call +
-	call +
-	call +
-	call +
-	call +
-	pop hl
-	inc hl
-	inc hl
-	ld b, $64
-	call _LABEL_D2E_DelayTimes20ms
-	ld b, $64
-	jp _LABEL_E9C_SkippableDelay
+    ; Page in data
+    ld a, $06
+    ld (_RAM_FFFF_), a
+    ; Read pointer
+    ld e, (hl)
+    inc hl
+    ld d, (hl)
+    ; Get it in ix
+    push de
+    pop ix
+    ; Emit five lines
+    call +
+    call +
+    call +
+    call +
+    call +
+  pop hl
+  ; Move pointer on
+  inc hl
+  inc hl
+  ; Wait 1s + 1s
+  ld b, $64
+  call _LABEL_D2E_DelayTimes20ms
+  ld b, $64
+  jp _LABEL_E9C_SkippableDelay
+  ; and done
 
-+:
-	call _LABEL_5790_TextToVRAM
-	dec b
++:call _LABEL_5790_TextToVRAM
+	dec b ; Next row?
 	push bc
-	ld b, $10
-	call _LABEL_D2E_DelayTimes20ms
+    ld b, $10 ; ~320ms
+    call _LABEL_D2E_DelayTimes20ms
 	pop bc
 	ret
+/*****************************************************/
 
 _LABEL_3C6C_:
 	call _LABEL_282_ScreenOff
@@ -9510,7 +9523,7 @@ _LABEL_40DD_:
 	dec (ix+21)
 	ret nz
 	ld a, $01
-	ld (_RAM_C779_), a
+	ld (_RAM_C779_GameState), a
 	ret
 
 +:
@@ -11096,7 +11109,7 @@ _LABEL_4CC8_:
 
 +:
 	ld a, $02
-	ld (_RAM_C779_), a
+	ld (_RAM_C779_GameState), a
 	ret
 
 _LABEL_4D24_:
@@ -13415,7 +13428,7 @@ _LABEL_5E8E_:
 	jp nz, _LABEL_5F78_
 	call _LABEL_2F72_
 	ld a, $02
-	ld (_RAM_C779_), a
+	ld (_RAM_C779_GameState), a
 	ld a, $0F
 	ld (_RAM_C77A_), a
 	ret
@@ -13775,7 +13788,7 @@ _LABEL_6156_:
 	jr z, _LABEL_617C_
 -:
 	ld a, $01
-	ld (_RAM_C779_), a
+	ld (_RAM_C779_GameState), a
 	inc hl
 	ld a, (_RAM_C764_)
 	ld (hl), a
@@ -13783,7 +13796,7 @@ _LABEL_6156_:
 
 _LABEL_617C_:
 	ld a, $03
-	ld (_RAM_C779_), a
+	ld (_RAM_C779_GameState), a
 	ld (_RAM_C8C6_), iy
 	ret
 
@@ -14132,7 +14145,7 @@ _LABEL_6414_:
 ; 12th entry of Jump Table from 63B9 (indexed by unknown)
 _LABEL_6426_:
 	ld a, $02
-	ld (_RAM_C779_), a
+	ld (_RAM_C779_GameState), a
 	ret
 
 ; 20th entry of Jump Table from 63B9 (indexed by unknown)
