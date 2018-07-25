@@ -870,458 +870,458 @@ Intermission1TBirdD:
 
 Intermission2DarkQueenA:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
-  Text 4,16, "I'M SO SURE THAT I'M GONNA", 17
-  Text 4,17, "WIN, WARTBODIES, THAT I'LL", 17
-  Text 8,18, "LET YOU ATTEMPT A", 17
-  Text 11,19, "BONUS LEVEL!", 200
+  Text 4,19, "I'M SO SURE THAT I'M GONNA", 17
+  Text 4,20, "WIN, WARTBODIES, THAT I'LL", 17
+  Text 8,21, "LET YOU ATTEMPT A", 17
+  Text 11,22, "BONUS LEVEL!", 200
   .db INTRO_END
 Intermission2DarkQueenB:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
-  Text 3,16, "GRR! I SUPPOSE YOU SNOTSKINS", 17
-  Text 3,17, "DESERVE A SHOT AT THIS BONUS", 17
-  Text 3,18, "LEVEL FOR GETTIN' THIS FAR.", 17
-  Text 5,19, "BUT ONCE IT'S OVER, I'M", 17
-  Text 4,20, "GONNA FINISH YOU FOR GOOD!", 200
+  Text 3,19, "GRR! I SUPPOSE YOU SNOTSKINS", 17
+  Text 3,20, "DESERVE A SHOT AT THIS BONUS", 17
+  Text 3,21, "LEVEL FOR GETTIN' THIS FAR.", 17
+  Text 5,22, "BUT ONCE IT'S OVER, I'M", 17
+  Text 4,23, "GONNA FINISH YOU FOR GOOD!", 200
   .db INTRO_END
 Intermission2DarkQueenC:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
-  Text 3,16, "YOU'D BETTER COLLECT ENOUGH", 17
-  Text 6,17, "PINS TO GAIN AN EXTRA", 17
-  Text 3,18, "LIFE HERE, SWAMPSUCKERS,'CUZ", 17
-  Text 3,19, "YOU'LL SURELY BE NEEDIN' IT!", 200
+  Text 3,19, "YOU'D BETTER COLLECT ENOUGH", 17
+  Text 6,20, "PINS TO GAIN AN EXTRA", 17
+  Text 3,21, "LIFE HERE, SWAMPSUCKERS,'CUZ", 17
+  Text 3,22, "YOU'LL SURELY BE NEEDIN' IT!", 200
   .db INTRO_END
 Intermission2DarkQueenD:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
-  Text 4,16, "YOU CAN'T SAY THAT I DON'T", 17
-  Text 3,17, "PLAY FAIR, PENCIL NECK. I'LL", 17
-  Text 3,18, "LET THE BATTLEWIMPS PLAY MY", 17
-  Text 3,19, "NICE EASY BONUS LEVEL BEFORE", 17
-  Text 7,20, "I GET REALLY NASTY!!", 200
+  Text 4,19, "YOU CAN'T SAY THAT I DON'T", 17
+  Text 3,20, "PLAY FAIR, PENCIL NECK. I'LL", 17
+  Text 3,21, "LET THE BATTLEWIMPS PLAY MY", 17
+  Text 3,22, "NICE EASY BONUS LEVEL BEFORE", 17
+  Text 7,23, "I GET REALLY NASTY!!", 200
   .db INTRO_END
 Intermission2TBirdA:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
-  Text 5,16, "SNATCH THE PINS, 'TOADS!", 17
-  Text 5,17, "COLLECT ENOUGH AN' WE'RE", 17
-  Text 4,18, "TALKIN' EXTRA LIVES HERE!!", 200
+  Text 5,18, "SNATCH THE PINS, 'TOADS!", 17
+  Text 5,19, "COLLECT ENOUGH AN' WE'RE", 17
+  Text 4,20, "TALKIN' EXTRA LIVES HERE!!", 200
   .db INTRO_END
 Intermission2TBirdB: 
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
-  Text 3,16, "TAKE A REST FROM THE ACTION,", 17
-  Text 5,17, "GUYS! TRY OUT THE BONUS", 17
-  Text 4,18, "LEVEL, AND IF YOU COLLECT", 17
-  Text 4,19, "ENOUGH PINS, YOU'LL WIN AN", 17
-  Text 8,20, "EXTRA LIFE OR TWO!", 200
+  Text 3,18, "TAKE A REST FROM THE ACTION,", 17
+  Text 5,19, "GUYS! TRY OUT THE BONUS", 17
+  Text 4,20, "LEVEL, AND IF YOU COLLECT", 17
+  Text 4,21, "ENOUGH PINS, YOU'LL WIN AN", 17
+  Text 8,22, "EXTRA LIFE OR TWO!", 200
   .db INTRO_END
 Intermission2TBirdC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
-  Text 3,17, "THE MORE THE MERRIER,'TOADS!", 17
-  Text 3,18, "LET'S CHECK OUT THAT CHECKER", 17
-  Text 6,19, "AND WIN US SOME LIVES!", 200
+  Text 3,19, "THE MORE THE MERRIER,'TOADS!", 17
+  Text 3,20, "LET'S CHECK OUT THAT CHECKER", 17
+  Text 6,21, "AND WIN US SOME LIVES!", 200
   .db INTRO_END
 Intermission2TBirdD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
-  Text 5,14, "C'MON 'TOADS, IT'S BONUS", 17
-  Text 5,16, "TIME! COLLECT THE WHITES", 17
-  Text 7,18, "TO WIN A LIFE, AVOID", 17
-  Text 8,20, "THE SKULLS AS THEY", 17
+  Text 5,18, "C'MON 'TOADS, IT'S BONUS", 17
+  Text 5,19, "TIME! COLLECT THE WHITES", 17
+  Text 7,20, "TO WIN A LIFE, AVOID", 17
+  Text 8,21, "THE SKULLS AS THEY", 17
   Text 11,22, "MEAN STRIFE!", 200
   .db INTRO_END
 
 Intermission3DarkQueenA: 
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
-  Text 5,16, "THIS IS WHERE THE ACTION", 17
-  Text 5,17, "GETS FAST AN' YOUR SLIME", 17
-  Text 7,18, "BACKS COME LAST, YOU", 17
-  Text 10,19, "FLAPPIN' FOOL!", 200
+  Text 5,19, "THIS IS WHERE THE ACTION", 17
+  Text 5,20, "GETS FAST AN' YOUR SLIME", 17
+  Text 7,21, "BACKS COME LAST, YOU", 17
+  Text 10,22, "FLAPPIN' FOOL!", 200
   .db INTRO_END
 Intermission3DarkQueenB:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
-  Text 5,16, "HAVE YOU GOT THE STOMACH", 17
-  Text 6,17, "FOR SPEED? I SINCERELY", 17
-  Text 6,18, "HOPE NOT, YOU HOPPING", 17
-  Text 12,19, "HALF-WITS!", 200
+  Text 5,19, "HAVE YOU GOT THE STOMACH", 17
+  Text 6,20, "FOR SPEED? I SINCERELY", 17
+  Text 6,21, "HOPE NOT, YOU HOPPING", 17
+  Text 12,22, "HALF-WITS!", 200
   .db INTRO_END
 Intermission3DarkQueenC:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
-  Text 7,16, "YOU MIGHT THINK YOUR", 17
-  Text 5,17, "BATTLENERDS ARE WINNING,", 17
-  Text 3,18, "HOOKBILL, BUT LET ME ASSURE", 17
-  Text 7,19, "YOU, I HAVEN'T EVEN", 17
-  Text 9,20, "WARMED UP YET!!", 200
+  Text 7,19, "YOU MIGHT THINK YOUR", 17
+  Text 5,20, "BATTLENERDS ARE WINNING,", 17
+  Text 3,21, "HOOKBILL, BUT LET ME ASSURE", 17
+  Text 7,22, "YOU, I HAVEN'T EVEN", 17
+  Text 9,23, "WARMED UP YET!!", 200
   .db INTRO_END
 Intermission3DarkQueenD:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
-  Text 3,16, "I HOPE YOU ENJOYED YOURSELF", 17
-  Text 3,17, "BACK THERE, 'CUZ I KNOW THAT", 17
-  Text 6,18, "SOMETHING REALLY NASTY", 17
-  Text 6,19, "IS GONNA HAPPEN TO YOU", 17
-  Text 9,20, "ON THOSE BIKES!!", 200
+  Text 3,19, "I HOPE YOU ENJOYED YOURSELF", 17
+  Text 3,20, "BACK THERE, 'CUZ I KNOW THAT", 17
+  Text 6,21, "SOMETHING REALLY NASTY", 17
+  Text 6,22, "IS GONNA HAPPEN TO YOU", 17
+  Text 9,23, "ON THOSE BIKES!!", 200
   .db INTRO_END
 Intermission3TBirdA:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
-  Text 6,16, "BE CAREFUL 'TOADS, I'M", 17
-  Text 7,17, "PICKIN' UP IMAGES OF", 17
-  Text 4,18, "WHIZZIN' WALLS AND RODENT", 17
-  Text 4,19, "ROADHOGS IN THAT TUNNEL!!", 200 
+  Text 6,18, "BE CAREFUL 'TOADS, I'M", 17
+  Text 7,19, "PICKIN' UP IMAGES OF", 17
+  Text 4,20, "WHIZZIN' WALLS AND RODENT", 17
+  Text 4,21, "ROADHOGS IN THAT TUNNEL!!", 200 
   .db INTRO_END
 Intermission3TBirdB:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
-  Text 3,17, "YOU'RE DOIN' GREAT, 'TOADS!", 17
-  Text 3,18, "LET'S HEAD FOR THE BIKES AND", 17
-  Text 6,19, "HIT THAT TUNNEL-HARD!", 200
+  Text 3,19, "YOU'RE DOIN' GREAT, 'TOADS!", 17
+  Text 3,20, "LET'S HEAD FOR THE BIKES AND", 17
+  Text 6,21, "HIT THAT TUNNEL-HARD!", 200
   .db INTRO_END
 Intermission3TBirdC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
-  Text 4,17, "REMEMBER, 'TOADS, IN HERE", 17
-  Text 5,18, "IT'S THE SURVIVAL OF THE", 17
-  Text 13,19, "FASTEST!", 200
+  Text 4,19, "REMEMBER, 'TOADS, IN HERE", 17
+  Text 5,20, "IT'S THE SURVIVAL OF THE", 17
+  Text 13,21, "FASTEST!", 200
   .db INTRO_END
 Intermission3TBirdD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
-  Text 6,23, "IT'S THE NEED-TO-SPEED", 17
-  Text 3,23, "ONCE AGAIN 'TOADS! PUT YOUR", 17
-  Text 4,23, "FOOT TO THE FLOOR AND HANG", 17
-  Text 12,23, "ON TIGHT!", 200
+  Text 6,18, "IT'S THE NEED-TO-SPEED", 17
+  Text 3,19, "ONCE AGAIN 'TOADS! PUT YOUR", 17
+  Text 4,20, "FOOT TO THE FLOOR AND HANG", 17
+  Text 12,21, "ON TIGHT!", 200
   .db INTRO_END
 
 Intermission4DarkQueenA:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
-  Text 5,23, "'TOAD VERSUS SNAKE, EH?", 17
-  Text 5,23, "THEY DON'T HAVE A CHANCE", 17
-  Text 2,23, "IN THIS ONE, MR. BEAKY FREAK!", 200
+  Text 5,19, "'TOAD VERSUS SNAKE, EH?", 17
+  Text 5,20, "THEY DON'T HAVE A CHANCE", 17
+  Text 2,21, "IN THIS ONE, MR. BEAKY FREAK!", 200
   .db INTRO_END
 Intermission4DarkQueenB:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
-  Text 6,23, "THE BIKE LEVEL'S OVER,", 17
-  Text 6,23, "MANGROVE LURKERS, SO I", 17
-  Text 3,23, "SUGGEST YOU RUN HOME TO THAT", 17
-  Text 6,23, "FEATHERED FREAK WHILE", 17
+  Text 6,19, "THE BIKE LEVEL'S OVER,", 17
+  Text 6,20, "MANGROVE LURKERS, SO I", 17
+  Text 3,21, "SUGGEST YOU RUN HOME TO THAT", 17
+  Text 6,22, "FEATHERED FREAK WHILE", 17
   Text 10,23, "YOU STILL CAN!", 200
   .db INTRO_END
 Intermission4DarkQueenC:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
-  Text 5,23, "THIS IS IT, YOU GOBBLIN'", 17
-  Text 3,23, "GEEK, YOUR MISERABLE BOTTLED", 17
-  Text 6,23, "NERDS ARE GONNA PERISH", 17
-  Text 9,23, "IN MY SNAKE PIT!", 200
+  Text 5,19, "THIS IS IT, YOU GOBBLIN'", 17
+  Text 3,20, "GEEK, YOUR MISERABLE BOTTLED", 17
+  Text 6,21, "NERDS ARE GONNA PERISH", 17
+  Text 9,22, "IN MY SNAKE PIT!", 200
   .db INTRO_END
 Intermission4DarkQueenD:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
-  Text 3,23, "PREPARE TO MEET KARNATH-KING", 17
-  Text 3,23, "OF THE SNAKES!! YOU'LL NEVER", 17
-  Text 3,23, "ESCAPE FROM HIS LETHAL LAIR,", 17
-  Text 7,23, "NEVER! HA-HA-HA-HA!", 200
+  Text 3,19, "PREPARE TO MEET KARNATH-KING", 17
+  Text 3,20, "OF THE SNAKES!! YOU'LL NEVER", 17
+  Text 3,21, "ESCAPE FROM HIS LETHAL LAIR,", 17
+  Text 7,22, "NEVER! HA-HA-HA-HA!", 200
   .db INTRO_END
 Intermission4TBirdA:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
-  Text 4,23, "MY INFO REVEALS THAT THESE", 17
-  Text 5,23, "SNAKES DON'T BITE, SO IT", 17
-  Text 4,23, "SHOULD BE A PIECE OF CAKE!", 200
+  Text 4,19, "MY INFO REVEALS THAT THESE", 17
+  Text 5,20, "SNAKES DON'T BITE, SO IT", 17
+  Text 4,21, "SHOULD BE A PIECE OF CAKE!", 200
   .db INTRO_END
 Intermission4TBirdB:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
-  Text 3,23, "IT LOOKS LIKE IT'S TIME FOR", 17
-  Text 4,23, "SOME SKILLFUL SCALING FROM", 17
-  Text 9,23, "THE BATTLETOADS!", 200
+  Text 3,19, "IT LOOKS LIKE IT'S TIME FOR", 17
+  Text 4,20, "SOME SKILLFUL SCALING FROM", 17
+  Text 9,21, "THE BATTLETOADS!", 200
   .db INTRO_END
 Intermission4TBirdC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
-  Text 5,23, "SLITHER ON UP TO THE TOP", 17
-  Text 3,23, "OF THESE SNAKE PITS, 'TOADS!", 200
+  Text 5,19, "SLITHER ON UP TO THE TOP", 17
+  Text 3,20, "OF THESE SNAKE PITS, 'TOADS!", 200
   .db INTRO_END
 Intermission4TBirdD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
-  Text 6,23, "THE EXIT'S AT THE TOP", 17
-  Text 5,23, "'TOADS, SO GRAB A SNAKE", 17
-  Text 8,23, "AND HOLD ON TIGHT!", 200
+  Text 6,19, "THE EXIT'S AT THE TOP", 17
+  Text 5,20, "'TOADS, SO GRAB A SNAKE", 17
+  Text 8,21, "AND HOLD ON TIGHT!", 200
   .db INTRO_END
 
 Intermission5DarkQueenA:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
-  Text 6,23, "SO, YOU MADE IT TO THE", 17
-  Text 3,23, "SECOND BONUS LEVEL. MAKE THE", 17
-  Text 6,23, "MOST OF IT, 'CUZ IT'LL", 17
-  Text 10,23, "BE YOUR LAST!!", 200
+  Text 6,19, "SO, YOU MADE IT TO THE", 17
+  Text 3,20, "SECOND BONUS LEVEL. MAKE THE", 17
+  Text 6,21, "MOST OF IT, 'CUZ IT'LL", 17
+  Text 10,22, "BE YOUR LAST!!", 200
   .db INTRO_END
 Intermission5DarkQueenB:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
-  Text 3,23, "TOO MUCH FOR YOU, HUH BEAKY?", 17
-  Text 5,23, "I'LL GIVE YOUR PATHETIC", 17
-  Text 3,23, "PRATTLETOADS ONE MORE CHANCE", 17
-  Text 7,23, "AT MY BONUS LEVEL...", 200
+  Text 3,19, "TOO MUCH FOR YOU, HUH BEAKY?", 17
+  Text 5,20, "I'LL GIVE YOUR PATHETIC", 17
+  Text 3,21, "PRATTLETOADS ONE MORE CHANCE", 17
+  Text 7,22, "AT MY BONUS LEVEL...", 200
   .db INTRO_END
 Intermission5DarkQueenC:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
-  Text 3,23, "I'M FEELING SO SORRY FOR YOU", 17
-  Text 3,23, "IN YOUR PITIFUL ATTEMPTS TO", 17
-  Text 4,23, "BEAT ME, THAT I'LL LET YOU", 17
-  Text 5,23, "TRY ANOTHER BONUS LEVEL!", 200
+  Text 3,19, "I'M FEELING SO SORRY FOR YOU", 17
+  Text 3,20, "IN YOUR PITIFUL ATTEMPTS TO", 17
+  Text 4,21, "BEAT ME, THAT I'LL LET YOU", 17
+  Text 5,22, "TRY ANOTHER BONUS LEVEL!", 200
   .db INTRO_END
 Intermission5DarkQueenD:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
-  Text 5,23, "YOUR LAST CHANCE TO GAIN", 17
-  Text 3,23, "SOME LIVES, SWAMP FEATURES,", 17
-  Text 4,23, "'CUZ IT'LL SOON BE THE END", 17
-  Text 4,23, "OF THE ROAD FOR YOU IN THE", 17
+  Text 5,19, "YOUR LAST CHANCE TO GAIN", 17
+  Text 3,20, "SOME LIVES, SWAMP FEATURES,", 17
+  Text 4,21, "'CUZ IT'LL SOON BE THE END", 17
+  Text 4,22, "OF THE ROAD FOR YOU IN THE", 17
   Text 11,23, "DARK TOWER!", 200
   .db INTRO_END
 Intermission5TBirdA:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
-  Text 8,23, "WATCH OUT, THERE'S", 17
-  Text 5,23, "MORE BEASTLY BAD ONES TO", 17
-  Text 3,23, "AVOID HERE! LET'S MOTIVATE!!", 200
+  Text 8,19, "WATCH OUT, THERE'S", 17
+  Text 5,20, "MORE BEASTLY BAD ONES TO", 17
+  Text 3,21, "AVOID HERE! LET'S MOTIVATE!!", 200
   .db INTRO_END
 Intermission5TBirdB:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
-  Text 3,23, "THE QUEEN'S RUNNING SCARED!", 17
-  Text 4,23, "LET'S TRY FOR SOME LIVES,", 17
-  Text 5,23, "THEN GO GET HER, 'TOADS!", 200
+  Text 3,19, "THE QUEEN'S RUNNING SCARED!", 17
+  Text 4,20, "LET'S TRY FOR SOME LIVES,", 17
+  Text 5,21, "THEN GO GET HER, 'TOADS!", 200
   .db INTRO_END
 Intermission5TBirdC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
-  Text 3,23, "GRAB AS MANY DOMINOES AS YOU", 17
-  Text 3,23, "CAN! MY SCANNERS REVEAL THAT", 17
-  Text 4,23, "VOLKMIRE'S TOWER IS NEAR!!", 200
+  Text 3,19, "GRAB AS MANY DOMINOES AS YOU", 17
+  Text 3,20, "CAN! MY SCANNERS REVEAL THAT", 17
+  Text 4,21, "VOLKMIRE'S TOWER IS NEAR!!", 200
   .db INTRO_END
 Intermission5TBirdD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
-  Text 3,23, "BACK ON THE CHECKERS,'TOADS!", 17
-  Text 3,23, "THERE'S DOMINOES TO COLLECT", 17
-  Text 5,23, "AND EXTRA LIVES TO GET!!", 200
+  Text 3,19, "BACK ON THE CHECKERS,'TOADS!", 17
+  Text 3,20, "THERE'S DOMINOES TO COLLECT", 17
+  Text 5,21, "AND EXTRA LIVES TO GET!!", 200
   .db INTRO_END
 
 Intermission6DarkQueenA:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
-  Text 3,23, "I CAN'T BELIEVE YOU ESCAPED", 17
-  Text 3,23, "FROM KARNATH! YOU'RE PRETTY", 17
-  Text 6,23, "GOOD, FROGGIES, BUT IT", 17
-  Text 9,23, "AIN'T OVER YET!", 200
+  Text 3,19, "I CAN'T BELIEVE YOU ESCAPED", 17
+  Text 3,20, "FROM KARNATH! YOU'RE PRETTY", 17
+  Text 6,21, "GOOD, FROGGIES, BUT IT", 17
+  Text 9,22, "AIN'T OVER YET!", 200
   .db INTRO_END
 Intermission6DarkQueenB:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
-  Text 6,23, "RIDE MY RACKETY ROLLER", 17
-  Text 5,23, "COASTER IF YOU DARE! BUT", 17
-  Text 5,23, "WATCH OUT FOR FUZZ, 'CUZ", 17
-  Text 10,23, "FUZZ CAN BUZZ!", 200
+  Text 6,19, "RIDE MY RACKETY ROLLER", 17
+  Text 5,20, "COASTER IF YOU DARE! BUT", 17
+  Text 5,21, "WATCH OUT FOR FUZZ, 'CUZ", 17
+  Text 10,22, "FUZZ CAN BUZZ!", 200
   .db INTRO_END
 Intermission6DarkQueenC:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
-  Text 5,23, "MMM, I WONDER WHAT THIN,", 17
-  Text 4,23, "SUCCULENT SLICES OF GREEN", 17
-  Text 3,23, "'TOAD TASTE LIKE? WELL, I'M", 17
-  Text 3,23, "SURE I'LL FIND OUT SHORTLY!!", 200
+  Text 5,19, "MMM, I WONDER WHAT THIN,", 17
+  Text 4,20, "SUCCULENT SLICES OF GREEN", 17
+  Text 3,21, "'TOAD TASTE LIKE? WELL, I'M", 17
+  Text 3,22, "SURE I'LL FIND OUT SHORTLY!!", 200
   .db INTRO_END
 Intermission6DarkQueenD:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
-  Text 3,23, "UP AN' DOWN N' ROUND YOU GO,", 17
-  Text 5,23, "YOU'D BEST BE FAST, 'CUZ", 17
-  Text 9,23, "FUZZ AIN'T SLOW!", 200
+  Text 3,19, "UP AN' DOWN N' ROUND YOU GO,", 17
+  Text 5,20, "YOU'D BEST BE FAST, 'CUZ", 17
+  Text 9,21, "FUZZ AIN'T SLOW!", 200
   .db INTRO_END
 Intermission6TBirdA:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
-  Text 3,23, "POWER UP THOSE JET TRACKTORS", 17
-  Text 7,23, "'TOADS, AND HIT THEM", 17
-  Text 10,23, "CORNERS FAST!", 200
+  Text 3,19, "POWER UP THOSE JET TRACKTORS", 17
+  Text 7,20, "'TOADS, AND HIT THEM", 17
+  Text 10,21, "CORNERS FAST!", 200
   .db INTRO_END
 Intermission6TBirdB:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
-  Text 3,23, "DON'T LET THAT MOBILE MINCER", 17
-  Text 4,23, "NEAR YOU, 'TOADS. MICHIKO", 17
-  Text 8,23, "AND ZITZ ARE STILL", 17
-  Text 9,23, "COUNTING ON YOU!", 200
+  Text 3,18, "DON'T LET THAT MOBILE MINCER", 17
+  Text 4,19, "NEAR YOU, 'TOADS. MICHIKO", 17
+  Text 8,20, "AND ZITZ ARE STILL", 17
+  Text 9,21, "COUNTING ON YOU!", 200
   .db INTRO_END
 Intermission6TBirdC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
-  Text 3,23, "LISTEN, 'TOADS, IT'S NOT THE", 17
-  Text 5,23, "TAKING PART THAT COUNTS,", 17
-  Text 8,23, "IT'S THE WINNING!", 200
+  Text 3,19, "LISTEN, 'TOADS, IT'S NOT THE", 17
+  Text 5,20, "TAKING PART THAT COUNTS,", 17
+  Text 8,21, "IT'S THE WINNING!", 200
   .db INTRO_END
 Intermission6TBirdD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
-  Text 3,23, "HIT THE TRACK AND DON'T LOOK", 17
-  Text 4,23, "BACK, 'TOADS! YOU'VE GOT A", 17
-  Text 5,23, "CRAZY RIDE AHEAD OF YOU!", 200
+  Text 3,19, "HIT THE TRACK AND DON'T LOOK", 17
+  Text 4,20, "BACK, 'TOADS! YOU'VE GOT A", 17
+  Text 5,21, "CRAZY RIDE AHEAD OF YOU!", 200
   .db INTRO_END
 
 Intermission7DarkQueenA:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
-  Text 5,23, "FEELING WEARY YET, SWAMP", 17
-  Text 3,23, "DWELLERS? I HOPE SO,'CUZ I'M", 17
-  Text 3,23, "SENDIN' IN SCUZZ TO BLOW UP", 17
-  Text 5,23, "THE TOWER WITH YOU STILL", 17
+  Text 5,19, "FEELING WEARY YET, SWAMP", 17
+  Text 3,20, "DWELLERS? I HOPE SO,'CUZ I'M", 17
+  Text 3,21, "SENDIN' IN SCUZZ TO BLOW UP", 17
+  Text 5,22, "THE TOWER WITH YOU STILL", 17
   Text 11,23, "INSIDE IT!", 200
   .db INTRO_END
 Intermission7DarkQueenB:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
-  Text 5,23, "TELL THEM TO QUIT WHILE", 17
-  Text 5,23, "THEY'RE AHEAD, FEATHERY", 17
-  Text 3,23, "FOOL, 'CUZ IT'S CURTAINS FOR", 17
-  Text 5,23, "THE FROGS IF THEY ENTER", 17
+  Text 5,19, "TELL THEM TO QUIT WHILE", 17
+  Text 5,20, "THEY'RE AHEAD, FEATHERY", 17
+  Text 3,21, "FOOL, 'CUZ IT'S CURTAINS FOR", 17
+  Text 5,22, "THE FROGS IF THEY ENTER", 17
   Text 9,23, "THE DARK TOWER!", 200
   .db INTRO_END
 Intermission7DarkQueenC:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
-  Text 5,23, "YOU CROAKING CLOWNS MUST", 17
-  Text 4,23, "HAVE TAKEN A SHORT CUT TO", 17
-  Text 4,23, "GET HERE! I'M WAITIN' FOR", 17
-  Text 6,23, "YOU AT THE BOTTOM, IF", 17
+  Text 5,19, "YOU CROAKING CLOWNS MUST", 17
+  Text 4,20, "HAVE TAKEN A SHORT CUT TO", 17
+  Text 4,21, "GET HERE! I'M WAITIN' FOR", 17
+  Text 6,22, "YOU AT THE BOTTOM, IF", 17
   Text 7,23, "YOU GET THAT FAR...", 200
   .db INTRO_END
 Intermission7DarkQueenD:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
-  Text 5,23, "I'M IMPRESSED, PROFESSOR", 17
-  Text 4,23, "NERD, I DIDN'T THINK YOUR", 17
-  Text 4,23, "BATTLEFOOLS WOULD GET THIS", 17
-  Text 4,23, "FAR! UNFORTUNATELY, THEIR", 17
+  Text 5,19, "I'M IMPRESSED, PROFESSOR", 17
+  Text 4,20, "NERD, I DIDN'T THINK YOUR", 17
+  Text 4,21, "BATTLEFOOLS WOULD GET THIS", 17
+  Text 4,22, "FAR! UNFORTUNATELY, THEIR", 17
   Text 8,23, "MISSION ENDS HERE!", 200
   .db INTRO_END
 Intermission7TBirdA: 
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
-  Text 5,23, "C'MON GUYS, THE END'S IN", 17
-  Text 5,23, "SIGHT! BEAT THE RAT TWO", 17
-  Text 4,23, "TIMES, AND HE'LL LEAD YOU", 17
-  Text 8,23, "TO THE DARK QUEEN!", 200
+  Text 5,18, "C'MON GUYS, THE END'S IN", 17
+  Text 5,19, "SIGHT! BEAT THE RAT TWO", 17
+  Text 4,20, "TIMES, AND HE'LL LEAD YOU", 17
+  Text 8,21, "TO THE DARK QUEEN!", 200
   .db INTRO_END
 Intermission7TBirdB:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
-  Text 6,23, "THE QUEEN'S PLACED TWO", 17
-  Text 3,23, "BOMBS IN THE TOWER! YOU MUST", 17
-  Text 4,23, "DEFUSE THEM ALL, OTHERWISE", 17
-  Text 9,23, "YOU'RE HISTORY!!", 200
+  Text 6,18, "THE QUEEN'S PLACED TWO", 17
+  Text 3,19, "BOMBS IN THE TOWER! YOU MUST", 17
+  Text 4,20, "DEFUSE THEM ALL, OTHERWISE", 17
+  Text 9,21, "YOU'RE HISTORY!!", 200
   .db INTRO_END
 Intermission7TBirdC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
-  Text 3,23, "WE'RE ALMOST THERE, 'TOADS!", 17
-  Text 4,23, "PUT ON YOUR RUNNING SHOES,", 17
-  Text 7,23, "AND LET'S DROP IN ON", 17
-  Text 9,23, "THE DARK QUEEN!!", 200
+  Text 3,18, "WE'RE ALMOST THERE, 'TOADS!", 17
+  Text 4,19, "PUT ON YOUR RUNNING SHOES,", 17
+  Text 7,20, "AND LET'S DROP IN ON", 17
+  Text 9,21, "THE DARK QUEEN!!", 200
   .db INTRO_END
 Intermission7TBirdD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
-  Text 4,23, "YOU'RE IN THE QUEEN'S HOME", 17
-  Text 4,23, "TERRITORY NOW,'TOADS! JUST", 17
-  Text 4,23, "TWO RAT RACES, AND YOU GET", 17
-  Text 3,23, "TO 'TOADSLAM HER REAL GOOD!!", 200
+  Text 4,18, "YOU'RE IN THE QUEEN'S HOME", 17
+  Text 4,19, "TERRITORY NOW,'TOADS! JUST", 17
+  Text 4,20, "TWO RAT RACES, AND YOU GET", 17
+  Text 3,21, "TO 'TOADSLAM HER REAL GOOD!!", 200
   .db INTRO_END
 
 Intermission8DarkQueenA:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
-  Text 3,23, "WELL, WELL, WELL, YOU FROGS", 17
-  Text 5,23, "MUST THINK YOU'RE REALLY", 17
-  Text 5,23, "SOMETHING. WELL, YOU'VE", 17
-  Text 3,23, "FOUGHT THE REST, NOW YOU'RE", 17
+  Text 3,19, "WELL, WELL, WELL, YOU FROGS", 17
+  Text 5,20, "MUST THINK YOU'RE REALLY", 17
+  Text 5,21, "SOMETHING. WELL, YOU'VE", 17
+  Text 3,22, "FOUGHT THE REST, NOW YOU'RE", 17
   Text 5,23, "GONNA LOSE TO THE BEST!", 200
   .db INTRO_END
 Intermission8DarkQueenB:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
-  Text 3,23, "I HOPE YOU'RE STILL WATCHING", 17
-  Text 4,23, "THIS, BIRD BRAIN, 'CUZ I'M", 17
-  Text 3,23, "GONNA FINISH THE BATTLETOADS", 17
-  Text 11,23, "OFF MYSELF!", 200
+  Text 3,19, "I HOPE YOU'RE STILL WATCHING", 17
+  Text 4,20, "THIS, BIRD BRAIN, 'CUZ I'M", 17
+  Text 3,21, "GONNA FINISH THE BATTLETOADS", 17
+  Text 11,22, "OFF MYSELF!", 200
   .db INTRO_END
 Intermission8DarkQueenC:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
-  Text 4,23, "JUST YOU AND ME LEFT NOW,", 17
-  Text 3,23, "'TOADIES! THERE'S NO ROUNDS,", 17
-  Text 3,23, "NO FALLS, NO RULES, AN' WHEN", 17
-  Text 5,23, "I'VE FINISHED - NO YOU!", 200
+  Text 4,19, "JUST YOU AND ME LEFT NOW,", 17
+  Text 3,20, "'TOADIES! THERE'S NO ROUNDS,", 17
+  Text 3,21, "NO FALLS, NO RULES, AN' WHEN", 17
+  Text 5,22, "I'VE FINISHED - NO YOU!", 200
   .db INTRO_END
 Intermission8DarkQueenD:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
-  Text 3,23, "PAH! IF YOU WANT A JOB DONE", 17
-  Text 5,23, "PROPERLY, NEVER TRUST A", 17
-  Text 4,23, "USELESS BUNCH OF PIGS AND", 17
-  Text 6,23, "RATS! C'MON 'TOADIES,", 17
+  Text 3,19, "PAH! IF YOU WANT A JOB DONE", 17
+  Text 5,20, "PROPERLY, NEVER TRUST A", 17
+  Text 4,21, "USELESS BUNCH OF PIGS AND", 17
+  Text 6,22, "RATS! C'MON 'TOADIES,", 17
   Text 11,23, "LET'S FIGHT!", 200
   .db INTRO_END
 Intermission8TBirdA: 
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
-  Text 3,23, "IT'S SHOWDOWN TIME, 'TOADS!!", 17
-  Text 4,23, "JUST THE DARK QUEEN STANDS", 17
-  Text 3,23, "BETWEEN YOU AND OUR BUDDIES!", 200
+  Text 3,19, "IT'S SHOWDOWN TIME, 'TOADS!!", 17
+  Text 4,20, "JUST THE DARK QUEEN STANDS", 17
+  Text 3,21, "BETWEEN YOU AND OUR BUDDIES!", 200
   .db INTRO_END
 Intermission8TBirdB:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
-  Text 3,23, "SHOW THAT DARK QUEEN WHO YOU", 17
-  Text 5,23, "ARE! YOU AIN'T NO FEEBLE", 17
-  Text 9,23, "FROGS-YOU'RE THE", 17
-  Text 11,23, "BATTLETOADS!", 200
+  Text 3,18, "SHOW THAT DARK QUEEN WHO YOU", 17
+  Text 5,19, "ARE! YOU AIN'T NO FEEBLE", 17
+  Text 9,20, "FROGS-YOU'RE THE", 17
+  Text 11,21, "BATTLETOADS!", 200
   .db INTRO_END
 Intermission8TBirdC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
-  Text 3,23, "WAYDIGO 'TOADS! THE QUEEN'S", 17
-  Text 4,23, "ARMY IS BEATEN, AND SHE'S", 17
-  Text 3,23, "SHAKIN' IN FEAR! GO GET HER!", 200
+  Text 3,19, "WAYDIGO 'TOADS! THE QUEEN'S", 17
+  Text 4,20, "ARMY IS BEATEN, AND SHE'S", 17
+  Text 3,21, "SHAKIN' IN FEAR! GO GET HER!", 200
   .db INTRO_END
 Intermission8TBirdD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
-  Text 3,23, "I KNEW YOU'D MAKE IT 'TOADS!", 17
-  Text 4,23, "BOY, I WOULDN'T WANT TO BE", 17
-  Text 4,23, "IN THE QUEEN'S SHOES NOW,", 17
-  Text 9,23, "SHE'S IN FOR ONE", 17
-  Text 7,23, "HUMUNGOUS SURPRISE!!", 200
+  Text 3,18, "I KNEW YOU'D MAKE IT 'TOADS!", 17
+  Text 4,19, "BOY, I WOULDN'T WANT TO BE", 17
+  Text 4,20, "IN THE QUEEN'S SHOES NOW,", 17
+  Text 9,21, "SHE'S IN FOR ONE", 17
+  Text 7,22, "HUMUNGOUS SURPRISE!!", 200
   .db INTRO_END
 
 Intermission9DarkQueenA: 
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
-  Text 7,23, "NOOOO, THIS CAN'T BE ", 17
-  Text 4,23, "HAPPENING!! YOU CAN'T BEAT ", 17
-  Text 3,23, "ME, I'M THE DARK QUEEN!! I'M ", 17
-  Text 4,23, "MEAN, I'M NASTY AND I WANT ", 17
+  Text 7,19, "NOOOO, THIS CAN'T BE ", 17
+  Text 4,20, "HAPPENING!! YOU CAN'T BEAT ", 17
+  Text 3,21, "ME, I'M THE DARK QUEEN!! I'M ", 17
+  Text 4,22, "MEAN, I'M NASTY AND I WANT ", 17
   Text 3,23, "TO WIN! GRR, I HATE 'TOADS!", 200
   .db INTRO_END
 Intermission9DarkQueenB: 
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
-  Text 3,23, "IT'S JUST NOT FAIR, I'M FED ", 17
-  Text 3,23, "UP BEING BEATEN BY A SCRAWNY ", 17
-  Text 5,23, "BEAK AND HIS SLIMY SWAMP ", 17
-  Text 3,23, "SWIMMERS!! I'LL GET YOU NEXT ", 17
+  Text 3,19, "IT'S JUST NOT FAIR, I'M FED ", 17
+  Text 3,20, "UP BEING BEATEN BY A SCRAWNY ", 17
+  Text 5,21, "BEAK AND HIS SLIMY SWAMP ", 17
+  Text 3,22, "SWIMMERS!! I'LL GET YOU NEXT ", 17
   Text 8,23, "TIME, ALL OF YOU!!", 200
   .db INTRO_END
 Intermission9DarkQueenC: 
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
-  Text 4,23, "UH-YOU WOULDN'T HIT A LADY ", 17
-  Text 3,23, "WHILE SHE'S DOWN, WOULD YOU? ", 17
-  Text 4,23, "GOOD, 'CUZ THIS GIVES ME A", 17
-  Text 3,23, "CHANCE TO ESCAPE! FAREWELL,", 17
+  Text 4,19, "UH-YOU WOULDN'T HIT A LADY ", 17
+  Text 3,20, "WHILE SHE'S DOWN, WOULD YOU? ", 17
+  Text 4,21, "GOOD, 'CUZ THIS GIVES ME A", 17
+  Text 3,22, "CHANCE TO ESCAPE! FAREWELL,", 17
   Text 9,23, "FOUNTAIN FREAKS!", 200
   .db INTRO_END
 Intermission9DarkQueenD:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
-  Text 5,23, "WHAT STRENGTH! BUT DON'T", 17
-  Text 6,23, "FORGET, THERE ARE MANY", 17
-  Text 7,23, "TYRANTS LIKE ME ALL", 17
-  Text 9,23, "OVER THE WORLD!!", 200
+  Text 5,19, "WHAT STRENGTH! BUT DON'T", 17
+  Text 6,20, "FORGET, THERE ARE MANY", 17
+  Text 7,21, "TYRANTS LIKE ME ALL", 17
+  Text 9,22, "OVER THE WORLD!!", 200
   .db INTRO_END
 Intermission9TBirdA:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
-  Text 4,23, "COSMICALLY COOL!! THE MAD,", 17
-  Text 3,23, "BAD N'CRAZY 'TOADS SAVE THE", 17
-  Text 4,23, "DAY, AND THE DARK QUEEN IS", 17
-  Text 6,23, "NOW THE DARK HAS-BEEN!", 17
-  Text 6,23, "HEH-HEH-CACKLE-CACKLE!", 200
+  Text 4,18, "COSMICALLY COOL!! THE MAD,", 17
+  Text 3,19, "BAD N'CRAZY 'TOADS SAVE THE", 17
+  Text 4,20, "DAY, AND THE DARK QUEEN IS", 17
+  Text 6,21, "NOW THE DARK HAS-BEEN!", 17
+  Text 6,22, "HEH-HEH-CACKLE-CACKLE!", 200
   .db INTRO_END
 Intermission9TBirdB:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
-  Text 4,23, "WOOOOO! I LIKE IT, 'TOADS!", 17
-  Text 5,23, "WE SURE TAUGHT THAT DARK", 17
-  Text 4,23, "QUEEN NOT TO MESS WITH THE", 17
-  Text 6,23, "AWESOME T.BIRD AND HIS", 17
-  Text 11,23, "BATTLETOADS!", 200
+  Text 4,18, "WOOOOO! I LIKE IT, 'TOADS!", 17
+  Text 5,19, "WE SURE TAUGHT THAT DARK", 17
+  Text 4,20, "QUEEN NOT TO MESS WITH THE", 17
+  Text 6,21, "AWESOME T.BIRD AND HIS", 17
+  Text 11,22, "BATTLETOADS!", 200
   .db INTRO_END
 Intermission9TBirdC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
-  Text 6,23, "TOUCHDOWN! THE BATTLIN'", 17
-  Text 5,23, "BATTLETOADS COME THROUGH", 17
-  Text 5,23, "IN THE LAST QUARTER AND", 17
-  Text 5,23, "THE GOOD GUYS WIN AGAIN!", 200
+  Text 6,18, "TOUCHDOWN! THE BATTLIN'", 17
+  Text 5,19, "BATTLETOADS COME THROUGH", 17
+  Text 5,20, "IN THE LAST QUARTER AND", 17
+  Text 5,21, "THE GOOD GUYS WIN AGAIN!", 200
   .db INTRO_END
 Intermission9TBirdD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
-  Text 4,23, "WE'LL HAVE TO WRITE A BOOK", 17
-  Text 4,23, "AND MAKE A MOVIE ABOUT YOU", 17
-  Text 4,23, "GUYS, IT'LL MAKE ME... ER,", 17
-  Text 10,23, "US A FORTUNE!", 200
+  Text 4,18, "WE'LL HAVE TO WRITE A BOOK", 17
+  Text 4,19, "AND MAKE A MOVIE ABOUT YOU", 17
+  Text 4,20, "GUYS, IT'LL MAKE ME... ER,", 17
+  Text 10,21, "US A FORTUNE!", 200
   .db INTRO_END
 
 /************************************
