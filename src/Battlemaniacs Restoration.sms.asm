@@ -465,8 +465,8 @@ Intermission:
     ; get a random number (0,2,4,6) to add on
     ld a,r
     and 6
-    add a,l
-    ld l,a
+    ld e,a
+    add hl,de
     ; read value
     ld a,(hl)
     inc hl
@@ -482,8 +482,8 @@ _TBird:
   ; get a random number
   ld a,r
   and 6
-  add a,l
-  ld l,a
+  ld e,a
+  add hl,de
   ; read value
   ld a,(hl)
   inc hl
