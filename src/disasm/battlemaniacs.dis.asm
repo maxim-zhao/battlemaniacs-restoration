@@ -8197,11 +8197,11 @@ _LABEL_3567_:
 
 _LABEL_362C_CheatEntry:
 	call _WaitForUp ; ++
-	call _LABEL_369A_WaitForDown
+	call _WaitForDown
 	call _WaitForUp ; ++
-	call _LABEL_369A_WaitForDown
+	call _WaitForDown
 	call _WaitForLeft ; +
-	call _LABEL_3680_WaitForRight
+	call _WaitForRight
 	ld a, $01
 	ld (_RAM_C757_CheatEnabled), a
 	ld a, $33
@@ -8251,7 +8251,7 @@ _LABEL_3679_UpPressed:
 	jr z, _LABEL_3679_UpPressed
 	ret
 
-_LABEL_3680_WaitForRight:
+_WaitForRight:
 	ld bc, $FFFF
 -:
 	in a, (Port_IOPort1)
@@ -8270,7 +8270,7 @@ _LABEL_3693_RightPressed:
 	jr z, _LABEL_3693_RightPressed
 	ret
 
-_LABEL_369A_WaitForDown:
+_WaitForDown:
 	ld bc, $FFFF
 -:
 	in a, (Port_IOPort1)

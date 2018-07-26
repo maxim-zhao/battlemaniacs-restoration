@@ -8,3 +8,4 @@
 /src/vgms/music/*.psg
 *.psg
 /src/saves/
+*.zip

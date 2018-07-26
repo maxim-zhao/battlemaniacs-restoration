@@ -25,6 +25,7 @@ banks 32
 .unbackground $0465 $0474 ; interrupt handler call to music engine
 ;.unbackground $0d2e $0d42 ; delay function
 .unbackground $3b8e $3c6b ; Intermission screens handler
+.unbackground $3f74 $40ad ; pre-title screens up to title screen
 .unbackground $6d3d $6d72 ; old jump points for music engine
 .unbackground $18000 $18402 ; intro code and script
 .unbackground $38C4 $3913 ; intro picture loaders
@@ -427,12 +428,22 @@ IntroTrampoline:
 .slot 2
 .section "Intro" superfree
 .enum $ff DESC
-  INTRO_END db
-  INTRO_PICTURE db
-  INTRO_WAIT db
-  INTRO_TEXT db
-  INTRO_BLANK_TEXT db
+  SCRIPT_END_NOBLANK db
+  SCRIPT_END_BLANK db
+  SCRIPT_PICTURE db
+  SCRIPT_WAIT db
+  SCRIPT_TEXT db
+  SCRIPT_BLANK_TEXT db
 .ende
+
+Title:
+	call ResetScrollTile0AndTilemap
+  call ScreenOn
+  ld hl,PreTitleScript
+  call _ScriptLoop
+  ; Separate script so this isn't skipped
+  ld hl,TitleScript
+  jp _ScriptLoop
 
 Intro:
   ; Start off blank
@@ -483,6 +494,7 @@ _TBird:
   ld a,r
   and 6
   ld e,a
+  ld d,0
   add hl,de
   ; read value
   ld a,(hl)
@@ -496,13 +508,15 @@ _TBird:
 _ScriptLoop:
   ld a,(hl)
   inc hl
-  cp INTRO_END
+  cp SCRIPT_END_BLANK
   jp z,_End
-  cp INTRO_PICTURE
+  cp SCRIPT_END_NOBLANK
+  ret z
+  cp SCRIPT_PICTURE
   jp z,_LoadPicture
-  cp INTRO_WAIT
+  cp SCRIPT_WAIT
   jp z,_Wait
-  cp INTRO_BLANK_TEXT
+  cp SCRIPT_BLANK_TEXT
   jp z,_blank
   ; else it's text
   ; location is next, we need to put it in bc
@@ -626,7 +640,7 @@ _End:
 
 ; Adds a picture
 .macro Picture args palette, tiles, tilemap
-  .db INTRO_PICTURE
+  .db SCRIPT_PICTURE
   .dw palette
   .dw tiles
   .db :tiles
@@ -640,9 +654,9 @@ _End:
 .macro Text args text, length, frames
   ; If the text is (length) long, we want to draw it at (31 - length)/2+1
   ; This centres it within the 31 tiles on-screen, with a bias to the left for even lengths.
-  .db INTRO_TEXT,(31-length)/2+1,textY,text,0
+  .db SCRIPT_TEXT,(31-length)/2+1,textY,text,0
   .if NARGS > 2
-  .db INTRO_WAIT, frames
+  .db SCRIPT_WAIT, frames
   .endif
   .redefine textY textY+rowAdvance
 .endm
@@ -653,15 +667,65 @@ _End:
 
 ; Pauses for the given length of time
 .macro Wait args frames
-  .db INTRO_WAIT, frames
+  .db SCRIPT_WAIT, frames
 .endm
 
 ; Clears the screen from the given row onwards
 .macro Clear args row
-  .db INTRO_BLANK_TEXT, row
+  .db SCRIPT_BLANK_TEXT, row
 .endm
 
 .block "Scripts"
+
+PreTitleScript:
+.redefine rowAdvance 2
+  StartText 4
+  ;    Text, Length, (optional) Wait
+  Text "@1993, 1994 RARE LTD.", 21
+  Text "ALL RIGHTS RESERVED.", 20
+  Text "LICENSED TO TRADEWEST, INC.", 27
+  Text "BY RARE COIN-IT, INC.", 21
+  Text "SUBLICENSED TO", 14
+  Text "VIRGIN INTERACTIVE", 18
+  Text "ENTERTAINMENT (EUROPE) LTD.", 27
+  Text "BATTLETOADS AND BATTLEMANIACS", 29
+  Text "ARE TRADEMARKS OF RARE LTD.", 27
+  Wait 0 ; max wait = 256 frames
+  Clear 4
+  StartText 4
+  Text "TRADEWEST# IS A TRADEMARK OF", 28
+  Text "WILLIAMS ENTERTAINMENT INC.", 27
+  Text "ALL RIGHTS RESERVED.", 20
+  Text "PUBLISHED AND DISTRIBUTED BY" ,28
+  Text "VIRGIN INTERACTIVE", 18
+  Text "ENTERTAINMENT (EUROPE) LTD.", 27
+  Text "LICENSED BY", 11
+  Text "SEGA ENTERPRISES, LTD.", 22
+  Wait 0
+  Picture VirginLogoPalette, VirginLogoTiles, VirginLogoTilemap
+  Wait 150
+  Clear 0
+  StartText 9
+  Text "PRESENTS", 8
+  Text "ZITZ, RASH & PIMPLE", 19
+  Text "AS THE", 6
+  Text "BATTLETOADS", 11
+  Text "IN", 2
+  Wait 100
+.db SCRIPT_END_BLANK
+
+TitleScript:
+  Picture TitlePalette, TitleTiles, TitleTilemap
+  StartText 12
+  Text "RESTORATION", 11
+  StartText 15
+  Text "PRESS START", 11
+  StartText 19
+  Text "VERSION 0.5 @2018 SMS POWER!", 28
+  Text "LICENSED BY", 11
+  Text "SEGA ENTERPRISES, LTD.", 22
+.db SCRIPT_END_NOBLANK
+
 
 IntroScript:
 .redefine rowAdvance 2
@@ -765,7 +829,7 @@ IntroScript:
   StartText 21
   Text "LET'S GATECRASH THE GAMESCAPE", 29
   Text "AN' COOK SOME BEASTIN' BACON!", 29, 100
-.db INTRO_END
+.db SCRIPT_END_BLANK
 
 ; Intermission scripts
 
@@ -859,7 +923,7 @@ Intermission1DarkQueenA:
   Text "FRIENDLY. BAD NEWS FOR YOU,", 27, 17
   Text "'CUZ OURS DEFINITELY ISN'T,", 27, 17
   Text "AND YOU'LL FIND OUT WHY!", 24, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission1DarkQueenB:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
@@ -867,7 +931,7 @@ Intermission1DarkQueenB:
   Text "OUT, WART FEATURES, 'CUZ", 24, 17
   Text "THEY'LL BE STINGIN', AN'", 24, 17
   Text "YOU'LL BE SINGIN'!", 18, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission1DarkQueenC:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
@@ -876,7 +940,7 @@ Intermission1DarkQueenC:
   Text "SNOT SNAFFLERS CAN BEAT US?", 27, 17
   Text "PREPARE TO MEET MY SATURN", 25, 17
   Text "TOADTRAPS!", 10, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission1DarkQueenD:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
@@ -885,7 +949,7 @@ Intermission1DarkQueenD:
   Text "DIDN'T GET YOU?  NEVER MIND,", 28, 17
   Text "'CUZ THE REAL CHALLENGE", 23, 17
   Text "STARTS HERE, SO COME ON IN!!", 28, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission1TBirdA:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
@@ -893,7 +957,7 @@ Intermission1TBirdA:
   Text "FACING NEXT, 'TOADS! ABOUT", 26, 17
   Text "A MILE DOWN, AND THE EXIT'S", 27, 17
   Text "AT THE BOTTOM!!", 15, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission1TBirdB:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
@@ -902,7 +966,7 @@ Intermission1TBirdB:
   Text "WE, GUYS? NOW LET'S LEAP", 24, 17
   Text "THROUGH THE LEAVES AND", 22, 17
   Text "TACKLE THAT TREE!", 17, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission1TBirdC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
@@ -911,7 +975,7 @@ Intermission1TBirdC:
   Text "I BET MY BEAK THERE'S A", 23, 17
   Text "WHOLE 'TOAD-LOAD OF TROUBLE", 27, 17
   Text "WAITING DOWN IN THAT TREE!", 26, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission1TBirdD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
@@ -919,7 +983,7 @@ Intermission1TBirdD:
   Text "THIS WHOLE TREE IS HOLLOW,", 26, 17
   Text "SO HEAD FOR THE BOTTOM", 22, 17
   Text "AND DON'T LOOK DOWN!", 20, 200
-.db INTRO_END
+.db SCRIPT_END_BLANK
 
 Intermission2DarkQueenA:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
@@ -928,7 +992,7 @@ Intermission2DarkQueenA:
   Text "WIN, WARTBODIES, THAT I'LL", 26, 17
   Text "LET YOU ATTEMPT A", 17, 17
   Text "BONUS LEVEL!", 12, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission2DarkQueenB:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
@@ -937,7 +1001,7 @@ Intermission2DarkQueenB:
   Text "LEVEL FOR GETTIN' THIS FAR.", 27, 17
   Text "BUT ONCE IT'S OVER, I'M", 23, 17
   Text "GONNA FINISH YOU FOR GOOD!", 26, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission2DarkQueenC:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
@@ -945,7 +1009,7 @@ Intermission2DarkQueenC:
   Text "PINS TO GAIN AN EXTRA", 21, 17
   Text "LIFE HERE, SWAMPSUCKERS,'CUZ", 28, 17
   Text "YOU'LL SURELY BE NEEDIN' IT!", 28, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission2DarkQueenD:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
@@ -954,14 +1018,14 @@ Intermission2DarkQueenD:
   Text "LET THE BATTLEWIMPS PLAY MY", 27, 17
   Text "NICE EASY BONUS LEVEL BEFORE", 28, 17
   Text "I GET REALLY NASTY!!", 20, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission2TBirdA:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
   Text "SNATCH THE PINS, 'TOADS!", 24, 17
   Text "COLLECT ENOUGH AN' WE'RE", 24, 17
   Text "TALKIN' EXTRA LIVES HERE!!", 26, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission2TBirdB:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
@@ -970,14 +1034,14 @@ Intermission2TBirdB:
   Text "LEVEL, AND IF YOU COLLECT", 25, 17
   Text "ENOUGH PINS, YOU'LL WIN AN", 26, 17
   Text "EXTRA LIFE OR TWO!", 18, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission2TBirdC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
   Text "THE MORE THE MERRIER,'TOADS!", 28, 17
   Text "LET'S CHECK OUT THAT CHECKER", 28, 17
   Text "AND WIN US SOME LIVES!", 22, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission2TBirdD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
@@ -986,7 +1050,7 @@ Intermission2TBirdD:
   Text "TO WIN A LIFE, AVOID", 20, 17
   Text "THE SKULLS AS THEY", 18, 17
   Text "MEAN STRIFE!", 12, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 
 Intermission3DarkQueenA:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
@@ -995,7 +1059,7 @@ Intermission3DarkQueenA:
   Text "GETS FAST AN' YOUR SLIME", 24, 17
   Text "BACKS COME LAST, YOU", 20, 17
   Text "FLAPPIN' FOOL!", 14, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission3DarkQueenB:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
@@ -1003,7 +1067,7 @@ Intermission3DarkQueenB:
   Text "FOR SPEED? I SINCERELY", 22, 17
   Text "HOPE NOT, YOU HOPPING", 21, 17
   Text "HALF-WITS!", 10, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission3DarkQueenC:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
@@ -1012,7 +1076,7 @@ Intermission3DarkQueenC:
   Text "HOOKBILL, BUT LET ME ASSURE", 27, 17
   Text "YOU, I HAVEN'T EVEN", 19, 17
   Text "WARMED UP YET!!", 15, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission3DarkQueenD:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
@@ -1021,7 +1085,7 @@ Intermission3DarkQueenD:
   Text "SOMETHING REALLY NASTY", 22, 17
   Text "IS GONNA HAPPEN TO YOU", 22, 17
   Text "ON THOSE BIKES!!", 16, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission3TBirdA:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
@@ -1029,21 +1093,21 @@ Intermission3TBirdA:
   Text "PICKIN' UP IMAGES OF", 20, 17
   Text "WHIZZIN' WALLS AND RODENT", 25, 17
   Text "ROADHOGS IN THAT TUNNEL!!", 25, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission3TBirdB:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
   Text "YOU'RE DOIN' GREAT, 'TOADS!", 27, 17
   Text "LET'S HEAD FOR THE BIKES AND", 28, 17
   Text "HIT THAT TUNNEL-HARD!", 21, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission3TBirdC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
   Text "REMEMBER, 'TOADS, IN HERE", 25, 17
   Text "IT'S THE SURVIVAL OF THE", 24, 17
   Text "FASTEST!", 8, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission3TBirdD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
@@ -1051,7 +1115,7 @@ Intermission3TBirdD:
   Text "ONCE AGAIN 'TOADS! PUT YOUR", 27, 17
   Text "FOOT TO THE FLOOR AND HANG", 26, 17
   Text "ON TIGHT!", 9, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 
 Intermission4DarkQueenA:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
@@ -1059,7 +1123,7 @@ Intermission4DarkQueenA:
   Text "'TOAD VERSUS SNAKE, EH?", 23, 17
   Text "THEY DON'T HAVE A CHANCE", 24, 17
   Text "IN THIS ONE, MR. BEAKY FREAK!", 29, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission4DarkQueenB:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
@@ -1068,7 +1132,7 @@ Intermission4DarkQueenB:
   Text "SUGGEST YOU RUN HOME TO THAT", 28, 17
   Text "FEATHERED FREAK WHILE", 21, 17
   Text "YOU STILL CAN!", 14, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission4DarkQueenC:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
@@ -1076,7 +1140,7 @@ Intermission4DarkQueenC:
   Text "GEEK, YOUR MISERABLE BOTTLED", 28, 17
   Text "NERDS ARE GONNA PERISH", 22, 17
   Text "IN MY SNAKE PIT!", 16, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission4DarkQueenD:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
@@ -1084,34 +1148,34 @@ Intermission4DarkQueenD:
   Text "OF THE SNAKES!! YOU'LL NEVER", 28, 17
   Text "ESCAPE FROM HIS LETHAL LAIR,", 28, 17
   Text "NEVER! HA-HA-HA-HA!", 19, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission4TBirdA:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
   Text "MY INFO REVEALS THAT THESE", 26, 17
   Text "SNAKES DON'T BITE, SO IT", 24, 17
   Text "SHOULD BE A PIECE OF CAKE!", 26, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission4TBirdB:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
   Text "IT LOOKS LIKE IT'S TIME FOR", 27, 17
   Text "SOME SKILLFUL SCALING FROM", 26, 17
   Text "THE BATTLETOADS!", 16, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission4TBirdC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
   Text "SLITHER ON UP TO THE TOP", 24, 17
   Text "OF THESE SNAKE PITS, 'TOADS!", 28, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission4TBirdD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
   Text "THE EXIT'S AT THE TOP", 21, 17
   Text "'TOADS, SO GRAB A SNAKE", 23, 17
   Text "AND HOLD ON TIGHT!", 18, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 
 Intermission5DarkQueenA:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
@@ -1120,7 +1184,7 @@ Intermission5DarkQueenA:
   Text "SECOND BONUS LEVEL. MAKE THE", 28, 17
   Text "MOST OF IT, 'CUZ IT'LL", 22, 17
   Text "BE YOUR LAST!!", 14, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission5DarkQueenB:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
@@ -1128,7 +1192,7 @@ Intermission5DarkQueenB:
   Text "I'LL GIVE YOUR PATHETIC", 23, 17
   Text "PRATTLETOADS ONE MORE CHANCE", 28, 17
   Text "AT MY BONUS LEVEL...", 20, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission5DarkQueenC:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
@@ -1136,7 +1200,7 @@ Intermission5DarkQueenC:
   Text "IN YOUR PITIFUL ATTEMPTS TO", 27, 17
   Text "BEAT ME, THAT I'LL LET YOU", 26, 17
   Text "TRY ANOTHER BONUS LEVEL!", 24, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission5DarkQueenD:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
@@ -1145,35 +1209,35 @@ Intermission5DarkQueenD:
   Text "'CUZ IT'LL SOON BE THE END", 26, 17
   Text "OF THE ROAD FOR YOU IN THE", 26, 17
   Text "DARK TOWER!", 11, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission5TBirdA:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
   Text "WATCH OUT, THERE'S", 18, 17
   Text "MORE BEASTLY BAD ONES TO", 24, 17
   Text "AVOID HERE! LET'S MOTIVATE!!", 28, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission5TBirdB:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
   Text "THE QUEEN'S RUNNING SCARED!", 27, 17
   Text "LET'S TRY FOR SOME LIVES,", 25, 17
   Text "THEN GO GET HER, 'TOADS!", 24, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission5TBirdC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
   Text "GRAB AS MANY DOMINOES AS YOU", 28, 17
   Text "CAN! MY SCANNERS REVEAL THAT", 28, 17
   Text "VOLKMIRE'S TOWER IS NEAR!!", 26, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission5TBirdD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
   Text "BACK ON THE CHECKERS,'TOADS!", 28, 17
   Text "THERE'S DOMINOES TO COLLECT", 27, 17
   Text "AND EXTRA LIVES TO GET!!", 24, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 
 Intermission6DarkQueenA:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
@@ -1182,7 +1246,7 @@ Intermission6DarkQueenA:
   Text "FROM KARNATH! YOU'RE PRETTY", 27, 17
   Text "GOOD, FROGGIES, BUT IT", 22, 17
   Text "AIN'T OVER YET!", 15, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission6DarkQueenB:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
@@ -1190,7 +1254,7 @@ Intermission6DarkQueenB:
   Text "COASTER IF YOU DARE! BUT", 24, 17
   Text "WATCH OUT FOR FUZZ, 'CUZ", 24, 17
   Text "FUZZ CAN BUZZ!", 14, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission6DarkQueenC:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
@@ -1198,21 +1262,21 @@ Intermission6DarkQueenC:
   Text "SUCCULENT SLICES OF GREEN", 25, 17
   Text "'TOAD TASTE LIKE? WELL, I'M", 27, 17
   Text "SURE I'LL FIND OUT SHORTLY!!", 28, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission6DarkQueenD:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
   Text "UP AN' DOWN N' ROUND YOU GO,", 28, 17
   Text "YOU'D BEST BE FAST, 'CUZ", 24, 17
   Text "FUZZ AIN'T SLOW!", 16, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission6TBirdA:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
   Text "POWER UP THOSE JET TRACKTORS", 28, 17
   Text "'TOADS, AND HIT THEM", 20, 17
   Text "CORNERS FAST!", 13, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission6TBirdB:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
@@ -1220,21 +1284,21 @@ Intermission6TBirdB:
   Text "NEAR YOU, 'TOADS. MICHIKO", 25, 17
   Text "AND ZITZ ARE STILL", 18, 17
   Text "COUNTING ON YOU!", 16, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission6TBirdC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
   Text "LISTEN, 'TOADS, IT'S NOT THE", 28, 17
   Text "TAKING PART THAT COUNTS,", 24, 17
   Text "IT'S THE WINNING!", 17, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission6TBirdD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
   Text "HIT THE TRACK AND DON'T LOOK", 28, 17
   Text "BACK, 'TOADS! YOU'VE GOT A", 26, 17
   Text "CRAZY RIDE AHEAD OF YOU!", 24, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 
 Intermission7DarkQueenA:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
@@ -1244,7 +1308,7 @@ Intermission7DarkQueenA:
   Text "SENDIN' IN SCUZZ TO BLOW UP", 27, 17
   Text "THE TOWER WITH YOU STILL", 24, 17
   Text "INSIDE IT!", 10, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission7DarkQueenB:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
@@ -1253,7 +1317,7 @@ Intermission7DarkQueenB:
   Text "FOOL, 'CUZ IT'S CURTAINS FOR", 28, 17
   Text "THE FROGS IF THEY ENTER", 23, 17
   Text "THE DARK TOWER!", 15, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission7DarkQueenC:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
@@ -1262,7 +1326,7 @@ Intermission7DarkQueenC:
   Text "GET HERE! I'M WAITIN' FOR", 25, 17
   Text "YOU AT THE BOTTOM, IF", 21, 17
   Text "YOU GET THAT FAR...", 19, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission7DarkQueenD:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
@@ -1271,7 +1335,7 @@ Intermission7DarkQueenD:
   Text "BATTLEFOOLS WOULD GET THIS", 26, 17
   Text "FAR! UNFORTUNATELY, THEIR", 25, 17
   Text "MISSION ENDS HERE!", 18, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission7TBirdA:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
@@ -1279,7 +1343,7 @@ Intermission7TBirdA:
   Text "SIGHT! BEAT THE RAT TWO", 23, 17
   Text "TIMES, AND HE'LL LEAD YOU", 25, 17
   Text "TO THE DARK QUEEN!", 18, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission7TBirdB:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
@@ -1287,7 +1351,7 @@ Intermission7TBirdB:
   Text "BOMBS IN THE TOWER! YOU MUST", 28, 17
   Text "DEFUSE THEM ALL, OTHERWISE", 26, 17
   Text "YOU'RE HISTORY!!", 16, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission7TBirdC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
@@ -1295,7 +1359,7 @@ Intermission7TBirdC:
   Text "PUT ON YOUR RUNNING SHOES,", 26, 17
   Text "AND LET'S DROP IN ON", 20, 17
   Text "THE DARK QUEEN!!", 16, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission7TBirdD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
@@ -1303,7 +1367,7 @@ Intermission7TBirdD:
   Text "TERRITORY NOW,'TOADS! JUST", 26, 17
   Text "TWO RAT RACES, AND YOU GET", 26, 17
   Text "TO 'TOADSLAM HER REAL GOOD!!", 28, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 
 Intermission8DarkQueenA:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
@@ -1313,7 +1377,7 @@ Intermission8DarkQueenA:
   Text "SOMETHING. WELL, YOU'VE", 23, 17
   Text "FOUGHT THE REST, NOW YOU'RE", 27, 17
   Text "GONNA LOSE TO THE BEST!", 23, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission8DarkQueenB:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
@@ -1321,7 +1385,7 @@ Intermission8DarkQueenB:
   Text "THIS, BIRD BRAIN, 'CUZ I'M", 26, 17
   Text "GONNA FINISH THE BATTLETOADS", 28, 17
   Text "OFF MYSELF!", 11, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission8DarkQueenC:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
@@ -1329,7 +1393,7 @@ Intermission8DarkQueenC:
   Text "'TOADIES! THERE'S NO ROUNDS,", 28, 17
   Text "NO FALLS, NO RULES, AN' WHEN", 28, 17
   Text "I'VE FINISHED - NO YOU!", 23, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission8DarkQueenD:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
@@ -1338,14 +1402,14 @@ Intermission8DarkQueenD:
   Text "USELESS BUNCH OF PIGS AND", 25, 17
   Text "RATS! C'MON 'TOADIES,", 21, 17
   Text "LET'S FIGHT!", 12, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission8TBirdA:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
   Text "IT'S SHOWDOWN TIME, 'TOADS!!", 28, 17
   Text "JUST THE DARK QUEEN STANDS", 26, 17
   Text "BETWEEN YOU AND OUR BUDDIES!", 28, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission8TBirdB:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
@@ -1353,14 +1417,14 @@ Intermission8TBirdB:
   Text "ARE! YOU AIN'T NO FEEBLE", 24, 17
   Text "FROGS-YOU'RE THE", 16, 17
   Text "BATTLETOADS!", 12, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission8TBirdC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
   Text "WAYDIGO 'TOADS! THE QUEEN'S", 27, 17
   Text "ARMY IS BEATEN, AND SHE'S", 25, 17
   Text "SHAKIN' IN FEAR! GO GET HER!", 28, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission8TBirdD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
@@ -1369,7 +1433,7 @@ Intermission8TBirdD:
   Text "IN THE QUEEN'S SHOES NOW,", 25, 17
   Text "SHE'S IN FOR ONE", 16, 17
   Text "HUMUNGOUS SURPRISE!!", 20, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 
 Intermission9DarkQueenA:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
@@ -1379,7 +1443,7 @@ Intermission9DarkQueenA:
   Text "ME, I'M THE DARK QUEEN!! I'M ", 29, 17
   Text "MEAN, I'M NASTY AND I WANT ", 27, 17
   Text "TO WIN! GRR, I HATE 'TOADS!", 27, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission9DarkQueenB:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
@@ -1388,7 +1452,7 @@ Intermission9DarkQueenB:
   Text "BEAK AND HIS SLIMY SWAMP ", 25, 17
   Text "SWIMMERS!! I'LL GET YOU NEXT ", 29, 17
   Text "TIME, ALL OF YOU!!", 18, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission9DarkQueenC:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
@@ -1397,7 +1461,7 @@ Intermission9DarkQueenC:
   Text "GOOD, 'CUZ THIS GIVES ME A", 26, 17
   Text "CHANCE TO ESCAPE! FAREWELL,", 27, 17
   Text "FOUNTAIN FREAKS!", 16, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission9DarkQueenD:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
@@ -1405,7 +1469,7 @@ Intermission9DarkQueenD:
   Text "FORGET, THERE ARE MANY", 22, 17
   Text "TYRANTS LIKE ME ALL", 19, 17
   Text "OVER THE WORLD!!", 16, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission9TBirdA:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
@@ -1414,7 +1478,7 @@ Intermission9TBirdA:
   Text "DAY, AND THE DARK QUEEN IS", 26, 17
   Text "NOW THE DARK HAS-BEEN!", 22, 17
   Text "HEH-HEH-CACKLE-CACKLE!", 22, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission9TBirdB:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
@@ -1423,7 +1487,7 @@ Intermission9TBirdB:
   Text "QUEEN NOT TO MESS WITH THE", 26, 17
   Text "AWESOME T.BIRD AND HIS", 22, 17
   Text "BATTLETOADS!", 12, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission9TBirdC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
@@ -1431,7 +1495,7 @@ Intermission9TBirdC:
   Text "BATTLETOADS COME THROUGH", 24, 17
   Text "IN THE LAST QUARTER AND", 23, 17
   Text "THE GOOD GUYS WIN AGAIN!", 24, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 Intermission9TBirdD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
@@ -1439,7 +1503,7 @@ Intermission9TBirdD:
   Text "AND MAKE A MOVIE ABOUT YOU", 26, 17
   Text "GUYS, IT'LL MAKE ME... ER,", 26, 17
   Text "US A FORTUNE!", 13, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 
 /************************************
 Ending Part 1
@@ -1533,11 +1597,11 @@ Ending Part 2 (Good Ending)
   Text "BATTLETOADS-AND LOST!!", 22
 ;Text 4:
   Text "THE END.", 8
-/*
-*************************************
+
+/*************************************
 Continue (In the Master System version these messages appear before continuing, not after continuing like in the SNES)
-*************************************
-*/
+*************************************/
+
 GameOverA:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
@@ -1546,7 +1610,7 @@ GameOverA:
   Text "QUEEN IF THAT'S YOUR BEST", 25, 17
   Text "EFFORT! GET A GRIP GUYS -", 25, 17
   Text "LET'S MOTIVATE!", 15, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 GameOverB:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
@@ -1554,7 +1618,7 @@ GameOverB:
   Text "TOO THICK HERE? I'LL GIVE", 25, 17
   Text "YOU A THICK EAR IF YOU DON'T", 28, 17
   Text "RESCUE MICHIKO AND ZITZ!", 24, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 GameOverC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
@@ -1562,7 +1626,7 @@ GameOverC:
   Text "FAIR? AH, SHAME... NOW", 22, 17
   Text "GET BACK IN THERE AND", 21, 17
   Text "ROAST SOME PORK!", 16, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 GameOverD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
@@ -1570,7 +1634,7 @@ GameOverD:
   Text "HAPPENING, EVEN I COULD'VE", 26, 17
   Text "BEATEN THAT! C'MON 'TOADS,", 26, 17
   Text "GET MAD, BAD 'N' CRAZY!!", 24, 200
-  .db INTRO_END
+  .db SCRIPT_END_BLANK
 
 /*************************************
 Game Over (No Game Over messages in the Master System version, don't know if these could be implemented)
@@ -1714,6 +1778,10 @@ DarkQueenPalette:
 .incbin "images\Dark Queen.png.palette.bin"
 TBirdPalette:
 .incbin "images\T-Bird.png.palette.bin"
+TitlePalette:
+.incbin "images\Title.png.palette.bin"
+VirginLogoPalette:
+.incbin "images\Virgin logo.png.palette.bin"
 .ends
 
 ; Compressed data needs to be in slot 1, but we don't care what bank.
@@ -1813,4 +1881,37 @@ TBirdTilemap:
   pop af
   ld (PAGING_REGISTER_2),a
   ret
+.ends
+
+.orga $3f74
+.section "Pre-title and title replacement" force
+  ld ix,$2000
+  call LoadFont
+  ld hl, DATA_FontPalette
+  ld (RAM_TilePalettePointer), hl
+  ld (RAM_SpritePalettePointer), hl
+  call LoadPalettes
+  ld a,(PAGING_REGISTER_2)
+  push af
+    ld a,:Title
+    ld (PAGING_REGISTER_2),a
+    call Title
+  pop af
+  ld (PAGING_REGISTER_2),a
+  jp $40ac
+.ends
+
+.slot 1
+.section "Virgin logo" superfree
+VirginLogoTiles:
+.incbin "images\Virgin logo.png.tiles.zx7"
+VirginLogoTilemap:
+.incbin "images\Virgin logo.png.tilemap.zx7"
+.ends
+
+.section "Title screen" superfree
+TitleTiles:
+.incbin "images\Title.png.tiles.zx7"
+TitleTilemap:
+.incbin "images\Title.png.tilemap.zx7"
 .ends
