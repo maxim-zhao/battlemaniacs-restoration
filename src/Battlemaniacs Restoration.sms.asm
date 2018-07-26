@@ -66,7 +66,7 @@ CurrentMusicBank  db
 .ends
 
 ; Functions in the original game we want to use
-.define TextToVRAM                  $5790 ; write ASCII from ix to VRAM starting at loction (b,c), until a zero is encountered
+.define TextToVRAM                  $5790 ; write ASCII from ix to VRAM starting at location (b,c), until a zero is encountered. USes tile mapping to match the last cal to LoadFont.
 .define CheckForButton1             $0E7A ; returns nz if pressed
 .define ResetScrollTile0AndTilemap  $04EA ; resets scrolling, blanks tile 0 and fills tilemap with that index
 .define LoadPalettes                $1583 ; loads palettes from RAM pointers to VRAM
@@ -716,14 +716,6 @@ PreTitleScript:
 
 TitleScript:
   Picture TitlePalette, TitleTiles, TitleTilemap
-  StartText 12
-  Text "RESTORATION", 11
-  StartText 15
-  Text "PRESS START", 11
-  StartText 19
-  Text "VERSION 0.5 @2018 SMS POWER!", 28
-  Text "LICENSED BY", 11
-  Text "SEGA ENTERPRISES, LTD.", 22
 .db SCRIPT_END_NOBLANK
 
 
@@ -1871,7 +1863,7 @@ TBirdTilemap:
 .section "Intermission replacement" force
   ld a,(PAGING_REGISTER_2)
   push af
-    ld ix,$2000
+    ld ix,$3000 + 32 * 4
     call LoadFont
     ld hl, DATA_FontPalette
     ld (RAM_SpritePalettePointer), hl
@@ -1885,7 +1877,7 @@ TBirdTilemap:
 
 .orga $3f74
 .section "Pre-title and title replacement" force
-  ld ix,$2000
+  ld ix,$3000 + 32 * 4
   call LoadFont
   ld hl, DATA_FontPalette
   ld (RAM_TilePalettePointer), hl
