@@ -16184,7 +16184,7 @@ _LABEL_BC00_DecompressToVRAM:
   ; RAM buffer?
 	ld de, _RAM_D000_
 	ld (_RAM_C292_), de
-  ; Skip header?
+  ; Skip header
 	ld bc, $11
 	add hl, bc
 	ld a, (hl)

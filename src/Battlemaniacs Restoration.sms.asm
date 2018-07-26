@@ -23,13 +23,19 @@ banks 32
 .unbackground $0083 $00ff ; unused space
 .unbackground $0159 $01ff ; unused space
 .unbackground $0465 $0474 ; interrupt handler call to music engine
-;.unbackground $0d2e $0d42 ; delay function
 .unbackground $3b8e $3c6b ; Intermission screens handler
+.unbackground $38C4 $3913 ; intro picture loaders
 .unbackground $3f74 $40ad ; pre-title screens up to title screen
 .unbackground $6d3d $6d72 ; old jump points for music engine
+.unbackground $6D73 $6DE9 ; title screen text strings
+.unbackground $8CF0 $8E99 ; pre-title text
 .unbackground $18000 $18402 ; intro code and script
-.unbackground $38C4 $3913 ; intro picture loaders
+.unbackground $18403 $18702 ; Virgin logo tilemap
+.unbackground $18703 $1884C ; title screen tilemap
+.unbackground $1AC31 $1AC40 ; pre-title logo palette
 .unbackground $1AC51 $1bf07 ; intro picture data 1
+.unbackground $1CFFB $1e5f0 ; title screen tiles (RNC compressed)
+.unbackground $1e5f2 $1f290 ; Virgin logo tiles (RNC compressed)
 .unbackground $1F292 $1fbad ; intro picture data 2
 
 ; Unused space throughout ROM - may not be useful
@@ -437,10 +443,8 @@ IntroTrampoline:
 .ende
 
 Title:
-	call ResetScrollTile0AndTilemap
-  call ScreenOn
   ld hl,PreTitleScript
-  call _ScriptLoop
+  call _ScriptStart
   ; Separate script so this isn't skipped
   ld hl,TitleScript
   jp _ScriptLoop
@@ -449,11 +453,9 @@ Intro:
   ; Start off blank
 	call ResetScrollTile0AndTilemap
   ld hl,IntroScript
-  jp _ScriptLoop
+  jp _ScriptStart
 
 Intermission:
-	call ResetScrollTile0AndTilemap
-  call ScreenOn
   ; Check if it's the continue screen
   ld a,(RAM_GameState)
   cp 3
@@ -463,8 +465,8 @@ Intermission:
   jp _TBird
 
   ; ELse look up a random text based on the level
-+:ld a,(RAM_LevelNumber) ; 0..8? TODO So we can fit in 8 bits for the next bit
-  add a,a ; Multiply by 16
++:ld a,(RAM_LevelNumber) ; 0..11
++:add a,a ; Multiply by 16 - fits in 8 bits
   add a,a
   add a,a
   add a,a
@@ -483,8 +485,11 @@ Intermission:
     inc hl
     ld h,(hl)
     ld l,a
+    ; check for zero
+    or h
+    jr z,_NoIntermission
     ; draw
-    call _ScriptLoop
+    call _ScriptStart
   pop hl
   ; next T-Bird
   ld de,8
@@ -502,8 +507,15 @@ _TBird:
   ld h,(hl)
   ld l,a
   ; draw
-  call _ScriptLoop
+  call _ScriptStart
+_NoIntermission:
   jp ScreenOff ; and ret
+  
+_ScriptStart:
+  push hl
+    call ResetScrollTile0AndTilemap
+    call ScreenOn
+  pop hl
 
 _ScriptLoop:
   ld a,(hl)
@@ -697,6 +709,7 @@ PreTitleScript:
   Text "TRADEWEST # IS A TRADEMARK OF", 29
   Text "WILLIAMS ENTERTAINMENT INC.", 27
   Text "ALL RIGHTS RESERVED.", 20
+  StartText 12
   Text "PUBLISHED AND DISTRIBUTED BY" ,28
   Text "VIRGIN INTERACTIVE", 18
   Text "ENTERTAINMENT (EUROPE) LTD.", 27
@@ -866,6 +879,8 @@ IntermissionsLookup:
 .dw Intermission4TBirdB
 .dw Intermission4TBirdC
 .dw Intermission4TBirdD
+; no intermissions for snake levels
+.dsw 3*2*4 0
 .dw Intermission5DarkQueenA
 .dw Intermission5DarkQueenB
 .dw Intermission5DarkQueenC
@@ -1901,7 +1916,7 @@ TBirdTilemap:
     call Title
   pop af
   ld (PAGING_REGISTER_2),a
-  jp $40ac
+  jp $40ad
 .ends
 
 .slot 1
