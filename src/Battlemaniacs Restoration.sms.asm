@@ -1532,16 +1532,19 @@ Ending:
 ;Scene 3:
   Text "PUT YOUR FOOT DOWN PIMPLE,", 26
   Text "HE'S GETTIN' AWAY!", 18
-;Scene 4:
-  Text "WE'VE CAUGHT UP! HURRY RASH,", 28
-  Text "FIRE THE MISSILES! WE WON'T", 27
-  Text "BE ABLE TO STAY WITH HIM", 24
-  Text "MUCH LONGER!", 12
 
 /*************************************
 Ending Part 2 (Bad Ending)
 *************************************/
 
+;Scene 4:
+  Text "WE'VE CAUGHT UP! HURRY RASH,", 28
+  Text "FIRE THE MISSILES! WE WON'T", 27
+  Text "BE ABLE TO STAY WITH HIM", 24
+  Text "MUCH LONGER!", 12
+;Scene 5:
+  Text "SO LONG, BATTLELOSERS!!", 23
+  Text "HA-HA-HA-HA!!", 13
 ;Text 1:
   Text "VOLKMIRE BREATHES A SIGH OF", 27
   Text "RELIEF AS HIS SPACESHIP", 23
@@ -1568,6 +1571,12 @@ Ending Part 2 (Bad Ending)
 /*************************************
 Ending Part 2 (Good Ending)
 *************************************/
+
+;Scene 4:
+  Text "WE'VE CAUGHT UP! HURRY RASH,", 28
+  Text "FIRE THE MISSILES! WE WON'T", 27
+  Text "BE ABLE TO STAY WITH HIM", 24
+  Text "MUCH LONGER!", 12
 ;Scene 5:
   Text "ARRGGGHHHHHHH!", 14
 ;Text 1:
