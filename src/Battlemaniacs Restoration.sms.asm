@@ -693,7 +693,7 @@ PreTitleScript:
   Wait 0 ; max wait = 256 frames
   Clear 4
   StartText 4
-  Text "TRADEWEST# IS A TRADEMARK OF", 28
+  Text "TRADEWEST # IS A TRADEMARK OF", 29
   Text "WILLIAMS ENTERTAINMENT INC.", 27
   Text "ALL RIGHTS RESERVED.", 20
   Text "PUBLISHED AND DISTRIBUTED BY" ,28
@@ -734,7 +734,7 @@ IntroScript:
 
   Picture Intro3Palette, Intro3Tiles, Intro3Tilemap
   StartText 21
-  Text "PROFESSOR T-BIRD STARTS...", 26,  50
+  Text "PROFESSOR T. BIRD STARTS...", 27,  50
   Clear 21
   StartText 21
   Text "'TOADS, I HAVE INVITED YOU", 26
@@ -938,7 +938,7 @@ Intermission1DarkQueenD:
   StartText 19
   Text "SO, THE MUTANT RATPACK AND", 26, 17
   Text "THAT USELESS STONE PIG", 22, 17
-  Text "DIDN'T GET YOU?  NEVER MIND,", 28, 17
+  Text "DIDN'T GET YOU? NEVER MIND,", 27, 17
   Text "'CUZ THE REAL CHALLENGE", 23, 17
   Text "STARTS HERE, SO COME ON IN!!", 28, 200
   .db SCRIPT_END_BLANK
@@ -999,7 +999,7 @@ Intermission2DarkQueenC:
   StartText 19
   Text "YOU'D BETTER COLLECT ENOUGH", 27, 17
   Text "PINS TO GAIN AN EXTRA", 21, 17
-  Text "LIFE HERE, SWAMPSUCKERS,'CUZ", 28, 17
+  Text "LIFE HERE, SWAMPSUCKERS, 'CUZ", 29, 17
   Text "YOU'LL SURELY BE NEEDIN' IT!", 28, 200
   .db SCRIPT_END_BLANK
 Intermission2DarkQueenD:
@@ -1030,7 +1030,7 @@ Intermission2TBirdB:
 Intermission2TBirdC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "THE MORE THE MERRIER,'TOADS!", 28, 17
+  Text "THE MORE THE MERRIER, 'TOADS!", 29, 17
   Text "LET'S CHECK OUT THAT CHECKER", 28, 17
   Text "AND WIN US SOME LIVES!", 22, 200
   .db SCRIPT_END_BLANK
@@ -1039,7 +1039,7 @@ Intermission2TBirdD:
   StartText 18
   Text "C'MON 'TOADS, IT'S BONUS", 24, 17
   Text "TIME! COLLECT THE WHITES", 24, 17
-  Text "TO WIN A LIFE, AVOID", 20, 17
+  Text "TO WIN A LIFE! AVOID", 20, 17
   Text "THE SKULLS AS THEY", 18, 17
   Text "MEAN STRIFE!", 12, 200
   .db SCRIPT_END_BLANK
@@ -1083,20 +1083,20 @@ Intermission3TBirdA:
   StartText 18
   Text "BE CAREFUL 'TOADS, I'M", 22, 17
   Text "PICKIN' UP IMAGES OF", 20, 17
-  Text "WHIZZIN' WALLS AND RODENT", 25, 17
-  Text "ROADHOGS IN THAT TUNNEL!!", 25, 200
+  Text "WHIZZIN' WALLS AND MASSIVE", 26, 17
+  Text "GAPS IN THAT TUNNEL!!", 21, 200
   .db SCRIPT_END_BLANK
 Intermission3TBirdB:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
   Text "YOU'RE DOIN' GREAT, 'TOADS!", 27, 17
   Text "LET'S HEAD FOR THE BIKES AND", 28, 17
-  Text "HIT THAT TUNNEL-HARD!", 21, 200
+  Text "HIT THAT TUNNEL HARD!", 21, 200
   .db SCRIPT_END_BLANK
 Intermission3TBirdC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "REMEMBER, 'TOADS, IN HERE", 25, 17
+  Text "REMEMBER, 'TOADS! IN HERE,", 26, 17
   Text "IT'S THE SURVIVAL OF THE", 24, 17
   Text "FASTEST!", 8, 200
   .db SCRIPT_END_BLANK
@@ -1104,7 +1104,7 @@ Intermission3TBirdD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
   Text "IT'S THE NEED-TO-SPEED", 22, 17
-  Text "ONCE AGAIN 'TOADS! PUT YOUR", 27, 17
+  Text "ONCE AGAIN, 'TOADS! PUT YOUR", 28, 17
   Text "FOOT TO THE FLOOR AND HANG", 26, 17
   Text "ON TIGHT!", 9, 200
   .db SCRIPT_END_BLANK
@@ -1129,7 +1129,7 @@ Intermission4DarkQueenC:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
   Text "THIS IS IT, YOU GOBBLIN'", 24, 17
-  Text "GEEK, YOUR MISERABLE BOTTLED", 28, 17
+  Text "GEEK! YOUR MISERABLE BOTTLED", 28, 17
   Text "NERDS ARE GONNA PERISH", 22, 17
   Text "IN MY SNAKE PIT!", 16, 200
   .db SCRIPT_END_BLANK
@@ -1180,7 +1180,7 @@ Intermission5DarkQueenA:
 Intermission5DarkQueenB:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "TOO MUCH FOR YOU, HUH BEAKY?", 28, 17
+  Text "TOO MUCH FOR YOU, HUH, BEAKY?", 29, 17
   Text "I'LL GIVE YOUR PATHETIC", 23, 17
   Text "PRATTLETOADS ONE MORE CHANCE", 28, 17
   Text "AT MY BONUS LEVEL...", 20, 200
@@ -1219,15 +1219,15 @@ Intermission5TBirdB:
 Intermission5TBirdC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "GRAB AS MANY DOMINOES AS YOU", 28, 17
-  Text "CAN! MY SCANNERS REVEAL THAT", 28, 17
+  Text "GRAB AS MANY PINS AS YOU CAN!", 29, 17
+  Text "MY SCANNERS REVEAL THAT", 23, 17
   Text "VOLKMIRE'S TOWER IS NEAR!!", 26, 200
   .db SCRIPT_END_BLANK
 Intermission5TBirdD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "BACK ON THE CHECKERS,'TOADS!", 28, 17
-  Text "THERE'S DOMINOES TO COLLECT", 27, 17
+  Text "BACK ON THE CHECKERS, 'TOADS!", 29, 17
+  Text "THERE'S PINS TO COLLECT", 23, 17
   Text "AND EXTRA LIVES TO GET!!", 24, 200
   .db SCRIPT_END_BLANK
 
@@ -1258,7 +1258,7 @@ Intermission6DarkQueenC:
 Intermission6DarkQueenD:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "UP AN' DOWN N' ROUND YOU GO,", 28, 17
+  Text "UP AN' DOWN N' ROUND YOU GO!", 28, 17
   Text "YOU'D BEST BE FAST, 'CUZ", 24, 17
   Text "FUZZ AIN'T SLOW!", 16, 200
   .db SCRIPT_END_BLANK
@@ -1280,7 +1280,7 @@ Intermission6TBirdB:
 Intermission6TBirdC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "LISTEN, 'TOADS, IT'S NOT THE", 28, 17
+  Text "LISTEN, 'TOADS! IT'S NOT THE", 28, 17
   Text "TAKING PART THAT COUNTS,", 24, 17
   Text "IT'S THE WINNING!", 17, 200
   .db SCRIPT_END_BLANK
@@ -1296,7 +1296,7 @@ Intermission7DarkQueenA:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
   Text "FEELING WEARY YET, SWAMP", 24, 17
-  Text "DWELLERS? I HOPE SO,'CUZ I'M", 28, 17
+  Text "DWELLERS? I HOPE SO, 'CUZ I'M", 29, 17
   Text "SENDIN' IN SCUZZ TO BLOW UP", 27, 17
   Text "THE TOWER WITH YOU STILL", 24, 17
   Text "INSIDE IT!", 10, 200
@@ -1323,7 +1323,7 @@ Intermission7DarkQueenD:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
   Text "I'M IMPRESSED, PROFESSOR", 24, 17
-  Text "NERD, I DIDN'T THINK YOUR", 25, 17
+  Text "NERD! I DIDN'T THINK YOUR", 25, 17
   Text "BATTLEFOOLS WOULD GET THIS", 26, 17
   Text "FAR! UNFORTUNATELY, THEIR", 25, 17
   Text "MISSION ENDS HERE!", 18, 200
@@ -1356,7 +1356,7 @@ Intermission7TBirdD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
   Text "YOU'RE IN THE QUEEN'S HOME", 26, 17
-  Text "TERRITORY NOW,'TOADS! JUST", 26, 17
+  Text "TERRITORY NOW, 'TOADS! JUST", 27, 17
   Text "TWO RAT RACES, AND YOU GET", 26, 17
   Text "TO 'TOADSLAM HER REAL GOOD!!", 28, 200
   .db SCRIPT_END_BLANK
@@ -1407,7 +1407,7 @@ Intermission8TBirdB:
   StartText 18
   Text "SHOW THAT DARK QUEEN WHO YOU", 28, 17
   Text "ARE! YOU AIN'T NO FEEBLE", 24, 17
-  Text "FROGS-YOU'RE THE", 16, 17
+  Text "FROGS - YOU'RE THE", 18, 17
   Text "BATTLETOADS!", 12, 200
   .db SCRIPT_END_BLANK
 Intermission8TBirdC:
@@ -1420,9 +1420,9 @@ Intermission8TBirdC:
 Intermission8TBirdD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "I KNEW YOU'D MAKE IT 'TOADS!", 28, 17
+  Text "I KNEW YOU'D MAKE IT, 'TOADS!", 29, 17
   Text "BOY, I WOULDN'T WANT TO BE", 26, 17
-  Text "IN THE QUEEN'S SHOES NOW,", 25, 17
+  Text "IN THE QUEEN'S SHOES NOW!", 25, 17
   Text "SHE'S IN FOR ONE", 16, 17
   Text "HUMUNGOUS SURPRISE!!", 20, 200
   .db SCRIPT_END_BLANK
@@ -1439,7 +1439,7 @@ Intermission9DarkQueenA:
 Intermission9DarkQueenB:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "IT'S JUST NOT FAIR, I'M FED ", 28, 17
+  Text "IT'S JUST NOT FAIR! I'M FED ", 28, 17
   Text "UP BEING BEATEN BY A SCRAWNY ", 29, 17
   Text "BEAK AND HIS SLIMY SWAMP ", 25, 17
   Text "SWIMMERS!! I'LL GET YOU NEXT ", 29, 17
@@ -1448,7 +1448,7 @@ Intermission9DarkQueenB:
 Intermission9DarkQueenC:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "UH-YOU WOULDN'T HIT A LADY ", 27, 17
+  Text "UH! YOU WOULDN'T HIT A LADY ", 28, 17
   Text "WHILE SHE'S DOWN, WOULD YOU? ", 29, 17
   Text "GOOD, 'CUZ THIS GIVES ME A", 26, 17
   Text "CHANCE TO ESCAPE! FAREWELL,", 27, 17
@@ -1457,8 +1457,8 @@ Intermission9DarkQueenC:
 Intermission9DarkQueenD:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "WHAT STRENGTH! BUT DON'T", 24, 17
-  Text "FORGET, THERE ARE MANY", 22, 17
+  Text "WHAT STRENGTH!! BUT DON'T", 25, 17
+  Text "FORGET THERE ARE MANY", 21, 17
   Text "TYRANTS LIKE ME ALL", 19, 17
   Text "OVER THE WORLD!!", 16, 200
   .db SCRIPT_END_BLANK
@@ -1466,7 +1466,7 @@ Intermission9TBirdA:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
   Text "COSMICALLY COOL!! THE MAD,", 26, 17
-  Text "BAD N'CRAZY 'TOADS SAVE THE", 27, 17
+  Text "BAD N' CRAZY 'TOADS SAVE THE", 28, 17
   Text "DAY, AND THE DARK QUEEN IS", 26, 17
   Text "NOW THE DARK HAS-BEEN!", 22, 17
   Text "HEH-HEH-CACKLE-CACKLE!", 22, 200
@@ -1477,7 +1477,7 @@ Intermission9TBirdB:
   Text "WOOOOO! I LIKE IT, 'TOADS!", 26, 17
   Text "WE SURE TAUGHT THAT DARK", 24, 17
   Text "QUEEN NOT TO MESS WITH THE", 26, 17
-  Text "AWESOME T.BIRD AND HIS", 22, 17
+  Text "AWESOME T. BIRD AND HIS", 22, 17
   Text "BATTLETOADS!", 12, 200
   .db SCRIPT_END_BLANK
 Intermission9TBirdC:
@@ -1493,7 +1493,7 @@ Intermission9TBirdD:
   StartText 18
   Text "WE'LL HAVE TO WRITE A BOOK", 26, 17
   Text "AND MAKE A MOVIE ABOUT YOU", 26, 17
-  Text "GUYS, IT'LL MAKE ME... ER,", 26, 17
+  Text "GUYS! IT'LL MAKE ME... ER,", 26, 17
   Text "US A FORTUNE!", 13, 200
   .db SCRIPT_END_BLANK
 
@@ -1520,7 +1520,7 @@ Ending:
   Text "MINUTE NOW!!", 12, 4
   Clear 23
   Text "YOU'D BETTER GET BACK HERE", 26
-  Text "PRONTO, 'TOADS, YOU'RE OUR", 26
+  Text "PRONTO, 'TOADS! YOU'RE OUR", 26
   Text "ONLY HOPE OF CATCHING HIM!", 26, 150
   Clear 23
 ;Scene 1:
@@ -1534,12 +1534,12 @@ Ending:
   Text "HE'S GETTIN' AWAY!", 18
 ;Scene 4:
   Text "WE'VE CAUGHT UP! HURRY RASH,", 28
-  Text "FIRE THE MISSILES, WE WON'T", 27
+  Text "FIRE THE MISSILES! WE WON'T", 27
   Text "BE ABLE TO STAY WITH HIM", 24
   Text "MUCH LONGER!", 12
 
 /*************************************
-Ending Part 2 (Bad Ending) (This will probably be left unused)
+Ending Part 2 (Bad Ending)
 *************************************/
 
 ;Text 1:
@@ -1583,7 +1583,7 @@ Ending Part 2 (Good Ending)
 ;Text 3:
   Text "WHO KNOWS WHAT HAPPENED TO", 26
   Text "HIM, BUT YOU CAN BE SURE OF", 27
-  Text "ONE THING, BOTH HE AND THE", 26
+  Text "ONE THING - BOTH HE AND THE", 27
   Text "DARK QUEEN WILL REMEMBER THE", 28
   Text "DAY THEY TOOK ON THE", 20
   Text "BATTLETOADS-AND LOST!!", 22
@@ -1597,8 +1597,8 @@ Continue (In the Master System version these messages appear before continuing, 
 GameOverA:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "THINGS ARE LOOKING GOOD", 23, 17
-  Text "'TOADS, GOOD FOR THE DARK", 25, 17
+  Text "THINGS ARE LOOKING GOOD,", 24, 17
+  Text "'TOADS. GOOD FOR THE DARK", 25, 17
   Text "QUEEN IF THAT'S YOUR BEST", 25, 17
   Text "EFFORT! GET A GRIP GUYS -", 25, 17
   Text "LET'S MOTIVATE!", 15, 200
@@ -1623,7 +1623,7 @@ GameOverD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
   Text "I CAN'T BELIEVE WHAT'S", 22, 17
-  Text "HAPPENING, EVEN I COULD'VE", 26, 17
+  Text "HAPPENING! EVEN I COULD'VE", 26, 17
   Text "BEATEN THAT! C'MON 'TOADS,", 26, 17
   Text "GET MAD, BAD 'N' CRAZY!!", 24, 200
   .db SCRIPT_END_BLANK
@@ -1633,13 +1633,13 @@ Game Over (No Game Over messages in the Master System version, don't know if the
 *************************************/
 
 ;Dark Queen A:
-  Text "YOU'RE NO MATCH FOR ME-I'M", 26
+  Text "YOU'RE NO MATCH FOR ME! I'M", 27
   Text "THE STRONGEST WOMAN IN", 22
   Text "THE UNIVERSE!!", 14
 ;Dark Queen B:
   Text "YOU'VE GOT A LOT TO LEARN,", 26
   Text "BEFORE YOU BEAT ME. TRY", 23
-  Text "AGAIN, 'TOADIES, HA-HA-HA-HA!", 29
+  Text "AGAIN, 'TOADIES! HA-HA-HA-HA!", 29
 ;Dark Queen C:
   Text "IS THAT THE BEST YOUR SWAMP", 27
   Text "CRAWLERS CAN DO, TURKEY", 23
@@ -1663,14 +1663,14 @@ Game Over (No Game Over messages in the Master System version, don't know if the
   Text "'TOADS BEATEN. IT'S A SAD", 25
   Text "DAY FOR ALL 'TOADKIND...", 24
 ;T-Bird C:
-  Text "NO MORE CHANCES,'TOADS.", 23
+  Text "NO MORE CHANCES, 'TOADS.", 24
   Text "TIME'S UP AND WE'VE LOST BY", 27
   Text "A WASHOUT. WE'LL HAVE TO", 24
   Text "REGROUP AND TRY AGAIN...", 24
 ;T-Bird D:
   Text "THAT'S IT, THE GAME'S OVER", 26
   Text "FOR US, FINITO, END OF THE", 26
-  Text "LINE...WE'D BETTER RETURN", 25
+  Text "LINE... WE'D BETTER RETURN", 26
   Text "TO PSICONE AND WORK OUT", 23
   Text "A NEW PLAN.", 11
 
