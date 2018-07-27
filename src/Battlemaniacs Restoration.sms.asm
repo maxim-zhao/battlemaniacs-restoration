@@ -750,7 +750,7 @@ IntroScript:
   Clear 21
   StartText 21
   Text "TOTAL REALITY INTEGRATED", 24
-  Text "PLAYING SYSTEM", 14, 100
+  Text "PLAYING SYSTEM.", 15, 100
   Clear 21
   StartText 21
   Text "WE'VE NAMED ITS ARTIFICIAL", 26
@@ -790,7 +790,7 @@ IntroScript:
 
   Picture Intro10Palette, Intro10Tiles, Intro10Tilemap
   StartText 21
-  Text "PAY ATTENTION BATTLEJERKS!", 26, 100
+  Text "PAY ATTENTION, BATTLEJERKS!", 27, 100
   Clear 21
   StartText 21
   Text "I, SILAS VOLKMIRE, INTEND TO", 28
@@ -1081,7 +1081,7 @@ Intermission3DarkQueenD:
 Intermission3TBirdA:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "BE CAREFUL 'TOADS, I'M", 22, 17
+  Text "BE CAREFUL, 'TOADS! I'M", 23, 17
   Text "PICKIN' UP IMAGES OF", 20, 17
   Text "WHIZZIN' WALLS AND MASSIVE", 26, 17
   Text "GAPS IN THAT TUNNEL!!", 21, 200
@@ -1136,10 +1136,10 @@ Intermission4DarkQueenC:
 Intermission4DarkQueenD:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "PREPARE TO MEET KARNATH-KING", 28, 17
-  Text "OF THE SNAKES!! YOU'LL NEVER", 28, 17
-  Text "ESCAPE FROM HIS LETHAL LAIR,", 28, 17
-  Text "NEVER! HA-HA-HA-HA!", 19, 200
+  Text "PREPARE TO MEET KARNATH -", 25, 17
+  Text "KING OF THE SNAKES!! YOU'LL", 27, 17
+  Text "NEVER ESCAPE FROM HIS LETHAL", 28, 17
+  Text "LAIR, NEVER! HA-HA-HA-HA!", 25, 200
   .db SCRIPT_END_BLANK
 Intermission4TBirdA:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
@@ -1164,7 +1164,7 @@ Intermission4TBirdC:
 Intermission4TBirdD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "THE EXIT'S AT THE TOP", 21, 17
+  Text "THE EXIT'S AT THE TOP,", 22, 17
   Text "'TOADS, SO GRAB A SNAKE", 23, 17
   Text "AND HOLD ON TIGHT!", 18, 200
   .db SCRIPT_END_BLANK
@@ -1413,7 +1413,7 @@ Intermission8TBirdB:
 Intermission8TBirdC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "WAYDIGO 'TOADS! THE QUEEN'S", 27, 17
+  Text "WAYDIGO, 'TOADS! THE QUEEN'S", 28, 17
   Text "ARMY IS BEATEN, AND SHE'S", 25, 17
   Text "SHAKIN' IN FEAR! GO GET HER!", 28, 200
   .db SCRIPT_END_BLANK
@@ -1502,9 +1502,9 @@ Ending Part 1
 ************************************/
 
 Ending:
-  Text "ER....", 6, 50
+  Text "ER...", 5, 50
   Clear 23
-  Text "HOLD THE PARTY, 'TOADS....", 26, 50
+  Text "HOLD THE PARTY, 'TOADS...", 25, 50
   Clear 23
   Text "I'VE JUST PICKED UP SILAS", 25
   Text "VOLKMIRE ON MY SCANNERS,", 24
@@ -1512,7 +1512,7 @@ Ending:
   Text "A TELEPORTER!!", 14, 200
   Clear 23
   Text "HOLD ON, I'LL LOCATE HIS", 24
-  Text "TARGET DESTINATION....", 22, 100
+  Text "TARGET DESTINATION...", 21, 100
   Clear 23
   Text "FOUND IT! TWEAK MY BEAK,", 24
   Text "HE'S GONNA APPEAR ABOVE THE", 27
@@ -1588,14 +1588,14 @@ Ending Part 2 (Good Ending)
   Text "VOLKMIRE'S BURNT OUT SHIP IS", 28
   Text "RETRIEVED FROM THE HIMALAYAS,", 29
   Text "BUT OF HIS BODY, THERE IS", 25
-  Text "NO TRACE....", 12
+  Text "NO TRACE...", 11
 ;Text 3:
   Text "WHO KNOWS WHAT HAPPENED TO", 26
   Text "HIM, BUT YOU CAN BE SURE OF", 27
   Text "ONE THING - BOTH HE AND THE", 27
   Text "DARK QUEEN WILL REMEMBER THE", 28
   Text "DAY THEY TOOK ON THE", 20
-  Text "BATTLETOADS-AND LOST!!", 22
+  Text "BATTLETOADS AND LOST!!", 22
 ;Text 4:
   Text "THE END.", 8
 
@@ -1662,7 +1662,7 @@ Game Over (No Game Over messages in the Master System version, don't know if the
   Text "FREAKY FAMILY ALBUM!", 20
   Text "HA-HA-HA-HA!", 12
 ;T-Bird A:
-  Text "OUR LUCK'S FINALLY RUN OUT", 26
+  Text "OUR LUCK'S FINALLY RUN OUT,", 27
   Text "'TOADS, AND WE'RE OUT OF THE", 28
   Text "GAME. HEAD BACK TO BASE AND", 27
   Text "WE'LL PLAN A REMATCH....", 24
