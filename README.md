@@ -14,7 +14,9 @@ The main aims of the project are:
 
 3- Restore all the SNES messages for the intermission scenes.
 
-4- Some other minor fixes/additions.
+4- Restore most the artworks from the SNES version.
+
+5- Some other minor fixes/additions.
 
 At the moment the project does not intend to modify the level themselves, despite the overall feeling that some of them are unpolished/unfinished compared to the original SNES game. But that possibility is not completely discarded and anyone interested in investigating that and making it possible will be welcomed.
 
