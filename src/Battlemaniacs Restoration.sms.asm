@@ -1037,7 +1037,7 @@ Intermission2TBirdC:
 Intermission2TBirdD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "C'MON 'TOADS, IT'S BONUS", 24, 17
+  Text "C'MON, 'TOADS! IT'S BONUS", 25, 17
   Text "TIME! COLLECT THE WHITES", 24, 17
   Text "TO WIN A LIFE! AVOID", 20, 17
   Text "THE SKULLS AS THEY", 18, 17
@@ -1331,7 +1331,7 @@ Intermission7DarkQueenD:
 Intermission7TBirdA:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "C'MON GUYS, THE END'S IN", 24, 17
+  Text "C'MON, GUYS! THE END'S IN", 25, 17
   Text "SIGHT! BEAT THE RAT TWO", 23, 17
   Text "TIMES, AND HE'LL LEAD YOU", 25, 17
   Text "TO THE DARK QUEEN!", 18, 200
