@@ -26,6 +26,6 @@ Maxim - programmer
 
 Pyron - artist
 
-S T ★ R - composer
+Motavian Raider - composer
 
 Wesker - coordinator
