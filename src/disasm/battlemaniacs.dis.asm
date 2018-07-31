@@ -286,13 +286,13 @@ _RAM_C76B_ dw
 _RAM_C76D_ db
 _RAM_C76E_ db
 _RAM_C76F_ db
-_RAM_C770_ db
-_RAM_C771_ db
+_RAM_C770_SwapButtons db
+_RAM_C771_Is2Player db
 .ende
 
 .enum $C773 export
 _RAM_C773_ db
-_RAM_C774_ db
+_RAM_C774_Player1Player db
 _RAM_C775_ db
 _RAM_C776_ db
 _RAM_C777_ dw
@@ -439,14 +439,14 @@ _RAM_C82C_ db
 .ende
 
 .enum $C82F export
-_RAM_C82F_ db
+_RAM_C82F_DirectionsPressed db
 _RAM_C830_ db
-_RAM_C831_ db
+_RAM_C831_ButtonsPressed db
 _RAM_C832_ db
 .ende
 
 .enum $C837 export
-_RAM_C837_ db
+_RAM_C837_Player2InputsEnabled db
 _RAM_C838_ db
 _RAM_C839_ db
 .ende
@@ -1368,7 +1368,7 @@ _LABEL_4EA_ResetScrollTile0AndTilemap:
 .db $F3 $F6 $F0 $D3 $BF $00 $00 $00 $3E $87 $D3 $BF $00 $00 $00 $00
 .db $FB $C9
 
-_LABEL_561_:
+_LABEL_561_GetInputs:
 	ld a, (_RAM_C81C_)
 	and a
 	jr z, +
@@ -1376,58 +1376,60 @@ _LABEL_561_:
 	and $01
 	ret nz
 +:
-	ld hl, $0000
-	ld bc, $0000
+	ld hl, $0000 ; UDLR
+	ld bc, $0000 ; 12
 	in a, (Port_IOPort1)
-	bit 2, a
+	bit 2, a ; Left
 	jr nz, +
 	ld l, $FF
 +:
 	in a, (Port_IOPort1)
-	bit 3, a
+	bit 3, a ; Right
 	jr nz, +
 	ld l, $01
 +:
 	in a, (Port_IOPort1)
-	bit 0, a
+	bit 0, a ; Up
 	jr nz, +
 	ld h, $FF
 +:
 	in a, (Port_IOPort1)
-	bit 1, a
+	bit 1, a ; Down
 	jr nz, +
 	ld h, $01
 +:
 	in a, (Port_IOPort1)
-	bit 4, a
+	bit 4, a ; Button 1
 	jr nz, +
 	ld c, $01
 +:
 	in a, (Port_IOPort1)
-	bit 5, a
+	bit 5, a ; Button 2
 	jr nz, +
 	ld b, $01
 +:
-	ld a, (_RAM_C83C_)
+	ld a, (_RAM_C83C_) ; overrides L/R
 	and a
 	jr z, +
 	ld l, a
 +:
-	ld (_RAM_C82F_), hl
-	ld a, (_RAM_C770_)
+	ld (_RAM_C82F_DirectionsPressed), hl ; save result
+  
+	ld a, (_RAM_C770_SwapButtons)
 	and a
 	jp z, +
 	ld a, b
 	ld b, c
 	ld c, a
 +:
-	ld (_RAM_C831_), bc
-	ld a, (_RAM_C81C_)
+	ld (_RAM_C831_ButtonsPressed), bc ; save value
+  
+	ld a, (_RAM_C81C_) ; enables something
 	and a
 	ret z
 	push af
-	ld a, $0E
-	ld (_RAM_FFFF_), a
+    ld a, $0E
+    ld (_RAM_FFFF_), a
 	pop af
 	cp $01
 	jr z, _LABEL_610_
@@ -1451,7 +1453,7 @@ _LABEL_561_:
 	jr nz, +
 	ld h, $FF
 +:
-	ld (_RAM_C82F_), hl
+	ld (_RAM_C82F_DirectionsPressed), hl
 	srl e
 	srl e
 	srl e
@@ -1461,7 +1463,7 @@ _LABEL_561_:
 	ld l, a
 	srl e
 	ld h, e
-	ld (_RAM_C831_), hl
+	ld (_RAM_C831_ButtonsPressed), hl
 	ld hl, (_RAM_C81F_)
 	dec hl
 	ld (_RAM_C81F_), hl
@@ -1503,7 +1505,7 @@ _LABEL_610_:
 ; Data from 638 to 638 (1 bytes)
 .db $C9
 
-_LABEL_639_:
+_LABEL_639_GetPlayer2Buttons:
 	ld hl, $0000
 	ld bc, $0000
 	in a, (Port_IOPort2)
@@ -1541,19 +1543,19 @@ _LABEL_639_:
 	jr z, +
 	ld l, a
 +:
-	ld (_RAM_C82F_), hl
-	ld a, (_RAM_C770_)
+	ld (_RAM_C82F_DirectionsPressed), hl
+	ld a, (_RAM_C770_SwapButtons)
 	and a
 	jp z, +
 	ld a, b
 	ld b, c
 	ld c, a
 +:
-	ld (_RAM_C831_), bc
+	ld (_RAM_C831_ButtonsPressed), bc
 	ret
 
 _LABEL_688_:
-	ld bc, (_RAM_C82F_)
+	ld bc, (_RAM_C82F_DirectionsPressed)
 	ld a, b
 	inc a
 	add a, a
@@ -2835,19 +2837,19 @@ _LABEL_E81_CheckForP21Or2:
 	xor $0C
 	ret
 
-_LABEL_E88_CheckForButton1Or2:
+_LABEL_E88_WaitForNoButtonP1:
 	in a, (Port_IOPort1)
 	and $30
 	cp $30
 	ret z
-	jp _LABEL_E88_CheckForButton1Or2
+	jp _LABEL_E88_WaitForNoButtonP1
 
-_LABEL_E92_CheckForP21Or2:
+_LABEL_E92_WaitForNoButtonP2:
 	in a, (Port_IOPort2)
 	and $0C
 	cp $0C
 	ret z
-	jp _LABEL_E92_CheckForP21Or2
+	jp _LABEL_E92_WaitForNoButtonP2
 
 _LABEL_E9C_SkippableDelay:
 -:call _LABEL_E7A_CheckForButton1
@@ -3005,7 +3007,7 @@ _DATA_FF9_:
 ; 1st entry of Jump Table from FF9 (indexed by _RAM_C792_)
 _LABEL_1011_:
 	ld ix, _RAM_C400_
-	ld a, (_RAM_C771_)
+	ld a, (_RAM_C771_Is2Player)
 	and a
 	jr z, +
 	ld a, (_RAM_C433_)
@@ -3139,7 +3141,7 @@ _LABEL_1086_:
 ; 10th entry of Jump Table from FF9 (indexed by _RAM_C792_)
 _LABEL_1110_:
 	ld ix, _RAM_C400_
-	ld a, (_RAM_C771_)
+	ld a, (_RAM_C771_Is2Player)
 	and a
 	jp z, _LABEL_1210_
 	ld de, (_RAM_C426_)
@@ -3158,7 +3160,7 @@ _LABEL_1110_:
 ; 5th entry of Jump Table from FF9 (indexed by _RAM_C792_)
 _LABEL_113A_:
 	ld ix, _RAM_C400_
-	ld a, (_RAM_C771_)
+	ld a, (_RAM_C771_Is2Player)
 	and a
 	jp z, _LABEL_1210_
 	ld a, (_RAM_C435_)
@@ -3216,7 +3218,7 @@ _LABEL_113A_:
 ; 11th entry of Jump Table from FF9 (indexed by _RAM_C792_)
 _LABEL_11A7_:
 	ld bc, (_RAM_C404_)
-	ld a, (_RAM_C771_)
+	ld a, (_RAM_C771_Is2Player)
 	and a
 	jr z, ++
 	ld hl, (_RAM_C434_)
@@ -4729,7 +4731,7 @@ _LABEL_1AD6_:
 	ld a, (hl)
 	and a
 	jr nz, +
-	ld a, (_RAM_C82F_)
+	ld a, (_RAM_C82F_DirectionsPressed)
 	and a
 	ret z
 --:
@@ -4741,7 +4743,7 @@ _LABEL_1AD6_:
 +:
 	cp $01
 	jr nz, +
-	ld a, (_RAM_C82F_)
+	ld a, (_RAM_C82F_DirectionsPressed)
 	and a
 	jr z, --
 -:
@@ -4755,13 +4757,13 @@ _LABEL_1AD6_:
 +:
 	cp $02
 	jr nz, +
-	ld a, (_RAM_C82F_)
+	ld a, (_RAM_C82F_DirectionsPressed)
 	and a
 	jr nz, --
 	jp -
 
 +:
-	ld a, (_RAM_C82F_)
+	ld a, (_RAM_C82F_DirectionsPressed)
 	and a
 	ret nz
 	ld (hl), $00
@@ -4792,21 +4794,21 @@ _LABEL_1B27_:
 	ei
 	ret
 
-_LABEL_1B45_:
-	ld a, (_RAM_C837_)
+_LABEL_1B45_GetInputsP2:
+	ld a, (_RAM_C837_Player2InputsEnabled)
 	and a
 	ret nz
 	ld hl, $0000
-	ld (_RAM_C82F_), hl
-	ld (_RAM_C831_), hl
-	call _LABEL_639_
-	ld hl, (_RAM_C82F_)
+	ld (_RAM_C82F_DirectionsPressed), hl
+	ld (_RAM_C831_ButtonsPressed), hl
+	call _LABEL_639_GetPlayer2Buttons
+	ld hl, (_RAM_C82F_DirectionsPressed)
 	ld a, l
 	or h
-	ld hl, (_RAM_C831_)
+	ld hl, (_RAM_C831_ButtonsPressed) ; Or them into P1 inputs
 	or l
 	or h
-	ld (_RAM_C837_), a
+	ld (_RAM_C837_Player2InputsEnabled), a
 	ret
 
 _LABEL_1B64_:
@@ -5901,7 +5903,7 @@ _LABEL_2411_:
 	add a, $0B
 	ld (_RAM_C405_), a
 	ld e, a
-	ld a, (_RAM_C771_)
+	ld a, (_RAM_C771_Is2Player)
 	and a
 	jr z, +
 	ld a, e
@@ -6251,7 +6253,7 @@ _LABEL_26AD_:
 	jp nc, +++
 	ld e, $04
 ++:
-	ld a, (_RAM_C771_)
+	ld a, (_RAM_C771_Is2Player)
 	and a
 	jr z, +
 	sla e
@@ -6369,7 +6371,7 @@ _LABEL_2788_:
 	add a, $F7
 ++:
 	ld e, a
-	ld a, (_RAM_C771_)
+	ld a, (_RAM_C771_Is2Player)
 	and a
 	jr z, +
 	sla e
@@ -7240,7 +7242,7 @@ _LABEL_2ED7_:
 	ld iy, _RAM_C400_
 	call +
 	ld (iy+24), $01
-	ld a, (_RAM_C771_)
+	ld a, (_RAM_C771_Is2Player)
 	and a
 	ret z
 	ld iy, _RAM_C430_
@@ -7347,7 +7349,7 @@ _LABEL_2F72_:
 	and a
 	jr z, ++
 	ld b, a
-	ld a, (_RAM_C771_)
+	ld a, (_RAM_C771_Is2Player)
 	and a
 	jr z, +
 	ld a, (ix+40)
@@ -7359,7 +7361,7 @@ _LABEL_2F72_:
 	ret
 
 _LABEL_2F99_:
-	ld a, (_RAM_C771_)
+	ld a, (_RAM_C771_Is2Player)
 	and a
 	ret z
 	ld a, (_RAM_C859_)
@@ -7372,7 +7374,7 @@ _LABEL_2F99_:
 	ret
 
 _LABEL_2FAE_:
-	ld a, (_RAM_C771_)
+	ld a, (_RAM_C771_Is2Player)
 	and a
 	ret z
 	ld hl, (_RAM_C777_)
@@ -7389,7 +7391,7 @@ _LABEL_2FAE_:
 	ret
 
 _LABEL_2FC8_:
-	ld a, (_RAM_C771_)
+	ld a, (_RAM_C771_Is2Player)
 	and a
 	ret z
 	ld a, (_RAM_C859_)
@@ -7457,7 +7459,7 @@ _LABEL_2FC8_:
 	ret
 
 _LABEL_3033_:
-	ld a, (_RAM_C771_)
+	ld a, (_RAM_C771_Is2Player)
 	and a
 	ret z
 	ld a, (_RAM_C859_)
@@ -7544,7 +7546,7 @@ _LABEL_30B4_:
 	jp z, _LABEL_3101_
 	cp $81
 	jp z, _LABEL_30B4_
-	call _LABEL_3C6C_
+	call _LABEL_3C6C_GameStartMenu
 	call _LABEL_282_ScreenOff
 	ld a, (_RAM_C757_CheatEnabled)
 	and a
@@ -7599,10 +7601,10 @@ _LABEL_311A_:
 	ld a, (_RAM_C7C0_)
 	cp $04
 	call z, _LABEL_FE4_
-	call _LABEL_6D1E_
+	call _LABEL_6D1E_PlayMusicForLevel
 	call _LABEL_51D0_
 	call _LABEL_295_ScreenOn
-	ld hl, _DATA_1AB51_
+	ld hl, _DATA_1AB51_Palette
 	ld (_RAM_C769_SpritePalettePointer), hl
 	call _LABEL_1583_LoadPalettes
 	ld a, $01
@@ -7846,11 +7848,11 @@ _LABEL_332D_:
 	pop af
 	and a
 	jr nz, ++
-	ld a, (_RAM_C771_)
+	ld a, (_RAM_C771_Is2Player)
 	and a
 	jp z, _LABEL_30B4_
 	xor a
-	ld (_RAM_C771_), a
+	ld (_RAM_C771_Is2Player), a
 	ld hl, $C400
 	ld (_RAM_C777_), hl
 	ld a, (_RAM_C8C6_)
@@ -7859,7 +7861,7 @@ _LABEL_332D_:
 	ld a, $02
 	ld (_RAM_C400_), a
 	ld a, (_RAM_C775_)
-	ld (_RAM_C774_), a
+	ld (_RAM_C774_Player1Player), a
 	ld a, (_RAM_C795_)
 	ld (_RAM_C794_), a
 	ld hl, _RAM_C786_
@@ -7914,9 +7916,9 @@ _LABEL_33D1_:
 	ld (_RAM_C79D_), a
 	ld ix, _RAM_C400_
 	call ++
-	ld a, (_RAM_C774_)
+	ld a, (_RAM_C774_Player1Player)
 	ld (ix+0), a
-	ld a, (_RAM_C771_)
+	ld a, (_RAM_C771_Is2Player)
 	and a
 	ret z
 	ld ix, _RAM_C430_
@@ -8467,7 +8469,7 @@ _LABEL_3831_:
 	ld ix, _RAM_C77B_
 	ld a, (_RAM_C400_)
 	call +
-	ld a, (_RAM_C771_)
+	ld a, (_RAM_C771_Is2Player)
 	and a
 	ret z
 	ld a, $02
@@ -8525,8 +8527,13 @@ _LABEL_3899_:
 
 ; Data from 38AF to 38C3 (21 bytes)
 _DATA_38AF_:
-.db $05 $02 $0A $00 $03 $02 $08 $00 $03 $00 $08 $00 $CD $EA $04 $3E
-.db $06 $32 $FF $FF $C9
+.db $05 $02 $0A $00 
+.db $03 $02 $08 $00 
+.db $03 $00 $08 $00 
+
+.db $CD $EA $04 $3E
+.db $06 $32 $FF $FF 
+.db $C9
 
 _LABEL_38C4_IntroPicture2:
 	ld hl, _DATA_1AB11_TilePalette
@@ -8584,7 +8591,7 @@ _LABEL_3914_:
 	ld hl, $8150
 	ld de, $0020
 	call _LABEL_69_DecompressToVRAMTrampoline
-	ld a, (_RAM_C771_)
+	ld a, (_RAM_C771_Is2Player)
 	and a
 	jr z, +
 	ld a, $07
@@ -8619,7 +8626,7 @@ _LABEL_3914_:
 	call _LABEL_5790_TextToVRAM
 	call _LABEL_5790_TextToVRAM
 	ld ix, _RAM_C77B_
-	ld a, (_RAM_C771_)
+	ld a, (_RAM_C771_Is2Player)
 	and a
 	jr z, +
 	ld bc, $1405
@@ -8637,7 +8644,7 @@ _LABEL_3914_:
 	call _LABEL_295_ScreenOn
 	ld b, $02
 	call _LABEL_D43_DelaySeconds
-	call _LABEL_E88_CheckForButton1Or2
+	call _LABEL_E88_WaitForNoButtonP1
 -:
 	call _LABEL_E7A_CheckForButton1
 	jp z, -
@@ -8982,31 +8989,43 @@ _LABEL_3C38_InterstitialText:
 	ret
 /*****************************************************/
 
-_LABEL_3C6C_:
+_LABEL_3C6C_GameStartMenu:
 	call _LABEL_282_ScreenOff
 	call _LABEL_4EA_ResetScrollTile0AndTilemap
+
+  ; palettes
 	ld hl, _DATA_1AB71_TitleScreenTilePalette
 	ld (_RAM_C7C7_TilePalettePointer), hl
 	ld hl, _DATA_1AC41_TitleScreenSpritePalette
 	ld (_RAM_C769_SpritePalettePointer), hl
 	call _LABEL_1583_LoadPalettes
+
+   ; character tiles
 	ld a, $07
 	ld (_RAM_FFFF_), a
 	ld hl, $8150
 	ld de, $0020
 	call _LABEL_69_DecompressToVRAMTrampoline
+
+  ; character tilemap
 	ld hl, _DATA_1C000_
 	ld de, $3884
 	ld bc, $0C1C
 	call _LABEL_D4D_EmitTilemapRect
+
+  ; font
 	ld ix, $2000
 	call _LABEL_1557_LoadFont
+  
+  ; stuff...
 	xor a
 	ld (_RAM_C859_), a
 	ld (_RAM_C822_IntroButtonPressed), a
 	ld (_RAM_C776_), a
 	ld hl, _RAM_C400_
 	ld (_RAM_C777_), hl
+  
+  ; menu text
 	ld bc, $0F0B
 	call _LABEL_57E7_SetTextToVRAMLocation
 	ld ix, _DATA_6E19_Text_TitleScreenMenu
@@ -9014,23 +9033,31 @@ _LABEL_3C6C_:
 	call _LABEL_5790_TextToVRAM
 	call _LABEL_5790_TextToVRAM
 	call _LABEL_5790_TextToVRAM
+  
+  ; character names
 	ld bc, $0005
 	call _LABEL_57E7_SetTextToVRAMLocation
 	ld ix, _DATA_6D73_Text_pimple_rash_licenced
 	call _LABEL_5790_TextToVRAM
 	call _LABEL_295_ScreenOn
-	call _LABEL_E88_CheckForButton1Or2
-	call _LABEL_E92_CheckForP21Or2
+  
+  ; wait for no buttons
+	call _LABEL_E88_WaitForNoButtonP1
+	call _LABEL_E92_WaitForNoButtonP2
+
 _LABEL_3CDE_:
+  ; delay?
 	ld b, $05
 	call _LABEL_D2E_DelayTimes20ms
-	call _LABEL_1B45_
-	call _LABEL_561_
-	ld a, (_RAM_C837_)
+  
+	call _LABEL_1B45_GetInputsP2
+	call _LABEL_561_GetInputs
+  
+	ld a, (_RAM_C837_Player2InputsEnabled)
 	and a
-	call nz, _LABEL_639_
-	ld hl, (_RAM_C82F_)
-	ld a, (_RAM_C837_)
+	call nz, _LABEL_639_GetPlayer2Buttons
+	ld hl, (_RAM_C82F_DirectionsPressed)
+	ld a, (_RAM_C837_Player2InputsEnabled)
 	and a
 	jr nz, +
 	sla h
@@ -9058,7 +9085,7 @@ _LABEL_3CDE_:
 	ld a, e
 	ld (_RAM_C822_IntroButtonPressed), a
 	call _LABEL_57E7_SetTextToVRAMLocation
-	ld a, $20
+	ld a, $20 ; " "
 	call _LABEL_57AB_CharToVRAM
 +:
 	ld a, (_RAM_C822_IntroButtonPressed)
@@ -9067,38 +9094,44 @@ _LABEL_3CDE_:
 	ld b, a
 	ld c, $09
 	call _LABEL_57E7_SetTextToVRAMLocation
-	ld a, $2D
+	ld a, $2D ; "-"
 	call _LABEL_57AB_CharToVRAM
 	call _LABEL_E7A_CheckForButton1
 	jr nz, +
 	call _LABEL_E81_CheckForP21Or2
 	jp z, _LABEL_3CDE_
-+:
++:; Button pressed
 	ld a, $39
 	call _LABEL_6D3D_AudioPlaySFX
 	ld a, (_RAM_C822_IntroButtonPressed)
-	cp $03
+	cp $03 ; Options
 	jp z, ++
 	and a
-	jp z, +
+	jp z, + ; Start
 	dec a
 	xor $01
 	ld (_RAM_C776_), a
 	ld a, $02
 	ld (_RAM_C775_), a
 	dec a
-	ld (_RAM_C774_), a
+	ld (_RAM_C774_Player1Player), a
 +:
-	ld (_RAM_C771_), a
+	ld (_RAM_C771_Is2Player), a
 	and a
 	ret nz
-	ld a, (_RAM_C837_)
+	ld a, (_RAM_C837_Player2InputsEnabled)
 	inc a
 	ld a, a
-	ld (_RAM_C774_), a
+	ld (_RAM_C774_Player1Player), a
 	ret
+  
+  ; c771 c774
+  ;    0    1 1-player pad 1
+  ;    0    2 1-player pad 2
+  ;    1    1 2-player
 
 ++:
+  ; Options screen
 	xor a
 	ld (_RAM_C822_IntroButtonPressed), a
 	ld (_RAM_C824_), a
@@ -9117,18 +9150,18 @@ _LABEL_3CDE_:
 	call _LABEL_3E8B_
 	call _LABEL_3EA3_
 	call _LABEL_3EB3_
-	call _LABEL_E88_CheckForButton1Or2
-	call _LABEL_E92_CheckForP21Or2
+	call _LABEL_E88_WaitForNoButtonP1
+	call _LABEL_E92_WaitForNoButtonP2
 _LABEL_3DAD_:
 	ld b, $05
 	call _LABEL_D2E_DelayTimes20ms
-	call _LABEL_1B45_
-	call _LABEL_561_
-	ld a, (_RAM_C837_)
+	call _LABEL_1B45_GetInputsP2
+	call _LABEL_561_GetInputs
+	ld a, (_RAM_C837_Player2InputsEnabled)
 	and a
-	call nz, _LABEL_639_
+	call nz, _LABEL_639_GetPlayer2Buttons
 	call _LABEL_3E09_
-	ld a, (_RAM_C837_)
+	ld a, (_RAM_C837_Player2InputsEnabled)
 	and a
 	jr z, +
 	call _LABEL_E81_CheckForP21Or2
@@ -9150,10 +9183,10 @@ _LABEL_3DAD_:
 	jp nz, _LABEL_3DF2_
 	ld a, $39
 	call _LABEL_6D3D_AudioPlaySFX
-	jp _LABEL_3C6C_
+	jp _LABEL_3C6C_GameStartMenu
 
 _LABEL_3DF2_:
-	ld a, (_RAM_C837_)
+	ld a, (_RAM_C837_Player2InputsEnabled)
 	and a
 	jr z, _LABEL_3E00_
 -:
@@ -9168,7 +9201,7 @@ _LABEL_3E00_:
 
 _LABEL_3E09_:
 	ld a, (_RAM_C824_)
-	ld hl, (_RAM_C82F_)
+	ld hl, (_RAM_C82F_DirectionsPressed)
 	add a, h
 	cp $FF
 	jr z, +
@@ -9216,9 +9249,9 @@ _LABEL_3E4A_:
 	jp _LABEL_3DF2_
 
 _LABEL_3E61_:
-	ld a, (_RAM_C770_)
+	ld a, (_RAM_C770_SwapButtons)
 	xor $01
-	ld (_RAM_C770_), a
+	ld (_RAM_C770_SwapButtons), a
 	call _LABEL_3EB3_
 	ld a, $39
 	call _LABEL_6D3D_AudioPlaySFX
@@ -9262,13 +9295,13 @@ _LABEL_3EA3_:
 _LABEL_3EB3_:
 	ld bc, $0D14
 	call _LABEL_57E7_SetTextToVRAMLocation
-	ld a, (_RAM_C770_)
+	ld a, (_RAM_C770_SwapButtons)
 	xor $01
 	add a, $31
 	call _LABEL_57AB_CharToVRAM
 	ld bc, $0F14
 	call _LABEL_57E7_SetTextToVRAMLocation
-	ld a, (_RAM_C770_)
+	ld a, (_RAM_C770_SwapButtons)
 	add a, $31
 	jp _LABEL_57AB_CharToVRAM
 
@@ -9276,8 +9309,8 @@ _LABEL_3EB3_:
 .db $C9 ; abandoned ret
 
 _LABEL_3ED2_ShowLevelSelect:
-	call _LABEL_E88_CheckForButton1Or2
-	call _LABEL_E92_CheckForP21Or2
+	call _LABEL_E88_WaitForNoButtonP1
+	call _LABEL_E92_WaitForNoButtonP2
 	call _LABEL_4EA_ResetScrollTile0AndTilemap
 	xor a
 	ld (_RAM_C852_), a
@@ -9314,11 +9347,11 @@ _LABEL_3F11_:
 	ld ix, _DATA_8BB7_Text_Numbers
 	add ix, de
 	call _LABEL_579B_TextToVRAM
-	call _LABEL_561_
-	ld a, (_RAM_C774_)
+	call _LABEL_561_GetInputs
+	ld a, (_RAM_C774_Player1Player)
 	cp $02
-	call z, _LABEL_639_
-	ld hl, (_RAM_C82F_)
+	call z, _LABEL_639_GetPlayer2Buttons
+	ld hl, (_RAM_C82F_DirectionsPressed)
 	ld a, (_RAM_C792_)
 	add a, l
 	cp $FF
@@ -9330,7 +9363,7 @@ _LABEL_3F11_:
 	dec a
 +:
 	ld (_RAM_C792_), a
-	ld a, (_RAM_C774_)
+	ld a, (_RAM_C774_Player1Player)
 	cp $01
 	jr z, +
 	call _LABEL_E81_CheckForP21Or2
@@ -9343,8 +9376,8 @@ _LABEL_3F11_:
 ++:
 	ld b, $14
 	call _LABEL_D2E_DelayTimes20ms
-	call _LABEL_E88_CheckForButton1Or2
-	call _LABEL_E92_CheckForP21Or2
+	call _LABEL_E88_WaitForNoButtonP1
+	call _LABEL_E92_WaitForNoButtonP2
 	call _LABEL_282_ScreenOff
 	ret
 
@@ -9482,7 +9515,7 @@ _LABEL_3F74_ShowMenus:
 -:push bc
     ld b, $02
     call _LABEL_D2E_DelayTimes20ms
-    call _LABEL_1B45_
+    call _LABEL_1B45_GetInputsP2
 	pop bc
 	call _LABEL_E7A_CheckForButton1
 	ret nz
@@ -9507,7 +9540,7 @@ _LABEL_40DD_:
 	ld (_RAM_C864_), hl
 	ld ix, _RAM_C400_
 	call +
-	ld a, (_RAM_C771_)
+	ld a, (_RAM_C771_Is2Player)
 	and a
 	ret z
 	ld hl, $C861
@@ -9533,18 +9566,18 @@ _LABEL_40DD_:
 	ld a, (ix+0)
 	cp $01
 	jr nz, +
-	call _LABEL_561_
+	call _LABEL_561_GetInputs
 ; Data from 4121 to 4122 (2 bytes)
 .db $18 $03
 
 +:
-	call _LABEL_639_
+	call _LABEL_639_GetPlayer2Buttons
 	call _LABEL_1AD6_
 	jr +++
 
 ++:
 	ld hl, $0000
-	ld (_RAM_C82F_), hl
+	ld (_RAM_C82F_DirectionsPressed), hl
 +++:
 	call _LABEL_6F7F_
 	ld a, (_RAM_C798_)
@@ -9905,7 +9938,7 @@ _LABEL_43D8_:
 	ret
 
 _LABEL_4433_:
-	ld hl, (_RAM_C82F_)
+	ld hl, (_RAM_C82F_DirectionsPressed)
 	ld h, $7D
 	ld a, (hl)
 	ld (ix+6), a
@@ -9925,7 +9958,7 @@ _LABEL_4433_:
 	ret
 
 _LABEL_445A_:
-	ld hl, (_RAM_C82F_)
+	ld hl, (_RAM_C82F_DirectionsPressed)
 	ld h, $7D
 	ld a, (hl)
 	ld (ix+6), a
@@ -9943,7 +9976,7 @@ _LABEL_4472_:
 	jr z, ++
 	cp $05
 	jr z, +
-	ld a, (_RAM_C82F_)
+	ld a, (_RAM_C82F_DirectionsPressed)
 	add a, a
 	add a, a
 	add a, a
@@ -10054,7 +10087,7 @@ _LABEL_450B_:
 	jr z, ++
 	cp $02
 	ret nz
-	ld a, (_RAM_C82F_)
+	ld a, (_RAM_C82F_DirectionsPressed)
 	cp (ix+26)
 	ret nz
 	ld hl, (_RAM_C864_)
@@ -10345,7 +10378,7 @@ _LABEL_4793_:
 	ld a, (ix+21)
 	and a
 	ret z
-	ld a, (_RAM_C831_)
+	ld a, (_RAM_C831_ButtonsPressed)
 	and a
 	jr z, +
 	ld hl, (_RAM_C7A6_)
@@ -10378,12 +10411,12 @@ _LABEL_47C6_:
 	ld a, (hl)
 	and a
 	jr z, +
-	ld a, (_RAM_C831_)
+	ld a, (_RAM_C831_ButtonsPressed)
 	ld (hl), a
 	ret
 
 +:
-	ld a, (_RAM_C831_)
+	ld a, (_RAM_C831_ButtonsPressed)
 	and a
 	ret z
 	ld (hl), a
@@ -10420,7 +10453,7 @@ _LABEL_4814_:
 	ld ix, _RAM_C400_
 	ld b, $00
 	call +
-	ld a, (_RAM_C771_)
+	ld a, (_RAM_C771_Is2Player)
 	and a
 	ret z
 	ld b, $01
@@ -10632,7 +10665,7 @@ _LABEL_498D_:
 	ld de, $0005
 	add hl, de
 +:
-	ld a, (_RAM_C771_)
+	ld a, (_RAM_C771_Is2Player)
 	and a
 	jr z, +
 	ld de, $003C
@@ -10897,7 +10930,7 @@ _LABEL_4B4E_:
 	ld (ix+1), $00
 	ld (ix+44), $00
 _LABEL_4BB8_:
-	ld a, (_RAM_C82F_)
+	ld a, (_RAM_C82F_DirectionsPressed)
 	and a
 	jr z, ++
 	ld e, $01
@@ -10981,7 +11014,7 @@ _LABEL_4C4C_:
 	push ix
 	pop hl
 	add hl, de
-	ld bc, _RAM_C82F_
+	ld bc, _RAM_C82F_DirectionsPressed
 	call ++
 	inc hl
 	inc bc
@@ -11892,7 +11925,7 @@ _LABEL_52EF_:
 	ld de, $2400
 	ld b, $79
 	call _LABEL_6A7_EmitTiles
-	ld a, (_RAM_C771_)
+	ld a, (_RAM_C771_Is2Player)
 	and a
 	ret z
 	ld hl, _DATA_3FEF0_
@@ -12026,7 +12059,7 @@ _LABEL_5433_:
 	jp z, _LABEL_54F2_
 	ld hl, $7806
 	ld ix, _RAM_C77B_
-	ld a, (_RAM_C771_)
+	ld a, (_RAM_C771_Is2Player)
 	and a
 	jp z, +
 	ld a, (_RAM_C773_)
@@ -12127,7 +12160,7 @@ _LABEL_5433_:
 	ret
 
 _LABEL_54F2_:
-	ld a, (_RAM_C771_)
+	ld a, (_RAM_C771_Is2Player)
 	and a
 	jp z, ++
 	ld a, (_RAM_C859_)
@@ -12141,7 +12174,7 @@ _LABEL_54F2_:
 	xor $01
 ++:
 	ld (_RAM_C773_), a
-	ld hl, _RAM_C774_
+	ld hl, _RAM_C774_Player1Player
 	and a
 	jr z, +
 	inc hl
@@ -12272,9 +12305,9 @@ _LABEL_557D_:
 	nop
 	djnz -
 	ld hl, $7802
-	ld a, (_RAM_C774_)
+	ld a, (_RAM_C774_Player1Player)
 	call ++
-	ld a, (_RAM_C771_)
+	ld a, (_RAM_C771_Is2Player)
 	and a
 	jp z, +
 	ld hl, $782E
@@ -12452,7 +12485,7 @@ _LABEL_5724_:
 	ld ix, $C783
 	dec a
 	ret z
-	ld a, (_RAM_C771_)
+	ld a, (_RAM_C771_Is2Player)
 	and a
 	ret z
 	ld ix, $C78E
@@ -12662,7 +12695,7 @@ _LABEL_583B_:
 
 _LABEL_5885_:
 	ld iy, _RAM_C400_
-	ld a, (_RAM_C771_)
+	ld a, (_RAM_C771_Is2Player)
 	and a
 	jr nz, +
 	jp +++
@@ -12875,7 +12908,7 @@ _LABEL_5A10_:
 	call _LABEL_135E_
 	cp $01
 	jr z, ++
-	ld a, (_RAM_C771_)
+	ld a, (_RAM_C771_Is2Player)
 	and a
 	ret z
 	ld a, (_RAM_C7DE_)
@@ -14474,7 +14507,7 @@ _LABEL_66B5_:
 	ret
 
 +:
-	ld a, (_RAM_C771_)
+	ld a, (_RAM_C771_Is2Player)
 	and a
 	ret z
 	ld de, $0019
@@ -15232,7 +15265,7 @@ _LABEL_6C89_:
 	ld (ix+2), l
 	ld (ix+3), h
 	ld b, h
-	ld a, (_RAM_C771_)
+	ld a, (_RAM_C771_Is2Player)
 	and a
 	jr z, +
 	ld a, (_RAM_C8C8_)
@@ -15285,7 +15318,7 @@ _LABEL_6D1A_:
 	pop bc
 	ret
 
-_LABEL_6D1E_:
+_LABEL_6D1E_PlayMusicForLevel:
 	ld a, $01
 	ld (_RAM_C85C_AudioEnabled), a
 	ld de, (_RAM_C792_)
@@ -15708,7 +15741,7 @@ _LABEL_6FC5_:
 	jr z, +
 	cp $0E
 	jr nz, _LABEL_6FC5_
-	ld a, (_RAM_C82F_)
+	ld a, (_RAM_C82F_DirectionsPressed)
 	cp $01
 	jr nz, _LABEL_6FC5_
 	ld e, $02
@@ -15716,7 +15749,7 @@ _LABEL_6FC5_:
 	jr ++
 
 +:
-	ld a, (_RAM_C82F_)
+	ld a, (_RAM_C82F_DirectionsPressed)
 	cp $FF
 	jr nz, _LABEL_6FC5_
 	ld e, $02
@@ -17983,7 +18016,7 @@ _DATA_1AB41_:
 .db $00 $2B $16 $06 $01 $3F $2A $15 $1A $25 $10 $00 $00 $2A $3F $14
 
 ; Data from 1AB51 to 1AB60 (16 bytes)
-_DATA_1AB51_:
+_DATA_1AB51_Palette:
 .db $00 $3F $05 $06 $17 $0B $0F $0C $08 $04 $15 $2A $00 $3D $2D $03
 
 ; Data from 1AB61 to 1AB70 (16 bytes)
