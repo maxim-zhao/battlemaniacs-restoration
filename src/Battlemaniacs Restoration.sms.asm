@@ -23,11 +23,11 @@ banks 32
 .unbackground $0083 $00ff ; unused space
 .unbackground $0159 $01ff ; unused space
 .unbackground $0465 $0474 ; interrupt handler call to music engine
-.unbackground $3b8e $3c6b ; Intermission screens handler
+.unbackground $3b8e $3c6b ; intermission screens handler
 .unbackground $38C4 $3913 ; intro picture loaders
 .unbackground $3f74 $40ad ; pre-title screens up to title screen
 .unbackground $6d3d $6d72 ; old jump points for music engine
-.unbackground $6D73 $6DE9 ; title screen text strings
+.unbackground $6Dae $6DE9 ; title screen text strings
 .unbackground $8CF0 $8E99 ; pre-title text
 .unbackground $18000 $18402 ; intro code and script
 .unbackground $18403 $18702 ; Virgin logo tilemap
