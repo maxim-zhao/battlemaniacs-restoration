@@ -26,6 +26,7 @@ banks 32
 .unbackground $3b8e $3c6b ; intermission screens handler
 .unbackground $38C4 $3913 ; intro picture loaders
 .unbackground $3f74 $40ad ; pre-title screens up to title screen
+.unbackground $40cd $40d4 ; caller of the intro
 .unbackground $6d3d $6d72 ; old jump points for music engine
 .unbackground $6Dae $6DE9 ; title screen text strings
 .unbackground $8CF0 $8E99 ; pre-title text
@@ -72,7 +73,7 @@ CurrentMusicBank  db
 .ends
 
 ; Functions in the original game we want to use
-.define TextToVRAM                  $5790 ; write ASCII from ix to VRAM starting at location (b,c), until a zero is encountered. USes tile mapping to match the last cal to LoadFont.
+.define TextToVRAM                  $5790 ; write ASCII from ix to VRAM starting at location (b,c), until a zero is encountered. Uses tile mapping to match the last call to LoadFont.
 .define CheckForButton1             $0E7A ; returns nz if pressed
 .define ResetScrollTile0AndTilemap  $04EA ; resets scrolling, blanks tile 0 and fills tilemap with that index
 .define LoadPalettes                $1583 ; loads palettes from RAM pointers to VRAM
@@ -80,7 +81,7 @@ CurrentMusicBank  db
 .define SkippableDelay              $0E9C ; delays for b*20ms, e.g. $64 => 2s
 .define ScreenOn                    $0295 ; turns screen on
 .define ScreenOff                   $0282 ; turns screen off
-.define LoadFont                    $1557 ; loads font tiles at tilemap address ix
+;.define LoadFont                    $1557 ; loads font tiles at tilemap address ix
 
 ; RAM locations from the original game we want to use
 .define RAM_TilePalettePointer      $C7C7 ; pointer to palette for tiles, used by LoadPalettes
@@ -89,12 +90,24 @@ CurrentMusicBank  db
 .define RAM_GameState               $c779 ; 3 = continue screen?
 .define RAM_LevelNumber             $C792 ; 0, 1, ...
 
-; Data locations from tje original game we want to use
+; Data locations from the original game we want to use
 .define DATA_FontPalette            $AC41
+
+; =======================================================================================
+;
+; Part 1: Audio
+;
+; We replace the whole music engine with PSGLib. This uses more space, but actually frees
+; up some CPU (so reducing slowdown in the orgiinal game, if there is any) and makes it
+; somewhat trivial to add in any new music as it can be produced using any tool capable
+; of producing a VGM file.
+;
+; =======================================================================================
 
 .bank 0 slot 0
 
 ; Patches to audio API calls
+
 .orga $0465
 .section "Interrupt handler hook" force
 InterruptHook:
@@ -109,19 +122,20 @@ InterruptHook:
 .ends
 
 .orga $30a3
-.section "Init hook" overwrite
-  call Init
+.section "Audio init hook" overwrite
+  ; Replaces a jump, see below
+  call AudioInit
 .ends
 
-.section "Init hook handler" free
-Init:
+.section "Audio init hook handler" free
+AudioInit:
   ; Page in code
   ; We don't need to preserve paging here
   ld a, :PSGInit
   ld (PAGING_REGISTER_1), a
   ; Call it
   call PSGInit
-  ; Restore paging
+  ; Restore paging - we just put things back to the defaults
   ld a,1
 	ld (PAGING_REGISTER_1), a
   inc a
@@ -131,9 +145,11 @@ Init:
   ; above will ret
 .ends
 
-; We need to place some trampolines in the first 16KB...
+; We need to place some trampolines in the first 16KB, so they can be 
+; called from code located above 16KB and safely restore paging
 .section "Play SFX trampoline" free
 PlaySFXTrampoline:
+  ; a = SFX track index (from the original game)
   ; save parameter
 	ex af, af'
   ; page in code
@@ -152,6 +168,7 @@ PlaySFXTrampoline:
 
 .section "Play music trampoline" free
 PlayMusicTrampoline:
+  ; a = music track index (from the original game)
   ; save parameter
 	ex af, af'
   ; page in code
@@ -183,6 +200,7 @@ StopMusicTrampoline:
   ret
 .ends
 
+; We hook the original API entry points and redirect them to our trampolines
 .bank 1 slot 1
 .orga $6d3d
 .section "Play SFX hook" force
@@ -201,6 +219,8 @@ StopMusicTrampoline:
   jp StopMusicTrampoline
 .ends
 
+; We need to pick a slot for this as it defines free sections.
+; We put the PSGLib code and glue functions in slot 1, and the music data in slot 2.
 .bank 16 slot 1
 .include "PSGLib.inc"
 
@@ -262,56 +282,51 @@ _lookup:
 
 .section "Music player" free
 PlayMusic:
-  ; We do a dumb if-then-else. This costs about 15 bytes per item and isn't very fast, but doing it by a lookup would be a pain as we have large indices.
+  ; We do a dumb if-then-else. This costs about 12 bytes per item and isn't very fast, but doing it by a lookup would be a pain as we have large indices.
   cp 1
   jr nz,+
   ; 1 = title screen
   ld a,:MusicTitle
-  ld (CurrentMusicBank),a
   ld hl,MusicTitle
+_play:
+  ld (CurrentMusicBank),a
   jp PSGPlay ; and ret
 +:cp $0d
   jr nz,+
   ; d = ragnarok canyon
   ld a,:MusicRagnarokCanyon
-  ld (CurrentMusicBank),a
   ld hl,MusicRagnarokCanyon
-  jp PSGPlay ; and ret
+  jp _play
 +:cp $15
   jr nz,+
   ; $15 = hollow tree
   ld a,:MusicHollowTree
-  ld (CurrentMusicBank),a
   ld hl,MusicHollowTree
-  jp PSGPlay ; and ret
+  jp _play
 +:cp $23
   jr nz,+
   ; $23 = snake pit
   ld a,:MusicSnakePit
-  ld (CurrentMusicBank),a
   ld hl,MusicSnakePit
-  jp PSGPlay ; and ret
+  jp _play
 +:cp $1b
   jr nz,+
   ; $1b = bonus stage
   ld a,:MusicBonusStage
-  ld (CurrentMusicBank),a
   ld hl,MusicBonusStage
-  jp PSGPlay ; and ret
+  jp _play
 +:cp $02
   jr nz,+
   ; $02 = dark tower (new)
   ld a,:MusicDarkTower
-  ld (CurrentMusicBank),a
   ld hl,MusicDarkTower
-  jp PSGPlay ; and ret
+  jp _play
 +:cp $03
   jr nz,+
   ; $03 = turbo tunnel (new)
   ld a,:MusicTurboTunnel
-  ld (CurrentMusicBank),a
   ld hl,MusicTurboTunnel
-  jp PSGPlay ; and ret
+  jp _play
   ; unhandled
 +:jp StopMusic ; and ret
 .ends
@@ -322,6 +337,8 @@ StopMusic:
   call PSGSFXStop
   ret
 .ends
+
+; Music data, each in its own superfree slot 2 section so WLA DX can assign the banks
 
 .slot 2
 .section "Music data 1" superfree
@@ -354,7 +371,8 @@ MusicTurboTunnel:
 .ends
 
 .section "SFX data" superfree
-; We prepend the SFX data with the channel info
+; All in one section because it's far simpler if it's all in the same bank
+; We prepend the SFX data with the channel mask
 .define CH2  %00000001
 .define CH23 %00000011
 SFX1:
@@ -416,23 +434,35 @@ SFX19:
 .incbin "vgms/sfx/SFX19_23.psg"
 .ends
 
-.bank 6 slot 2
-.orga $8000
-.section "Intro replacement" force
-  jp IntroTrampoline
-.ends
-
-.bank 0 slot 0
-.section "IntroTrampoline" free
-IntroTrampoline:
-  ; no need to preserve paging - original game doesn't
+.bank 1 slot 1
+.orga $40cd
+.section "IntroTrampoline" force
+  ; Original game does:
+	; ld a, :_LABEL_18000_Intro;$06
+	; ld (_RAM_FFFF_), a
+	; call _LABEL_18000_Intro
   ld a,:Intro
   ld (PAGING_REGISTER_2),a
-  jp Intro
+  call Intro
 .ends
 
+; =======================================================================================
+;
+; Part 2: Scripts
+;
+; The intro, title screen, intermissions, game over sequence and ending are all very
+; similar structurally: show pictures and text, with timing. We implement a completely
+; new engine to achieve the same thing, with a few assumptions:
+; * Pictures are always full-width so we can easily load the tilemaps straight to VRAM
+; * We can load the picture from tile 0, and locate the font near the top of VRAM
+; * Text is mostly centred and evenly spaced - although we can place it arbitrarily if 
+;   needed
+; * Waits should all be skippable
+;
+; =======================================================================================
+
 .slot 2
-.section "Intro" superfree
+.section "Scripting" superfree
 .enum $ff DESC
   SCRIPT_END_NOBLANK db
   SCRIPT_END_BLANK db
@@ -442,6 +472,7 @@ IntroTrampoline:
   SCRIPT_BLANK_TEXT db
 .ende
 
+; Pre-title sequence and title screen
 Title:
   ld hl,PreTitleScript
   call _ScriptStart
@@ -449,12 +480,14 @@ Title:
   ld hl,TitleScript
   jp _ScriptLoop
 
+; Post-title-timeout sequence - the story
 Intro:
   ; Start off blank
 	call ResetScrollTile0AndTilemap
   ld hl,IntroScript
   jp _ScriptStart
 
+; Inter-level sequence - randomly chosen from 4 items each time
 Intermission:
   ; Check if it's the continue screen
   ld a,(RAM_GameState)
@@ -706,7 +739,7 @@ PreTitleScript:
   Wait 3
   Clear 4
   StartText 4
-  Text "TRADEWEST # IS A TRADEMARK OF", 29
+  Text "TRADEWEST# IS A TRADEMARK OF", 28
   Text "WILLIAMS ENTERTAINMENT INC.", 27
   Text "ALL RIGHTS RESERVED.", 20
   StartText 12
@@ -749,7 +782,7 @@ IntroScript:
 
   Picture Intro3Palette, Intro3Tiles, Intro3Tilemap
   StartText 21
-  Text "PROFESSOR T. BIRD STARTS...", 27, 2
+  Text "PROFESSOR T-BIRD STARTS...", 26, 2
   Clear 21
   StartText 21
   Text "'TOADS, I HAVE INVITED YOU", 26
@@ -765,7 +798,7 @@ IntroScript:
   Clear 21
   StartText 21
   Text "TOTAL REALITY INTEGRATED", 24
-  Text "PLAYING SYSTEM.", 15, 2
+  Text "PLAYING SYSTEM", 14, 2
   Clear 21
   StartText 21
   Text "WE'VE NAMED ITS ARTIFICIAL", 26
@@ -805,7 +838,7 @@ IntroScript:
 
   Picture Intro10Palette, Intro10Tiles, Intro10Tilemap
   StartText 21
-  Text "PAY ATTENTION, BATTLEJERKS!", 27, 2
+  Text "PAY ATTENTION BATTLEJERKS!", 26, 2
   Clear 21
   StartText 21
   Text "I, SILAS VOLKMIRE, INTEND TO", 28
@@ -955,7 +988,7 @@ Intermission1DarkQueenD:
   StartText 19
   Text "SO, THE MUTANT RATPACK AND", 26, 0.33
   Text "THAT USELESS STONE PIG", 22, 0.33
-  Text "DIDN'T GET YOU? NEVER MIND,", 27, 0.33
+  Text "DIDN'T GET YOU?  NEVER MIND,", 28, 0.33
   Text "'CUZ THE REAL CHALLENGE", 23, 0.33
   Text "STARTS HERE, SO COME ON IN!!", 28, 4
   .db SCRIPT_END_BLANK
@@ -1016,7 +1049,7 @@ Intermission2DarkQueenC:
   StartText 19
   Text "YOU'D BETTER COLLECT ENOUGH", 27, 0.33
   Text "PINS TO GAIN AN EXTRA", 21, 0.33
-  Text "LIFE HERE, SWAMPSUCKERS, 'CUZ", 29, 0.33
+  Text "LIFE HERE, SWAMPSUCKERS,'CUZ", 28, 0.33
   Text "YOU'LL SURELY BE NEEDIN' IT!", 28, 4
   .db SCRIPT_END_BLANK
 Intermission2DarkQueenD:
@@ -1047,16 +1080,16 @@ Intermission2TBirdB:
 Intermission2TBirdC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "THE MORE THE MERRIER, 'TOADS!", 29, 0.33
+  Text "THE MORE THE MERRIER,'TOADS!", 28, 0.33
   Text "LET'S CHECK OUT THAT CHECKER", 28, 0.33
   Text "AND WIN US SOME LIVES!", 22, 4
   .db SCRIPT_END_BLANK
 Intermission2TBirdD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "C'MON, 'TOADS! IT'S BONUS", 25, 0.33
+  Text "C'MON 'TOADS, IT'S BONUS", 24, 0.33
   Text "TIME! COLLECT THE WHITES", 24, 0.33
-  Text "TO WIN A LIFE! AVOID", 20, 0.33
+  Text "TO WIN A LIFE, AVOID", 20, 0.33
   Text "THE SKULLS AS THEY", 18, 0.33
   Text "MEAN STRIFE!", 12, 4
   .db SCRIPT_END_BLANK
@@ -1098,22 +1131,22 @@ Intermission3DarkQueenD:
 Intermission3TBirdA:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "BE CAREFUL, 'TOADS! I'M", 23, 0.33
+  Text "BE CAREFUL 'TOADS, I'M", 22, 0.33
   Text "PICKIN' UP IMAGES OF", 20, 0.33
-  Text "WHIZZIN' WALLS AND MASSIVE", 26, 0.33
-  Text "GAPS IN THAT TUNNEL!!", 21, 4
+  Text "WHIZZIN' WALLS AND RODENT", 25, 0.33
+  Text "ROADHOGS IN THAT TUNNEL!!", 25, 4
   .db SCRIPT_END_BLANK
 Intermission3TBirdB:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
   Text "YOU'RE DOIN' GREAT, 'TOADS!", 27, 0.33
   Text "LET'S HEAD FOR THE BIKES AND", 28, 0.33
-  Text "HIT THAT TUNNEL HARD!", 21, 4
+  Text "HIT THAT TUNNEL-HARD!", 21, 4
   .db SCRIPT_END_BLANK
 Intermission3TBirdC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "REMEMBER, 'TOADS! IN HERE,", 26, 0.33
+  Text "REMEMBER, 'TOADS, IN HERE", 25, 0.33
   Text "IT'S THE SURVIVAL OF THE", 24, 0.33
   Text "FASTEST!", 8, 4
   .db SCRIPT_END_BLANK
@@ -1121,7 +1154,7 @@ Intermission3TBirdD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
   Text "IT'S THE NEED-TO-SPEED", 22, 0.33
-  Text "ONCE AGAIN, 'TOADS! PUT YOUR", 28, 0.33
+  Text "ONCE AGAIN 'TOADS! PUT YOUR", 27, 0.33
   Text "FOOT TO THE FLOOR AND HANG", 26, 0.33
   Text "ON TIGHT!", 9, 4
   .db SCRIPT_END_BLANK
@@ -1146,17 +1179,17 @@ Intermission4DarkQueenC:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
   Text "THIS IS IT, YOU GOBBLIN'", 24, 0.33
-  Text "GEEK! YOUR MISERABLE BOTTLED", 28, 0.33
+  Text "GEEK, YOUR MISERABLE BOTTLED", 28, 0.33
   Text "NERDS ARE GONNA PERISH", 22, 0.33
   Text "IN MY SNAKE PIT!", 16, 4
   .db SCRIPT_END_BLANK
 Intermission4DarkQueenD:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "PREPARE TO MEET KARNATH -", 25, 0.33
-  Text "KING OF THE SNAKES!! YOU'LL", 27, 0.33
-  Text "NEVER ESCAPE FROM HIS LETHAL", 28, 0.33
-  Text "LAIR, NEVER! HA-HA-HA-HA!", 25, 4
+  Text "PREPARE TO MEET KARNATH-KING", 28, 0.33
+  Text "OF THE SNAKES!! YOU'LL NEVER", 28, 0.33
+  Text "ESCAPE FROM HIS LETHAL LAIR,", 28, 0.33
+  Text "NEVER! HA-HA-HA-HA!", 19, 4
   .db SCRIPT_END_BLANK
 Intermission4TBirdA:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
@@ -1181,7 +1214,7 @@ Intermission4TBirdC:
 Intermission4TBirdD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "THE EXIT'S AT THE TOP,", 22, 0.33
+  Text "THE EXIT'S AT THE TOP", 21, 0.33
   Text "'TOADS, SO GRAB A SNAKE", 23, 0.33
   Text "AND HOLD ON TIGHT!", 18, 4
   .db SCRIPT_END_BLANK
@@ -1197,7 +1230,7 @@ Intermission5DarkQueenA:
 Intermission5DarkQueenB:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "TOO MUCH FOR YOU, HUH, BEAKY?", 29, 0.33
+  Text "TOO MUCH FOR YOU, HUH BEAKY?", 28, 0.33
   Text "I'LL GIVE YOUR PATHETIC", 23, 0.33
   Text "PRATTLETOADS ONE MORE CHANCE", 28, 0.33
   Text "AT MY BONUS LEVEL...", 20, 4
@@ -1236,15 +1269,15 @@ Intermission5TBirdB:
 Intermission5TBirdC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "GRAB AS MANY PINS AS YOU CAN!", 29, 0.33
-  Text "MY SCANNERS REVEAL THAT", 23, 0.33
+  Text "GRAB AS MANY DOMINOES AS YOU", 28, 0.33
+  Text "CAN! MY SCANNERS REVEAL THAT", 28, 0.33
   Text "VOLKMIRE'S TOWER IS NEAR!!", 26, 4
   .db SCRIPT_END_BLANK
 Intermission5TBirdD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "BACK ON THE CHECKERS, 'TOADS!", 29, 0.33
-  Text "THERE'S PINS TO COLLECT", 23, 0.33
+  Text "BACK ON THE CHECKERS,'TOADS!", 28, 0.33
+  Text "THERE'S DOMINOES TO COLLECT", 27, 0.33
   Text "AND EXTRA LIVES TO GET!!", 24, 4
   .db SCRIPT_END_BLANK
 
@@ -1275,7 +1308,7 @@ Intermission6DarkQueenC:
 Intermission6DarkQueenD:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "UP AN' DOWN N' ROUND YOU GO!", 28, 0.33
+  Text "UP AN' DOWN N' ROUND YOU GO,", 28, 0.33
   Text "YOU'D BEST BE FAST, 'CUZ", 24, 0.33
   Text "FUZZ AIN'T SLOW!", 16, 4
   .db SCRIPT_END_BLANK
@@ -1297,7 +1330,7 @@ Intermission6TBirdB:
 Intermission6TBirdC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "LISTEN, 'TOADS! IT'S NOT THE", 28, 0.33
+  Text "LISTEN, 'TOADS, IT'S NOT THE", 28, 0.33
   Text "TAKING PART THAT COUNTS,", 24, 0.33
   Text "IT'S THE WINNING!", 17, 4
   .db SCRIPT_END_BLANK
@@ -1313,7 +1346,7 @@ Intermission7DarkQueenA:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
   Text "FEELING WEARY YET, SWAMP", 24, 0.33
-  Text "DWELLERS? I HOPE SO, 'CUZ I'M", 29, 0.33
+  Text "DWELLERS? I HOPE SO,'CUZ I'M", 28, 0.33
   Text "SENDIN' IN SCUZZ TO BLOW UP", 27, 0.33
   Text "THE TOWER WITH YOU STILL", 24, 0.33
   Text "INSIDE IT!", 10, 4
@@ -1340,7 +1373,7 @@ Intermission7DarkQueenD:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
   Text "I'M IMPRESSED, PROFESSOR", 24, 0.33
-  Text "NERD! I DIDN'T THINK YOUR", 25, 0.33
+  Text "NERD, I DIDN'T THINK YOUR", 25, 0.33
   Text "BATTLEFOOLS WOULD GET THIS", 26, 0.33
   Text "FAR! UNFORTUNATELY, THEIR", 25, 0.33
   Text "MISSION ENDS HERE!", 18, 4
@@ -1348,7 +1381,7 @@ Intermission7DarkQueenD:
 Intermission7TBirdA:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "C'MON, GUYS! THE END'S IN", 25, 0.33
+  Text "C'MON GUYS, THE END'S IN", 24, 0.33
   Text "SIGHT! BEAT THE RAT TWO", 23, 0.33
   Text "TIMES, AND HE'LL LEAD YOU", 25, 0.33
   Text "TO THE DARK QUEEN!", 18, 4
@@ -1373,7 +1406,7 @@ Intermission7TBirdD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
   Text "YOU'RE IN THE QUEEN'S HOME", 26, 0.33
-  Text "TERRITORY NOW, 'TOADS! JUST", 27, 0.33
+  Text "TERRITORY NOW,'TOADS! JUST", 26, 0.33
   Text "TWO RAT RACES, AND YOU GET", 26, 0.33
   Text "TO 'TOADSLAM HER REAL GOOD!!", 28, 4
   .db SCRIPT_END_BLANK
@@ -1424,22 +1457,22 @@ Intermission8TBirdB:
   StartText 18
   Text "SHOW THAT DARK QUEEN WHO YOU", 28, 0.33
   Text "ARE! YOU AIN'T NO FEEBLE", 24, 0.33
-  Text "FROGS - YOU'RE THE", 18, 0.33
+  Text "FROGS-YOU'RE THE", 16, 0.33
   Text "BATTLETOADS!", 12, 4
   .db SCRIPT_END_BLANK
 Intermission8TBirdC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "WAYDIGO, 'TOADS! THE QUEEN'S", 28, 0.33
+  Text "WAYDIGO 'TOADS! THE QUEEN'S", 27, 0.33
   Text "ARMY IS BEATEN, AND SHE'S", 25, 0.33
   Text "SHAKIN' IN FEAR! GO GET HER!", 28, 4
   .db SCRIPT_END_BLANK
 Intermission8TBirdD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "I KNEW YOU'D MAKE IT, 'TOADS!", 29, 0.33
+  Text "I KNEW YOU'D MAKE IT 'TOADS!", 28, 0.33
   Text "BOY, I WOULDN'T WANT TO BE", 26, 0.33
-  Text "IN THE QUEEN'S SHOES NOW!", 25, 0.33
+  Text "IN THE QUEEN'S SHOES NOW,", 25, 0.33
   Text "SHE'S IN FOR ONE", 16, 0.33
   Text "HUMUNGOUS SURPRISE!!", 20, 4
   .db SCRIPT_END_BLANK
@@ -1456,7 +1489,7 @@ Intermission9DarkQueenA:
 Intermission9DarkQueenB:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "IT'S JUST NOT FAIR! I'M FED ", 28, 0.33
+  Text "IT'S JUST NOT FAIR, I'M FED ", 28, 0.33
   Text "UP BEING BEATEN BY A SCRAWNY ", 29, 0.33
   Text "BEAK AND HIS SLIMY SWAMP ", 25, 0.33
   Text "SWIMMERS!! I'LL GET YOU NEXT ", 29, 0.33
@@ -1465,7 +1498,7 @@ Intermission9DarkQueenB:
 Intermission9DarkQueenC:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "UH! YOU WOULDN'T HIT A LADY ", 28, 0.33
+  Text "UH-YOU WOULDN'T HIT A LADY ", 27, 0.33
   Text "WHILE SHE'S DOWN, WOULD YOU? ", 29, 0.33
   Text "GOOD, 'CUZ THIS GIVES ME A", 26, 0.33
   Text "CHANCE TO ESCAPE! FAREWELL,", 27, 0.33
@@ -1474,8 +1507,8 @@ Intermission9DarkQueenC:
 Intermission9DarkQueenD:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "WHAT STRENGTH!! BUT DON'T", 25, 0.33
-  Text "FORGET THERE ARE MANY", 21, 0.33
+  Text "WHAT STRENGTH! BUT DON'T", 24, 0.33
+  Text "FORGET, THERE ARE MANY", 22, 0.33
   Text "TYRANTS LIKE ME ALL", 19, 0.33
   Text "OVER THE WORLD!!", 16, 4
   .db SCRIPT_END_BLANK
@@ -1483,7 +1516,7 @@ Intermission9TBirdA:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
   Text "COSMICALLY COOL!! THE MAD,", 26, 0.33
-  Text "BAD N' CRAZY 'TOADS SAVE THE", 28, 0.33
+  Text "BAD N'CRAZY 'TOADS SAVE THE", 27, 0.33
   Text "DAY, AND THE DARK QUEEN IS", 26, 0.33
   Text "NOW THE DARK HAS-BEEN!", 22, 0.33
   Text "HEH-HEH-CACKLE-CACKLE!", 22, 4
@@ -1494,7 +1527,7 @@ Intermission9TBirdB:
   Text "WOOOOO! I LIKE IT, 'TOADS!", 26, 0.33
   Text "WE SURE TAUGHT THAT DARK", 24, 0.33
   Text "QUEEN NOT TO MESS WITH THE", 26, 0.33
-  Text "AWESOME T. BIRD AND HIS", 22, 0.33
+  Text "AWESOME T.BIRD AND HIS", 22, 0.33
   Text "BATTLETOADS!", 12, 4
   .db SCRIPT_END_BLANK
 Intermission9TBirdC:
@@ -1510,7 +1543,7 @@ Intermission9TBirdD:
   StartText 18
   Text "WE'LL HAVE TO WRITE A BOOK", 26, 0.33
   Text "AND MAKE A MOVIE ABOUT YOU", 26, 0.33
-  Text "GUYS! IT'LL MAKE ME... ER,", 26, 0.33
+  Text "GUYS, IT'LL MAKE ME... ER,", 26, 0.33
   Text "US A FORTUNE!", 13, 4
   .db SCRIPT_END_BLANK
 
@@ -1519,9 +1552,9 @@ Ending Part 1
 ************************************/
 
 Ending:
-  Text "ER...", 5, 1
+  Text "ER....", 6, 1
   Clear 23
-  Text "HOLD THE PARTY, 'TOADS...", 25, 1
+  Text "HOLD THE PARTY, 'TOADS....", 26, 1
   Clear 23
   Text "I'VE JUST PICKED UP SILAS", 25
   Text "VOLKMIRE ON MY SCANNERS,", 24
@@ -1529,7 +1562,7 @@ Ending:
   Text "A TELEPORTER!!", 14, 4
   Clear 23
   Text "HOLD ON, I'LL LOCATE HIS", 24
-  Text "TARGET DESTINATION...", 21, 2
+  Text "TARGET DESTINATION....", 22, 2
   Clear 23
   Text "FOUND IT! TWEAK MY BEAK,", 24
   Text "HE'S GONNA APPEAR ABOVE THE", 27
@@ -1537,7 +1570,7 @@ Ending:
   Text "MINUTE NOW!!", 12, 4
   Clear 23
   Text "YOU'D BETTER GET BACK HERE", 26
-  Text "PRONTO, 'TOADS! YOU'RE OUR", 26
+  Text "PRONTO, 'TOADS, YOU'RE OUR", 26
   Text "ONLY HOPE OF CATCHING HIM!", 26, 3
   Clear 23
 ;Scene 1:
@@ -1549,19 +1582,16 @@ Ending:
 ;Scene 3:
   Text "PUT YOUR FOOT DOWN PIMPLE,", 26
   Text "HE'S GETTIN' AWAY!", 18
-
-/*************************************
-Ending Part 2 (Bad Ending)
-*************************************/
-
 ;Scene 4:
   Text "WE'VE CAUGHT UP! HURRY RASH,", 28
-  Text "FIRE THE MISSILES! WE WON'T", 27
+  Text "FIRE THE MISSILES, WE WON'T", 27
   Text "BE ABLE TO STAY WITH HIM", 24
   Text "MUCH LONGER!", 12
-;Scene 5:
-  Text "SO LONG, BATTLELOSERS!!", 23
-  Text "HA-HA-HA-HA!!", 13
+
+/*************************************
+Ending Part 2 (Bad Ending) (This will probably be left unused)
+*************************************/
+
 ;Text 1:
   Text "VOLKMIRE BREATHES A SIGH OF", 27
   Text "RELIEF AS HIS SPACESHIP", 23
@@ -1588,12 +1618,6 @@ Ending Part 2 (Bad Ending)
 /*************************************
 Ending Part 2 (Good Ending)
 *************************************/
-
-;Scene 4:
-  Text "WE'VE CAUGHT UP! HURRY RASH,", 28
-  Text "FIRE THE MISSILES! WE WON'T", 27
-  Text "BE ABLE TO STAY WITH HIM", 24
-  Text "MUCH LONGER!", 12
 ;Scene 5:
   Text "ARRGGGHHHHHHH!", 14
 ;Text 1:
@@ -1605,14 +1629,14 @@ Ending Part 2 (Good Ending)
   Text "VOLKMIRE'S BURNT OUT SHIP IS", 28
   Text "RETRIEVED FROM THE HIMALAYAS,", 29
   Text "BUT OF HIS BODY, THERE IS", 25
-  Text "NO TRACE...", 11
+  Text "NO TRACE....", 12
 ;Text 3:
   Text "WHO KNOWS WHAT HAPPENED TO", 26
   Text "HIM, BUT YOU CAN BE SURE OF", 27
-  Text "ONE THING - BOTH HE AND THE", 27
+  Text "ONE THING, BOTH HE AND THE", 26
   Text "DARK QUEEN WILL REMEMBER THE", 28
   Text "DAY THEY TOOK ON THE", 20
-  Text "BATTLETOADS AND LOST!!", 22
+  Text "BATTLETOADS-AND LOST!!", 22
 ;Text 4:
   Text "THE END.", 8
 
@@ -1623,8 +1647,8 @@ Continue (In the Master System version these messages appear before continuing, 
 GameOverA:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "THINGS ARE LOOKING GOOD,", 24, 0.33
-  Text "'TOADS. GOOD FOR THE DARK", 25, 0.33
+  Text "THINGS ARE LOOKING GOOD", 23, 0.33
+  Text "'TOADS, GOOD FOR THE DARK", 25, 0.33
   Text "QUEEN IF THAT'S YOUR BEST", 25, 0.33
   Text "EFFORT! GET A GRIP GUYS -", 25, 0.33
   Text "LET'S MOTIVATE!", 15, 4
@@ -1649,7 +1673,7 @@ GameOverD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
   Text "I CAN'T BELIEVE WHAT'S", 22, 0.33
-  Text "HAPPENING! EVEN I COULD'VE", 26, 0.33
+  Text "HAPPENING, EVEN I COULD'VE", 26, 0.33
   Text "BEATEN THAT! C'MON 'TOADS,", 26, 0.33
   Text "GET MAD, BAD 'N' CRAZY!!", 24, 4
   .db SCRIPT_END_BLANK
@@ -1659,13 +1683,13 @@ Game Over (No Game Over messages in the Master System version, don't know if the
 *************************************/
 
 ;Dark Queen A:
-  Text "YOU'RE NO MATCH FOR ME! I'M", 27
+  Text "YOU'RE NO MATCH FOR ME-I'M", 26
   Text "THE STRONGEST WOMAN IN", 22
   Text "THE UNIVERSE!!", 14
 ;Dark Queen B:
   Text "YOU'VE GOT A LOT TO LEARN,", 26
   Text "BEFORE YOU BEAT ME. TRY", 23
-  Text "AGAIN, 'TOADIES! HA-HA-HA-HA!", 29
+  Text "AGAIN, 'TOADIES, HA-HA-HA-HA!", 29
 ;Dark Queen C:
   Text "IS THAT THE BEST YOUR SWAMP", 27
   Text "CRAWLERS CAN DO, TURKEY", 23
@@ -1679,7 +1703,7 @@ Game Over (No Game Over messages in the Master System version, don't know if the
   Text "FREAKY FAMILY ALBUM!", 20
   Text "HA-HA-HA-HA!", 12
 ;T-Bird A:
-  Text "OUR LUCK'S FINALLY RUN OUT,", 27
+  Text "OUR LUCK'S FINALLY RUN OUT", 26
   Text "'TOADS, AND WE'RE OUT OF THE", 28
   Text "GAME. HEAD BACK TO BASE AND", 27
   Text "WE'LL PLAN A REMATCH....", 24
@@ -1689,14 +1713,14 @@ Game Over (No Game Over messages in the Master System version, don't know if the
   Text "'TOADS BEATEN. IT'S A SAD", 25
   Text "DAY FOR ALL 'TOADKIND...", 24
 ;T-Bird C:
-  Text "NO MORE CHANCES, 'TOADS.", 24
+  Text "NO MORE CHANCES,'TOADS.", 23
   Text "TIME'S UP AND WE'VE LOST BY", 27
   Text "A WASHOUT. WE'LL HAVE TO", 24
   Text "REGROUP AND TRY AGAIN...", 24
 ;T-Bird D:
   Text "THAT'S IT, THE GAME'S OVER", 26
   Text "FOR US, FINITO, END OF THE", 26
-  Text "LINE... WE'D BETTER RETURN", 26
+  Text "LINE...WE'D BETTER RETURN", 25
   Text "TO PSICONE AND WORK OUT", 23
   Text "A NEW PLAN.", 11
 
@@ -1747,8 +1771,11 @@ matthew spall
 (new credits of the hack)
 */
 .endb
+.ends
 
-
+.bank 0 slot 0
+.section "Decompressor" free
+.block "Decompressor"
 decompress:
   ; page in data
   ld a,(PAGING_REGISTER_1)
@@ -1763,6 +1790,7 @@ decompress:
 .define ZX7ToVRAM
 .define ZX7ToVRAMScreenOn
 .include "ZX7 decompressor.asm"
+.endb
 .ends
 
 ; Palettes need to be in the lower 32KB
@@ -1891,8 +1919,8 @@ TBirdTilemap:
   push af
     ld ix,$3000 + 32 * 4
     call LoadFont
-    ld hl, DATA_FontPalette
-    ld (RAM_SpritePalettePointer), hl
+;    ld hl, DATA_FontPalette
+;    ld (RAM_SpritePalettePointer), hl
     ld a,:Intermission
     ld (PAGING_REGISTER_2),a
     call Intermission
@@ -1905,9 +1933,9 @@ TBirdTilemap:
 .section "Pre-title and title replacement" force
   ld ix,$3000 + 32 * 4
   call LoadFont
-  ld hl, DATA_FontPalette
-  ld (RAM_TilePalettePointer), hl
-  ld (RAM_SpritePalettePointer), hl
+;  ld hl, DATA_FontPalette
+;  ld (RAM_TilePalettePointer), hl
+;  ld (RAM_SpritePalettePointer), hl
   call LoadPalettes
   ld a,(PAGING_REGISTER_2)
   push af
@@ -1932,4 +1960,58 @@ TitleTiles:
 .incbin "images\Title.png.tiles.zx7"
 TitleTilemap:
 .incbin "images\Title.png.tilemap.zx7"
+.ends
+
+; Font replacement
+.bank 0 slot 0
+.unbackground $1557 $1582
+.unbackground $816D $88ed
+.orga $1557
+.section "Font loader trampoline" force
+LoadFont:
+  ld a,(PAGING_REGISTER_2)
+  push af
+    ld a,:LoadFontImpl
+    ld (PAGING_REGISTER_2),a
+    call LoadFontImpl
+  pop af
+  ld (PAGING_REGISTER_2),a
+  ret
+.ends
+
+.bank 16 slot 2 ; needs to match the decompressor page
+.section "Font loader implementation" free
+LoadFontImpl:
+  ; Takes a VRAM address in ix which we need to convert to a tile index by dividing by 32
+  push ix
+  pop de
+  .repeat 5
+  srl d
+  rr e
+  .endr
+  ld ($c751),de ; and save here
+
+  ; Now load it
+  push ix
+  pop de
+  set 6,d ; set the write flag
+  ld hl,Font
+  call decompress ; and ret
+  
+  ; We also set the palette
+  ld hl, FontPalette
+  ld (RAM_SpritePalettePointer), hl
+  ld (RAM_TilePalettePointer), hl
+  call LoadPalettes
+  ret
+  
+Font:
+;.incbin "images\fonts\original.png.tiles.zx7"
+.incbin "images\fonts\SNES.png.tiles.zx7"
+.ends
+; Palettes need to e in the first 16KB
+.bank 0 slot 0
+.section "Font palette" free
+FontPalette:
+.incbin "images\fonts\original.png.palette.bin"
 .ends
