@@ -1784,7 +1784,7 @@ matthew spall
 GameModeScreenScript:
   Picture ToadsPalette, ToadsTiles, ToadsTilemap
   TextAt 6, 0, "PIMPLE"
-  TextAt 18, 0, "RASH"
+  TextAt 22, 0, "RASH"
   ; TODO: move stuff down a bit?
   ; TODO: 
   TextAt 11, 15, "1 PLAYER"
