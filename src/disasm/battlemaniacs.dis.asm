@@ -319,7 +319,7 @@ _RAM_C78D_ db
 
 .enum $C791 export
 _RAM_C791_ db
-_RAM_C792_ db
+_RAM_C792_LevelNumber db
 _RAM_C793_ db
 _RAM_C794_ db
 _RAM_C795_ db
@@ -2987,7 +2987,7 @@ _LABEL_FE4_:
 	ld a, (_RAM_C86E_)
 	and a
 	ret nz
-	ld a, (_RAM_C792_)
+	ld a, (_RAM_C792_LevelNumber)
 	add a, a
 	ld e, a
 	ld d, $00
@@ -3004,7 +3004,7 @@ _DATA_FF9_:
 .dw _LABEL_1011_ _LABEL_1067_ _LABEL_1079_ _LABEL_1086_ _LABEL_113A_ _LABEL_113A_ _LABEL_113A_ _LABEL_113A_
 .dw _LABEL_1079_ _LABEL_1110_ _LABEL_11A7_ _LABEL_113A_
 
-; 1st entry of Jump Table from FF9 (indexed by _RAM_C792_)
+; 1st entry of Jump Table from FF9 (indexed by _RAM_C792_LevelNumber)
 _LABEL_1011_:
 	ld ix, _RAM_C400_
 	ld a, (_RAM_C771_Is2Player)
@@ -3053,7 +3053,7 @@ _LABEL_1011_:
 	ld (_RAM_C7DB_), hl
 	ret
 
-; 2nd entry of Jump Table from FF9 (indexed by _RAM_C792_)
+; 2nd entry of Jump Table from FF9 (indexed by _RAM_C792_LevelNumber)
 _LABEL_1067_:
 	call _LABEL_19E1_
 	xor a
@@ -3064,7 +3064,7 @@ _LABEL_1067_:
 	ld (_RAM_C7DD_), hl
 	ret
 
-; 3rd entry of Jump Table from FF9 (indexed by _RAM_C792_)
+; 3rd entry of Jump Table from FF9 (indexed by _RAM_C792_LevelNumber)
 _LABEL_1079_:
 	xor a
 	ld (_RAM_C86E_), a
@@ -3073,7 +3073,7 @@ _LABEL_1079_:
 	ld (_RAM_DA03_), a
 	ret
 
-; 4th entry of Jump Table from FF9 (indexed by _RAM_C792_)
+; 4th entry of Jump Table from FF9 (indexed by _RAM_C792_LevelNumber)
 _LABEL_1086_:
 	ld a, (_RAM_DA01_)
 	cp $01
@@ -3138,7 +3138,7 @@ _LABEL_1086_:
 	ld (_RAM_DA46_), hl
 	ret
 
-; 10th entry of Jump Table from FF9 (indexed by _RAM_C792_)
+; 10th entry of Jump Table from FF9 (indexed by _RAM_C792_LevelNumber)
 _LABEL_1110_:
 	ld ix, _RAM_C400_
 	ld a, (_RAM_C771_Is2Player)
@@ -3157,7 +3157,7 @@ _LABEL_1110_:
 	ld ix, _RAM_C430_
 	jp _LABEL_1210_
 
-; 5th entry of Jump Table from FF9 (indexed by _RAM_C792_)
+; 5th entry of Jump Table from FF9 (indexed by _RAM_C792_LevelNumber)
 _LABEL_113A_:
 	ld ix, _RAM_C400_
 	ld a, (_RAM_C771_Is2Player)
@@ -3215,7 +3215,7 @@ _LABEL_113A_:
 	ld (_RAM_C7DB_), hl
 	ret
 
-; 11th entry of Jump Table from FF9 (indexed by _RAM_C792_)
+; 11th entry of Jump Table from FF9 (indexed by _RAM_C792_LevelNumber)
 _LABEL_11A7_:
 	ld bc, (_RAM_C404_)
 	ld a, (_RAM_C771_Is2Player)
@@ -7546,7 +7546,7 @@ _LABEL_30B4_:
 	jp z, _LABEL_3101_
 	cp $81
 	jp z, _LABEL_30B4_
-	call _LABEL_3C6C_GameStartMenu
+	call _LABEL_3C6C_GameModeMenu
 	call _LABEL_282_ScreenOff
 	ld a, (_RAM_C757_CheatEnabled)
 	and a
@@ -7730,14 +7730,14 @@ _LABEL_31C2_:
 	ld a, (_RAM_C779_GameState)
 	cp $01
 	jr nz, +++
-	ld hl, (_RAM_C792_)
+	ld hl, (_RAM_C792_LevelNumber)
 	ld h, $00
 	ld de, _DATA_719E_
 	add hl, de
 	ld a, (hl)
 	ld (_RAM_C779_GameState), a
 	ld e, a
-	ld a, (_RAM_C792_)
+	ld a, (_RAM_C792_LevelNumber)
 	cp $0A
 	jr c, ++
 	ld hl, _DATA_20B24_
@@ -7827,7 +7827,7 @@ _LABEL_331B_:
 	ld a, (_RAM_C779_GameState)
 	cp $81
 	jp z, _LABEL_33C7_
-	cp $02
+	cp $02 ; End of game
 	jp z, _LABEL_33A6_
 	cp $03
 	jp z, +
@@ -7892,17 +7892,17 @@ _LABEL_33A6_:
 	xor a
 	ld (_RAM_C779_GameState), a
 	ld a, $00
-	call _LABEL_6D54_AudioPlayMusic
-	ld a, (_RAM_C792_)
+	call _LABEL_6D54_AudioPlayMusic ; Stop music
+	ld a, (_RAM_C792_LevelNumber)
 	inc a
-	ld (_RAM_C792_), a
+	ld (_RAM_C792_LevelNumber), a
 	cp $0C
-	jp z, +
+	jp z, + ; Ending
 	jp _LABEL_3101_
 
 +:
-	call _LABEL_3914_
-	call _LABEL_39CD_
+	call _LABEL_3914_ ; Game Completed
+	call _LABEL_39CD_ ; Credits
 	jp _LABEL_23B_Startup
 
 _LABEL_33C7_:
@@ -7925,7 +7925,7 @@ _LABEL_33D1_:
 	call ++
 	ld a, (_RAM_C775_)
 	ld (ix+0), a
-	ld a, (_RAM_C792_)
+	ld a, (_RAM_C792_LevelNumber)
 	cp $05
 	ret z
 	cp $07
@@ -7945,7 +7945,7 @@ _LABEL_33D1_:
 	ld (ix+22), $08
 	ld (ix+1), $00
 	ld e, $01
-	ld a, (_RAM_C792_)
+	ld a, (_RAM_C792_LevelNumber)
 	cp $07
 	jr nz, +
 	ld e, $FF
@@ -7987,7 +7987,7 @@ _LABEL_346B_:
 	ld (hl), $00
 	ld bc, $00FF
 	ldir
-	ld a, (_RAM_C792_)
+	ld a, (_RAM_C792_LevelNumber)
 	ld e, a
 	add a, a
 	add a, a
@@ -8064,7 +8064,7 @@ _LABEL_346B_:
 	ld a, (_RAM_C7C0_)
 	cp $05
 	jr nz, +
-	ld a, (_RAM_C792_)
+	ld a, (_RAM_C792_LevelNumber)
 	sub $04
 	add a, a
 	add a, a
@@ -8076,7 +8076,7 @@ _LABEL_346B_:
 	jr ++
 
 +:
-	ld a, (_RAM_C792_)
+	ld a, (_RAM_C792_LevelNumber)
 	cp $08
 	jr nz, ++
 	ld hl, _DATA_1ABB1_
@@ -8135,7 +8135,7 @@ _LABEL_3567_:
 	ld (_RAM_C7E3_), hl
 	ld l, (ix+5)
 	ld h, (ix+6)
-	ld a, (_RAM_C792_)
+	ld a, (_RAM_C792_LevelNumber)
 	cp $03
 	jp z, +
 	ld a, h
@@ -8310,7 +8310,7 @@ _LABEL_36B4_:
 	jp -
 
 _LABEL_36D5_:
-	ld a, (_RAM_C792_)
+	ld a, (_RAM_C792_LevelNumber)
 	cp $03
 	jr nz, _LABEL_371F_
 	xor a
@@ -8415,7 +8415,7 @@ _DATA_3798_:
 .db $3C $32 $EB $C7 $FE $06 $C2 $A6 $37 $C9
 
 _LABEL_37C2_:
-	ld a, (_RAM_C792_)
+	ld a, (_RAM_C792_LevelNumber)
 	add a, a
 	add a, a
 	ld e, a
@@ -8434,7 +8434,7 @@ _LABEL_37DA_:
 	cp $05
 	ret nz
 	ld ix, _RAM_C400_
-	ld a, (_RAM_C792_)
+	ld a, (_RAM_C792_LevelNumber)
 	add a, a
 	ld e, a
 	ld d, $00
@@ -8880,7 +8880,7 @@ _LABEL_3B8E_:
 	cp $03
 	jr z, +
   
-	ld a, (_RAM_C792_) ; Stage?
+	ld a, (_RAM_C792_LevelNumber) ; Stage?
 	add a, a
 	add a, a
 	ld e, a
@@ -8989,7 +8989,7 @@ _LABEL_3C38_InterstitialText:
 	ret
 /*****************************************************/
 
-_LABEL_3C6C_GameStartMenu:
+_LABEL_3C6C_GameModeMenu:
 	call _LABEL_282_ScreenOff
 	call _LABEL_4EA_ResetScrollTile0AndTilemap
 
@@ -9183,7 +9183,7 @@ _LABEL_3DAD_:
 	jp nz, _LABEL_3DF2_
 	ld a, $39
 	call _LABEL_6D3D_AudioPlaySFX
-	jp _LABEL_3C6C_GameStartMenu
+	jp _LABEL_3C6C_GameModeMenu
 
 _LABEL_3DF2_:
 	ld a, (_RAM_C837_Player2InputsEnabled)
@@ -9330,13 +9330,13 @@ _LABEL_3ED2_ShowLevelSelect:
 	call _LABEL_5790_TextToVRAM
 	call _LABEL_295_ScreenOn
 	xor a
-	ld (_RAM_C792_), a
+	ld (_RAM_C792_LevelNumber), a
 _LABEL_3F11_:
 	ld b, $05
 	call _LABEL_D2E_DelayTimes20ms
 	ld bc, $0E0D
 	call _LABEL_57E7_SetTextToVRAMLocation
-	ld a, (_RAM_C792_)
+	ld a, (_RAM_C792_LevelNumber)
 	add a, a
 	add a, a
 	ld e, a
@@ -9352,7 +9352,7 @@ _LABEL_3F11_:
 	cp $02
 	call z, _LABEL_639_GetPlayer2Buttons
 	ld hl, (_RAM_C82F_DirectionsPressed)
-	ld a, (_RAM_C792_)
+	ld a, (_RAM_C792_LevelNumber)
 	add a, l
 	cp $FF
 	jr nz, +
@@ -9362,7 +9362,7 @@ _LABEL_3F11_:
 	jr nz, +
 	dec a
 +:
-	ld (_RAM_C792_), a
+	ld (_RAM_C792_LevelNumber), a
 	ld a, (_RAM_C774_Player1Player)
 	cp $01
 	jr z, +
@@ -9475,7 +9475,7 @@ _LABEL_3F74_ShowMenus:
 	ld b, $64
 	call _LABEL_E9C_SkippableDelay
   
-  ; MAin title screen
+  ; Main title screen
 	call _LABEL_282_ScreenOff
 	call _LABEL_4EA_ResetScrollTile0AndTilemap
 
@@ -10436,7 +10436,7 @@ _LABEL_47C6_:
 	inc hl
 	ld (hl), a
 	ld (ix+21), $01
-	ld a, (_RAM_C792_)
+	ld a, (_RAM_C792_LevelNumber)
 	and a
 	call z, _LABEL_6AB9_
 	ld hl, (_RAM_C869_)
@@ -10547,7 +10547,7 @@ _LABEL_4814_:
 	inc hl
 	ld a, (hl)
 	ld (ix+27), a
-	ld a, (_RAM_C792_)
+	ld a, (_RAM_C792_LevelNumber)
 	dec a
 	jr z, +++
 	inc hl
@@ -10568,7 +10568,7 @@ _LABEL_4814_:
 	ld a, (hl)
 	ld (ix+8), a
 	ld (ix+21), $01
-	ld a, (_RAM_C792_)
+	ld a, (_RAM_C792_LevelNumber)
 	and a
 	jr nz, +
 	push ix
@@ -11815,7 +11815,7 @@ _LABEL_51D0_:
 	ld de, $34E0
 	ld b, $04
 	call _LABEL_6A7_EmitTiles
-	ld a, (_RAM_C792_)
+	ld a, (_RAM_C792_LevelNumber)
 	cp $0B
 	jr z, +
 	ld hl, _DATA_3EBE0_
@@ -12242,7 +12242,7 @@ _LABEL_54F2_:
 	ret
 
 _LABEL_557D_:
-	ld hl, (_RAM_C792_)
+	ld hl, (_RAM_C792_LevelNumber)
 	ld h, $00
 	ld de, _DATA_7251_
 	add hl, de
@@ -12701,7 +12701,7 @@ _LABEL_5885_:
 	jp +++
 
 +:
-	ld a, (_RAM_C792_)
+	ld a, (_RAM_C792_LevelNumber)
 	and a
 	jr z, +
 	cp $03
@@ -12764,7 +12764,7 @@ _LABEL_5885_:
 	ld a, (iy+46)
 	and a
 	ret nz
-	ld a, (_RAM_C792_)
+	ld a, (_RAM_C792_LevelNumber)
 	add a, a
 	ld e, a
 	ld d, $00
@@ -12787,12 +12787,12 @@ _DATA_5926_:
 ; Data from 593E to 593E (1 bytes)
 .db $C9
 
-; 3rd entry of Jump Table from 5926 (indexed by _RAM_C792_)
+; 3rd entry of Jump Table from 5926 (indexed by _RAM_C792_LevelNumber)
 _LABEL_593F_:
 	ld a, (_RAM_C82C_)
 	and a
 	ret z
-; 4th entry of Jump Table from 5926 (indexed by _RAM_C792_)
+; 4th entry of Jump Table from 5926 (indexed by _RAM_C792_LevelNumber)
 _LABEL_5944_:
 	ld ix, _RAM_C4C0_
 	ld b, $0A
@@ -12830,7 +12830,7 @@ _LABEL_594A_:
 	jr z, _LABEL_59D0_
 	cp $20
 	ret z
-	ld a, (_RAM_C792_)
+	ld a, (_RAM_C792_LevelNumber)
 	cp $03
 	ret nz
 	ld a, e
@@ -12889,7 +12889,7 @@ _LABEL_59E5_:
 	call _LABEL_6186_
 	jp _LABEL_6B61_
 
-; 5th entry of Jump Table from 5926 (indexed by _RAM_C792_)
+; 5th entry of Jump Table from 5926 (indexed by _RAM_C792_LevelNumber)
 _LABEL_5A10_:
 	ld l, (iy+4)
 	ld h, (iy+5)
@@ -12938,7 +12938,7 @@ _LABEL_5A10_:
 	ld (iy+24), a
 	jp _LABEL_6186_
 
-; 10th entry of Jump Table from 5926 (indexed by _RAM_C792_)
+; 10th entry of Jump Table from 5926 (indexed by _RAM_C792_LevelNumber)
 _LABEL_5A73_:
 	ld e, (ix+38)
 	ld d, (ix+39)
@@ -12977,14 +12977,14 @@ _LABEL_5A73_:
 _DATA_5ABB_:
 .db $40 $C0 $02 $00 $C0 $C0 $00 $00 $C0 $40 $00 $00 $40 $40 $00 $00
 
-; 2nd entry of Jump Table from 5926 (indexed by _RAM_C792_)
+; 2nd entry of Jump Table from 5926 (indexed by _RAM_C792_LevelNumber)
 _LABEL_5ACB_:
 	ld a, (iy+1)
 	dec a
 	ret z
 	dec a
 	ret z
-; 11th entry of Jump Table from 5926 (indexed by _RAM_C792_)
+; 11th entry of Jump Table from 5926 (indexed by _RAM_C792_LevelNumber)
 _LABEL_5AD2_:
 	ld a, (ix+0)
 	cp $10
@@ -13058,7 +13058,7 @@ _LABEL_5AD2_:
 	sla c
 	sla c
 	sla c
-	ld a, (_RAM_C792_)
+	ld a, (_RAM_C792_LevelNumber)
 	dec a
 	jr z, +
 	ld (iy+21), $00
@@ -13084,7 +13084,7 @@ _LABEL_5B95_:
 	jp nz, _LABEL_5AD2_
 	ret
 
-; 1st entry of Jump Table from 5926 (indexed by _RAM_C792_)
+; 1st entry of Jump Table from 5926 (indexed by _RAM_C792_LevelNumber)
 _LABEL_5B9C_:
 	ld a, (ix+0)
 	sub $10
@@ -13224,7 +13224,7 @@ _LABEL_5C8E_:
 	ld (iy+7), $D0
 	ld (iy+8), $03
 	call _LABEL_6156_
-	ld a, (_RAM_C792_)
+	ld a, (_RAM_C792_LevelNumber)
 	and a
 	ret nz
 	push iy
@@ -13234,7 +13234,7 @@ _LABEL_5C8E_:
 
 _LABEL_5CB1_:
 	ld hl, $0280
-	ld a, (_RAM_C792_)
+	ld a, (_RAM_C792_LevelNumber)
 	and a
 	jr z, +
 	ld hl, $0200
@@ -13243,7 +13243,7 @@ _LABEL_5CB1_:
 	ld ix, _RAM_C460_
 	ld b, $0C
 	ld de, $0030
-	ld a, (_RAM_C792_)
+	ld a, (_RAM_C792_LevelNumber)
 	cp $01
 	jr z, _LABEL_5CDC_
 	ld a, (_RAM_C776_)
@@ -13322,7 +13322,7 @@ _LABEL_5D44_:
 	ld a, (_RAM_C798_)
 	cp $02
 	jr nz, +
-	ld a, (_RAM_C792_)
+	ld a, (_RAM_C792_LevelNumber)
 	and a
 	jr nz, ++
 	ld a, (_RAM_C825_)
@@ -13548,7 +13548,7 @@ _LABEL_5EEB_:
 +++:
 	ld (ix+6), a
 	ld e, a
-	ld a, (_RAM_C792_)
+	ld a, (_RAM_C792_LevelNumber)
 	dec a
 	jr z, +
 	ld a, (ix+0)
@@ -13629,7 +13629,7 @@ _LABEL_5FB9_:
 	ret
 
 _LABEL_5FF6_:
-	ld a, (_RAM_C792_)
+	ld a, (_RAM_C792_LevelNumber)
 	cp $03
 	ret nz
 	ld iy, _RAM_C400_
@@ -13862,7 +13862,7 @@ _LABEL_6186_:
 +++:
 	push hl
 	push de
-	ld hl, (_RAM_C792_)
+	ld hl, (_RAM_C792_LevelNumber)
 	ld h, $00
 	ld de, _DATA_61E4_
 	add hl, de
@@ -13873,7 +13873,7 @@ _LABEL_6186_:
 	ret
 
 _LABEL_61BB_:
-	ld a, (_RAM_C792_)
+	ld a, (_RAM_C792_LevelNumber)
 	cp $03
 	jr z, ++
 	cp $09
@@ -15321,7 +15321,7 @@ _LABEL_6D1A_:
 _LABEL_6D1E_PlayMusicForLevel:
 	ld a, $01
 	ld (_RAM_C85C_AudioEnabled), a
-	ld de, (_RAM_C792_)
+	ld de, (_RAM_C792_LevelNumber)
 	ld d, $00
 	ld hl, _DATA_6D31_
 	add hl, de
@@ -15657,7 +15657,7 @@ _LABEL_6F7F_:
 	ld a, (ix+1)
 	cp $0F
 	ret z
-	ld a, (_RAM_C792_)
+	ld a, (_RAM_C792_LevelNumber)
 	cp $02
 	ret z
 	cp $03
@@ -15695,7 +15695,7 @@ _LABEL_6F7F_:
 	and a
 	ret z
 	ld e, a
-	ld a, (_RAM_C792_)
+	ld a, (_RAM_C792_LevelNumber)
 	cp $01
 	jr z, +
 _LABEL_6FC5_:
@@ -15803,7 +15803,7 @@ _LABEL_706E_:
 	ld (_RAM_C824_), hl
 +:
 	pop hl
-	ld a, (_RAM_C792_)
+	ld a, (_RAM_C792_LevelNumber)
 	dec a
 	jr z, +
 	jr ++
@@ -15899,7 +15899,7 @@ _LABEL_7127_:
 +:
 	cp $10
 	jr nc, _LABEL_716D_
-	ld a, (_RAM_C792_)
+	ld a, (_RAM_C792_LevelNumber)
 	and a
 	jr z, +
 	ld a, (ix+5)

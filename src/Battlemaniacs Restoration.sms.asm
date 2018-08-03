@@ -25,6 +25,7 @@ banks 32
 .unbackground $0465 $0474 ; interrupt handler call to music engine
 .unbackground $3b8e $3c6b ; intermission screens handler
 .unbackground $38C4 $3913 ; intro picture loaders
+.unbackground $3C6C $3CD8 ; Game mode selection screen
 .unbackground $3f74 $40ad ; pre-title screens up to title screen
 .unbackground $40cd $40d4 ; caller of the intro
 .unbackground $6d3d $6d72 ; old jump points for music engine
@@ -81,7 +82,8 @@ CurrentMusicBank  db
 .define SkippableDelay              $0E9C ; delays for b*20ms, e.g. $64 => 2s
 .define ScreenOn                    $0295 ; turns screen on
 .define ScreenOff                   $0282 ; turns screen off
-;.define LoadFont                    $1557 ; loads font tiles at tilemap address ix
+
+.export TextToVRAM,CheckForButton1,ResetScrollTile0AndTilemap,LoadPalettes,SkippableDelay,ScreenOn,ScreenOff
 
 ; RAM locations from the original game we want to use
 .define RAM_TilePalettePointer      $C7C7 ; pointer to palette for tiles, used by LoadPalettes
@@ -544,6 +546,10 @@ _TBird:
 _NoIntermission:
   jp ScreenOff ; and ret
   
+GameModeScreen:
+  ld hl,GameModeScreenScript
+  jp _ScriptLoop ; and ret
+  
 _ScriptStart:
   push hl
     call ResetScrollTile0AndTilemap
@@ -699,11 +705,15 @@ _End:
 .macro Text args text, length, seconds
   ; If the text is (length) long, we want to draw it at (31 - length)/2+1
   ; This centres it within the 31 tiles on-screen, with a bias to the left for even lengths.
-  .db SCRIPT_TEXT,(31-length)/2+1,textY,text,0
+  .db SCRIPT_TEXT, (31-length)/2+1, textY, text, 0
   .if NARGS > 2
   .db SCRIPT_WAIT, seconds * 50
   .endif
   .redefine textY textY+rowAdvance
+.endm
+
+.macro TextAt args x,y,text
+  .db SCRIPT_TEXT, x, y, text, 0
 .endm
 
 .macro StartText args y
@@ -1770,6 +1780,19 @@ matthew spall
 
 (new credits of the hack)
 */
+
+GameModeScreenScript:
+  Picture ToadsPalette, ToadsTiles, ToadsTilemap
+  TextAt 6, 0, "PIMPLE"
+  TextAt 18, 0, "RASH"
+  ; TODO: move stuff down a bit?
+  ; TODO: 
+  TextAt 11, 15, "1 PLAYER"
+  TextAt 11, 17, "2 PLAYERS A"
+  TextAt 11, 19, "2 PLAYERS B"
+  TextAt 11, 21, "OPTIONS"
+.db SCRIPT_END_NOBLANK
+
 .endb
 .ends
 
@@ -1828,6 +1851,8 @@ TitlePalette:
 .incbin "images\Title.png.palette.bin"
 VirginLogoPalette:
 .incbin "images\Virgin logo.png.palette.bin"
+ToadsPalette:
+.incbin "images\Toads.png.palette.bin"
 .ends
 
 ; Compressed data needs to be in slot 1, but we don't care what bank.
@@ -1919,8 +1944,6 @@ TBirdTilemap:
   push af
     ld ix,$3000 + 32 * 4
     call LoadFont
-;    ld hl, DATA_FontPalette
-;    ld (RAM_SpritePalettePointer), hl
     ld a,:Intermission
     ld (PAGING_REGISTER_2),a
     call Intermission
@@ -1933,9 +1956,6 @@ TBirdTilemap:
 .section "Pre-title and title replacement" force
   ld ix,$3000 + 32 * 4
   call LoadFont
-;  ld hl, DATA_FontPalette
-;  ld (RAM_TilePalettePointer), hl
-;  ld (RAM_SpritePalettePointer), hl
   call LoadPalettes
   ld a,(PAGING_REGISTER_2)
   push af
@@ -2014,4 +2034,27 @@ Font:
 .section "Font palette" free
 FontPalette:
 .incbin "images\fonts\original.png.palette.bin"
+.ends
+
+.bank 0 slot 0
+.orga $3C6C
+.section "Game mode screen replacement" force
+  ld a,(PAGING_REGISTER_2)
+  push af
+    ld ix,$3000 + 32 * 4
+    call LoadFont
+    ld a,:GameModeScreen
+    ld (PAGING_REGISTER_2),a
+    call GameModeScreen
+  pop af
+  ld (PAGING_REGISTER_2),a
+  jp $3cd8 ; wait for button
+.ends
+
+.slot 1
+.section "Game mode screen data" superfree
+ToadsTiles:
+.incbin "images\Toads.png.tiles.zx7"
+ToadsTilemap:
+.incbin "images\Toads.png.tilemap.zx7"
 .ends
