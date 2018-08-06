@@ -22,14 +22,10 @@ banks 32
 .unbackground $003b $0065 ; unused space
 .unbackground $0083 $00ff ; unused space
 .unbackground $0159 $01ff ; unused space
-.unbackground $0465 $0474 ; interrupt handler call to music engine
-.unbackground $3b8e $3c6b ; intermission screens handler
 .unbackground $38C4 $3913 ; intro picture loaders
-.unbackground $3C6C $3CD8 ; Game mode selection screen
-.unbackground $3f74 $40ad ; pre-title screens up to title screen
-.unbackground $40cd $40d4 ; caller of the intro
-.unbackground $6d3d $6d72 ; old jump points for music engine
-.unbackground $6Dae $6DE9 ; title screen text strings
+.unbackground $6D73 $6DE9 ; title screen text strings
+; gap: continue, game over text
+.unbackground $6e19 $6e41 ; title screen text strings
 .unbackground $8CF0 $8E99 ; pre-title text
 .unbackground $18000 $18402 ; intro code and script
 .unbackground $18403 $18702 ; Virgin logo tilemap
@@ -60,7 +56,7 @@ banks 32
 ; We rewrite the SMS header - this restores the product code and fixes the checksum
 .smsheader
   productcode $70, $58, 2
-	regioncode 4
+  regioncode 4
 .endsms
 ; No room for an SDSC tag :(
 ;.sdsctag 1.0, "Battlemaniacs Restoration", "Adds missing music to the game, ...", "Maxim, ..."
@@ -82,6 +78,7 @@ CurrentMusicBank  db
 .define SkippableDelay              $0E9C ; delays for b*20ms, e.g. $64 => 2s
 .define ScreenOn                    $0295 ; turns screen on
 .define ScreenOff                   $0282 ; turns screen off
+.define FadeOut                     $14ac ; fades screen out
 
 .export TextToVRAM,CheckForButton1,ResetScrollTile0AndTilemap,LoadPalettes,SkippableDelay,ScreenOn,ScreenOff
 
@@ -110,6 +107,7 @@ CurrentMusicBank  db
 
 ; Patches to audio API calls
 
+.unbackground $0465 $0474 ; interrupt handler call to music engine
 .orga $0465
 .section "Interrupt handler hook" force
 InterruptHook:
@@ -139,9 +137,9 @@ AudioInit:
   call PSGInit
   ; Restore paging - we just put things back to the defaults
   ld a,1
-	ld (PAGING_REGISTER_1), a
+  ld (PAGING_REGISTER_1), a
   inc a
-	ld (PAGING_REGISTER_2), a
+  ld (PAGING_REGISTER_2), a
   ; what we replaced to get here
   jp $02BF
   ; above will ret
@@ -153,7 +151,7 @@ AudioInit:
 PlaySFXTrampoline:
   ; a = SFX track index (from the original game)
   ; save parameter
-	ex af, af'
+  ex af, af'
   ; page in code
   ld a,(PAGING_REGISTER_1)
   push af
@@ -172,7 +170,7 @@ PlaySFXTrampoline:
 PlayMusicTrampoline:
   ; a = music track index (from the original game)
   ; save parameter
-	ex af, af'
+  ex af, af'
   ; page in code
   ld a,(PAGING_REGISTER_1)
   push af
@@ -204,6 +202,7 @@ StopMusicTrampoline:
 
 ; We hook the original API entry points and redirect them to our trampolines
 .bank 1 slot 1
+.unbackground $6d3d $6d72 ; old jump points for music engine
 .orga $6d3d
 .section "Play SFX hook" force
   ; a = index
@@ -437,12 +436,13 @@ SFX19:
 .ends
 
 .bank 1 slot 1
+.unbackground $40cd $40d4 ; caller of the intro
 .orga $40cd
 .section "IntroTrampoline" force
   ; Original game does:
-	; ld a, :_LABEL_18000_Intro;$06
-	; ld (_RAM_FFFF_), a
-	; call _LABEL_18000_Intro
+  ; ld a, :_LABEL_18000_Intro;$06
+  ; ld (_RAM_FFFF_), a
+  ; call _LABEL_18000_Intro
   ld a,:Intro
   ld (PAGING_REGISTER_2),a
   call Intro
@@ -485,7 +485,7 @@ Title:
 ; Post-title-timeout sequence - the story
 Intro:
   ; Start off blank
-	call ResetScrollTile0AndTilemap
+  call ResetScrollTile0AndTilemap
   ld hl,IntroScript
   jp _ScriptStart
 
@@ -549,6 +549,16 @@ _NoIntermission:
 GameModeScreen:
   ld hl,GameModeScreenScript
   jp _ScriptLoop ; and ret
+
+GameOverScreen:
+  ld hl,GameOverPimple
+  ld a,($c8c6)
+  or a
+  jr z,+
+  ld hl,GameOverRash
++:call _ScriptLoop
+  ld hl,GameOverText
+  jp _ScriptLoop
   
 _ScriptStart:
   push hl
@@ -582,13 +592,13 @@ _ScriptLoop:
   push ix
   pop hl
   ; check for key press
-	call CheckForButton1
-	jr z, _ScriptLoop ; loop if not pressed
+  call CheckForButton1
+  jr z, _ScriptLoop ; loop if not pressed
   ; else fall through
 _IntroSkipped:
-	call ResetScrollTile0AndTilemap
-	ld a, 1
-	ld (RAM_IntroButtonPressed), a
+  call ResetScrollTile0AndTilemap
+  ld a, 1
+  ld (RAM_IntroButtonPressed), a
   ret
 
 _blank:
@@ -640,16 +650,16 @@ _LoadPicture:
   ; First the palette
   ld e,(hl)
   inc hl
-	ld d,(hl)
+  ld d,(hl)
   inc hl
-	ld (RAM_TilePalettePointer), de
+  ld (RAM_TilePalettePointer), de
   push hl
     call LoadPalettes
   pop hl
   ; Then the tiles
   ld e,(hl) ; offset
   inc hl
-	ld d,(hl)
+  ld d,(hl)
   inc hl
   ld c,(hl) ; page
   inc hl
@@ -663,7 +673,7 @@ _LoadPicture:
   ; Then the tilemap
   ld e,(hl)
   inc hl
-	ld d,(hl)
+  ld d,(hl)
   inc hl
   push hl
     ex de,hl
@@ -675,16 +685,16 @@ _LoadPicture:
   jp _ScriptLoop
 
 _Wait:
-	ld b, (hl)
+  ld b, (hl)
   inc hl
-	call SkippableDelay
+  call SkippableDelay
   jp _ScriptLoop
 
 
 _End:
-	call ResetScrollTile0AndTilemap
-	xor a
-	ld (RAM_IntroButtonPressed), a
+  call ResetScrollTile0AndTilemap
+  xor a
+  ld (RAM_IntroButtonPressed), a
   ret
 
 ; Macros for scripts
@@ -1783,15 +1793,24 @@ matthew spall
 
 GameModeScreenScript:
   Picture ToadsPalette, ToadsTiles, ToadsTilemap
-  TextAt 6, 0, "PIMPLE"
+  TextAt 6, 0, "PIMPLE", 
   TextAt 22, 0, "RASH"
-  ; TODO: move stuff down a bit?
-  ; TODO: 
   TextAt 11, 15, "1 PLAYER"
   TextAt 11, 17, "2 PLAYERS A"
   TextAt 11, 19, "2 PLAYERS B"
   TextAt 11, 21, "OPTIONS"
 .db SCRIPT_END_NOBLANK
+
+GameOverPimple:
+  Picture GameOverPimplePalette, GameOverPimpleTiles, GameOverPimpleTilemap
+.db SCRIPT_END_NOBLANK
+GameOverRash:
+  Picture GameOverRashPalette, GameOverRashTiles, GameOverRashTilemap
+.db SCRIPT_END_NOBLANK
+GameOverText:
+  TextAt 11, 13, "GAME OVER"
+.db SCRIPT_END_NOBLANK
+  
 
 .endb
 .ends
@@ -1839,12 +1858,12 @@ Intro9Palette:
 .incbin "images\intro9.png.palette.bin"
 Intro10Palette:
 .incbin "images\intro10.png.palette.bin"
-.ends
-.section "Palettes part 2" free
 Intro11Palette:
 .incbin "images\intro11.png.palette.bin"
 DarkQueenPalette:
 .incbin "images\Dark Queen.png.palette.bin"
+.ends
+.section "Palettes part 2" free
 TBirdPalette:
 .incbin "images\T-Bird.png.palette.bin"
 TitlePalette:
@@ -1853,6 +1872,10 @@ VirginLogoPalette:
 .incbin "images\Virgin logo.png.palette.bin"
 ToadsPalette:
 .incbin "images\Toads.png.palette.bin"
+GameOverPimplePalette:
+.incbin "images\Game Over - Pimple.png.palette.bin"
+GameOverRashPalette:
+.incbin "images\Game Over - Rash.png.palette.bin"
 .ends
 
 ; Compressed data needs to be in slot 1, but we don't care what bank.
@@ -1938,6 +1961,7 @@ TBirdTilemap:
 .ends
 
 .bank 0 slot 0
+.unbackground $3b8e $3c6b ; intermission screens handler
 .orga $3b8e
 .section "Intermission replacement" force
   ld a,(PAGING_REGISTER_2)
@@ -1953,6 +1977,7 @@ TBirdTilemap:
 .ends
 
 .orga $3f74
+.unbackground $3f74 $40ad ; pre-title screens up to title screen
 .section "Pre-title and title replacement" force
   ld ix,$3000 + 32 * 4
   call LoadFont
@@ -1984,8 +2009,8 @@ TitleTilemap:
 
 ; Font replacement
 .bank 0 slot 0
-.unbackground $1557 $1582
-.unbackground $816D $88ed
+.unbackground $1557 $1582 ; code
+.unbackground $816D $88ed ; data
 .orga $1557
 .section "Font loader trampoline" force
 LoadFont:
@@ -2037,6 +2062,7 @@ FontPalette:
 .ends
 
 .bank 0 slot 0
+.unbackground $3C6C $3CD7 ; Game mode selection screen
 .orga $3C6C
 .section "Game mode screen replacement" force
   ld a,(PAGING_REGISTER_2)
@@ -2048,6 +2074,16 @@ FontPalette:
     call GameModeScreen
   pop af
   ld (PAGING_REGISTER_2),a
+  
+  ; Some stuff the game does which we need to replicate...
+  xor a
+  ld ($C859), a
+  ld (RAM_IntroButtonPressed), a
+  ld ($C776), a
+  ld hl, $C400
+  ld ($C777), hl
+
+  ; Back to the normal code flow
   jp $3cd8 ; wait for button
 .ends
 
@@ -2057,4 +2093,30 @@ ToadsTiles:
 .incbin "images\Toads.png.tiles.zx7"
 ToadsTilemap:
 .incbin "images\Toads.png.tilemap.zx7"
+.ends
+
+
+.bank 0 slot 0
+.unbackground $3a6e $3aca
+.orga $3a6e
+.section "Game over replacement" force
+  call ResetScrollTile0AndTilemap
+  ld ix,$3000 + 32 * 4
+  call LoadFont
+  ld a,:GameOverScreen
+  ld (PAGING_REGISTER_2),a
+  call GameOverScreen
+  jp $3aca
+.ends
+
+.slot 1
+.section "Game over screen data" superfree
+GameOverPimpleTiles:
+.incbin "images\Game Over - Pimple.png.tiles.zx7"
+GameOverPimpleTilemap:
+.incbin "images\Game Over - Pimple.png.tilemap.zx7"
+GameOverRashTiles:
+.incbin "images\Game Over - Rash.png.tiles.zx7"
+GameOverRashTilemap:
+.incbin "images\Game Over - Rash.png.tilemap.zx7"
 .ends

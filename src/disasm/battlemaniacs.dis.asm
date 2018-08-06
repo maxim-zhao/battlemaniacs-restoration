@@ -545,7 +545,7 @@ _RAM_C8C1_ db
 _RAM_C8C2_ db
 _RAM_C8C3_ db
 _RAM_C8C4_ dw
-_RAM_C8C6_ dw
+_RAM_C8C6_CharacterIndex dw
 _RAM_C8C8_ db
 _RAM_C8C9_ dw
 .ende
@@ -4778,7 +4778,7 @@ _LABEL_1B16_:
 
 +:
 	ld a, $10
-_LABEL_1B27_:
+_LABEL_1B27_SetPaletteEntry:
 	di
 	out (Port_VDPAddress), a
 	ld ($0007), a
@@ -7855,7 +7855,7 @@ _LABEL_332D_:
 	ld (_RAM_C771_Is2Player), a
 	ld hl, $C400
 	ld (_RAM_C777_), hl
-	ld a, (_RAM_C8C6_)
+	ld a, (_RAM_C8C6_CharacterIndex)
 	and a
 	jp nz, +
 	ld a, $02
@@ -7872,7 +7872,7 @@ _LABEL_332D_:
 	jp _LABEL_3101_
 
 ++:
-	ld a, (_RAM_C8C6_)
+	ld a, (_RAM_C8C6_CharacterIndex)
 	and a
 	jr nz, +
 	ld a, (_RAM_C764_)
@@ -8585,7 +8585,8 @@ _LABEL_3914_:
   
 	ld a, $0F
 	ld hl, $0001
-	call _LABEL_1B27_
+	call _LABEL_1B27_SetPaletteEntry
+  
 	ld a, $07
 	ld (_RAM_FFFF_), a
 	ld hl, $8150
@@ -8735,28 +8736,34 @@ _LABEL_3A49_:
 	ret
 
 _LABEL_3A6E_GameOver:
+  ; Blank screen
 	call _LABEL_4EA_ResetScrollTile0AndTilemap
 	call _LABEL_282_ScreenOff
+  ; Load font
 	ld ix, $2000
 	call _LABEL_1557_LoadFont
+  ; Load palettes
 	ld hl, _DATA_1AB71_TitleScreenTilePalette
 	ld (_RAM_C7C7_TilePalettePointer), hl
 	ld hl, _DATA_1AC41_TitleScreenSpritePalette
 	ld (_RAM_C769_SpritePalettePointer), hl
 	call _LABEL_1583_LoadPalettes
+  ; Set a palette entry to another colour
 	ld a, $0F
 	ld hl, $0001
-	call _LABEL_1B27_
+	call _LABEL_1B27_SetPaletteEntry
+  ; Load tiles
 	ld a, $07
 	ld (_RAM_FFFF_), a
 	ld hl, $8150
 	ld de, $0020
 	call _LABEL_69_DecompressToVRAMTrampoline
+  ; Load tilemap
 	ld a, $06
 	ld (_RAM_FFFF_), a
 	ld hl, _DATA_1884D_
-	ld ix, (_RAM_C8C6_)
-	ld a, (ix+0)
+	ld ix, (_RAM_C8C6_CharacterIndex)
+	ld a, (ix+0) ; Check which one
 	dec a
 	jr z, +
 	ld hl, _DATA_188DD_
@@ -8764,22 +8771,25 @@ _LABEL_3A6E_GameOver:
 	ld de, $3814
 	ld bc, $0C0C
 	call _LABEL_D4D_EmitTilemapRect
+  ; Emit text
 	ld bc, $0D08
 	call _LABEL_57E7_SetTextToVRAMLocation
 	ld ix, _DATA_6E0C_Text_GameOver
 	call _LABEL_579B_TextToVRAM
+  ; Screen on
 	call _LABEL_295_ScreenOn
+  ; Wait 4s
 	ld b, $04
 	call _LABEL_D43_DelaySeconds
+  ; Look up credits per character (for 2-player mode)?
 	ld a, (_RAM_C794_)
 	ld e, a
-	ld a, (_RAM_C8C6_)
+	ld a, (_RAM_C8C6_CharacterIndex)
 	and a
 	jr z, +
 	ld a, (_RAM_C795_)
 	ld e, a
-+:
-	ld a, e
++:ld a, e
 	and a
 	jp z, _LABEL_3B36_
 	cp $09
@@ -8802,7 +8812,7 @@ _LABEL_3A6E_GameOver:
 	ld b, $01
 	call _LABEL_D2E_DelayTimes20ms
 	pop bc
-	ld a, (_RAM_C8C6_)
+	ld a, (_RAM_C8C6_CharacterIndex)
 	and a
 	jr nz, +
 	ld a, (_RAM_C400_)
@@ -8824,7 +8834,7 @@ _LABEL_3B36_:
 	ret
 
 +:
-	ld a, (_RAM_C8C6_)
+	ld a, (_RAM_C8C6_CharacterIndex)
 	and a
 	jr z, +
 	ld a, (_RAM_C795_)
@@ -8850,7 +8860,7 @@ _LABEL_3B5E_:
 	call _LABEL_57E7_SetTextToVRAMLocation
 	ld a, (_RAM_C794_)
 	ld e, a
-	ld a, (_RAM_C8C6_)
+	ld a, (_RAM_C8C6_CharacterIndex)
 	and a
 	jr z, +
 	ld a, (_RAM_C795_)
@@ -13830,7 +13840,7 @@ _LABEL_6156_:
 _LABEL_617C_:
 	ld a, $03
 	ld (_RAM_C779_GameState), a
-	ld (_RAM_C8C6_), iy
+	ld (_RAM_C8C6_CharacterIndex), iy
 	ret
 
 _LABEL_6186_:
@@ -14426,7 +14436,7 @@ _LABEL_65E0_:
 	ld l, $03
 +:
 	ld a, $1F
-	jp _LABEL_1B27_
+	jp _LABEL_1B27_SetPaletteEntry
 
 ; 17th entry of Jump Table from 63B9 (indexed by unknown)
 _LABEL_6630_:
@@ -14470,10 +14480,10 @@ _LABEL_6630_:
 +:
 	ld l, e
 	ld a, $1E
-	call _LABEL_1B27_
+	call _LABEL_1B27_SetPaletteEntry
 	ld h, d
 	ld a, $1F
-	jp _LABEL_1B27_
+	jp _LABEL_1B27_SetPaletteEntry
 
 ; 33rd entry of Jump Table from 63B9 (indexed by unknown)
 _LABEL_6690_:
