@@ -545,7 +545,7 @@ _RAM_C8C1_ db
 _RAM_C8C2_ db
 _RAM_C8C3_ db
 _RAM_C8C4_ dw
-_RAM_C8C6_CharacterIndex dw
+_RAM_C8C6_CharacterDataPointer dw
 _RAM_C8C8_ db
 _RAM_C8C9_ dw
 .ende
@@ -3682,7 +3682,7 @@ _LABEL_13B4_:
 	jp nz, -
 	ret
 
-_LABEL_14AC_:
+_LABEL_14AC_FadeOut:
 	call _LABEL_151D_
 	ld b, $10
 _LABEL_14B1_:
@@ -7543,7 +7543,7 @@ _LABEL_30B4_:
 
 	ld a, (_RAM_C779_GameState)
 	cp $80
-	jp z, _LABEL_3101_
+	jp z, _LABEL_3101_StartLevel
 	cp $81
 	jp z, _LABEL_30B4_
 	call _LABEL_3C6C_GameModeMenu
@@ -7561,7 +7561,7 @@ _LABEL_30B4_:
 	ld a, (_RAM_C762_)
 	ld (_RAM_C781_), a
 	ld (_RAM_C78C_), a
-_LABEL_3101_:
+_LABEL_3101_StartLevel:
 	call _LABEL_C6C_
 	call _LABEL_3E4_
 	call _LABEL_50D1_
@@ -7766,7 +7766,7 @@ _LABEL_31C2_:
 	call _LABEL_6D6B_AudioStop
 	ld b, $05
 	call _LABEL_D2E_DelayTimes20ms
-	call _LABEL_14AC_
+	call _LABEL_14AC_FadeOut
 	call _LABEL_282_ScreenOff
 	call _LABEL_1583_LoadPalettes
 	call _LABEL_C6C_
@@ -7843,11 +7843,12 @@ _LABEL_332D_:
 	call _LABEL_6D54_AudioPlayMusic
 	call _LABEL_3A6E_GameOver
 	push af
-	call _LABEL_14AC_
-	call _LABEL_282_ScreenOff
+    call _LABEL_14AC_FadeOut
+    call _LABEL_282_ScreenOff
 	pop af
-	and a
+	and a ; CHeck if continuing
 	jr nz, ++
+  ; No...
 	ld a, (_RAM_C771_Is2Player)
 	and a
 	jp z, _LABEL_30B4_
@@ -7855,7 +7856,7 @@ _LABEL_332D_:
 	ld (_RAM_C771_Is2Player), a
 	ld hl, $C400
 	ld (_RAM_C777_), hl
-	ld a, (_RAM_C8C6_CharacterIndex)
+	ld a, (_RAM_C8C6_CharacterDataPointer)
 	and a
 	jp nz, +
 	ld a, $02
@@ -7869,24 +7870,25 @@ _LABEL_332D_:
 	ld bc, $000B
 	ldir
 +:
-	jp _LABEL_3101_
+	jp _LABEL_3101_StartLevel
 
 ++:
-	ld a, (_RAM_C8C6_CharacterIndex)
+  ; Continuing
+	ld a, (_RAM_C8C6_CharacterDataPointer)
 	and a
-	jr nz, +
+	jr nz, + ; ???
 	ld a, (_RAM_C764_)
 	ld (_RAM_C782_), a
 	ld a, (_RAM_C762_)
 	ld (_RAM_C781_), a
-	jp _LABEL_3101_
+	jp _LABEL_3101_StartLevel
 
 +:
 	ld a, (_RAM_C764_)
 	ld (_RAM_C78D_), a
 	ld a, (_RAM_C762_)
 	ld (_RAM_C78C_), a
-	jp _LABEL_3101_
+	jp _LABEL_3101_StartLevel
 
 _LABEL_33A6_:
 	xor a
@@ -7898,7 +7900,7 @@ _LABEL_33A6_:
 	ld (_RAM_C792_LevelNumber), a
 	cp $0C
 	jp z, + ; Ending
-	jp _LABEL_3101_
+	jp _LABEL_3101_StartLevel
 
 +:
 	call _LABEL_3914_ ; Game Completed
@@ -8762,7 +8764,7 @@ _LABEL_3A6E_GameOver:
 	ld a, $06
 	ld (_RAM_FFFF_), a
 	ld hl, _DATA_1884D_
-	ld ix, (_RAM_C8C6_CharacterIndex)
+	ld ix, (_RAM_C8C6_CharacterDataPointer)
 	ld a, (ix+0) ; Check which one
 	dec a
 	jr z, +
@@ -8784,16 +8786,18 @@ _LABEL_3A6E_GameOver:
   ; Look up credits per character (for 2-player mode)?
 	ld a, (_RAM_C794_)
 	ld e, a
-	ld a, (_RAM_C8C6_CharacterIndex)
+	ld a, (_RAM_C8C6_CharacterDataPointer)
 	and a
 	jr z, +
 	ld a, (_RAM_C795_)
 	ld e, a
 +:ld a, e
+  ; check it's enough (and not too much)
 	and a
 	jp z, _LABEL_3B36_
 	cp $09
 	jp nc, _LABEL_3B36_
+  ; draw text
 	ld bc, $1008
 	call _LABEL_57E7_SetTextToVRAMLocation
 	ld ix, _DATA_6DEA_Text_continue
@@ -8801,6 +8805,7 @@ _LABEL_3A6E_GameOver:
 	call _LABEL_5790_TextToVRAM
 	call _LABEL_5790_TextToVRAM
 	call _LABEL_5790_TextToVRAM
+  ; Start timer
 	ld a, $09
 	ld (_RAM_C822_IntroButtonPressed), a
 --:
@@ -8809,10 +8814,10 @@ _LABEL_3A6E_GameOver:
 	ld b, $32
 -:
 	push bc
-	ld b, $01
-	call _LABEL_D2E_DelayTimes20ms
+    ld b, $01
+    call _LABEL_D2E_DelayTimes20ms
 	pop bc
-	ld a, (_RAM_C8C6_CharacterIndex)
+	ld a, (_RAM_C8C6_CharacterDataPointer)
 	and a
 	jr nz, +
 	ld a, (_RAM_C400_)
@@ -8834,7 +8839,7 @@ _LABEL_3B36_:
 	ret
 
 +:
-	ld a, (_RAM_C8C6_CharacterIndex)
+	ld a, (_RAM_C8C6_CharacterDataPointer)
 	and a
 	jr z, +
 	ld a, (_RAM_C795_)
@@ -8860,7 +8865,7 @@ _LABEL_3B5E_:
 	call _LABEL_57E7_SetTextToVRAMLocation
 	ld a, (_RAM_C794_)
 	ld e, a
-	ld a, (_RAM_C8C6_CharacterIndex)
+	ld a, (_RAM_C8C6_CharacterDataPointer)
 	and a
 	jr z, +
 	ld a, (_RAM_C795_)
@@ -13840,7 +13845,7 @@ _LABEL_6156_:
 _LABEL_617C_:
 	ld a, $03
 	ld (_RAM_C779_GameState), a
-	ld (_RAM_C8C6_CharacterIndex), iy
+	ld (_RAM_C8C6_CharacterDataPointer), iy
 	ret
 
 _LABEL_6186_:

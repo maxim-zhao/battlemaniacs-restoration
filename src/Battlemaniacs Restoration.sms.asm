@@ -88,6 +88,7 @@ CurrentMusicBank  db
 .define RAM_IntroButtonPressed      $C822 ; signal from intro to game to indicate if it was skipped by pressing a button, 1 if true, 0 otherwise
 .define RAM_GameState               $c779 ; 3 = continue screen?
 .define RAM_LevelNumber             $C792 ; 0, 1, ...
+.define RAM_CharacterDataPointer    $c8c6 ; Points to character data, the first byte of which tells me if it's Pimple (1) or Rash (2)
 
 ; Data locations from the original game we want to use
 .define DATA_FontPalette            $AC41
@@ -472,6 +473,7 @@ SFX19:
   SCRIPT_WAIT db
   SCRIPT_TEXT db
   SCRIPT_BLANK_TEXT db
+  SCRIPT_FADEOUT db
 .ende
 
 ; Pre-title sequence and title screen
@@ -497,11 +499,12 @@ Intermission:
   jp nz,+
   ; Continue screen graphics
   ld hl,GameOverLookup
-  jp _TBird
+  ld de,0
+  jp ++
 
   ; ELse look up a random text based on the level
 +:ld a,(RAM_LevelNumber) ; 0..11
-+:add a,a ; Multiply by 16 - fits in 8 bits
+  add a,a ; Multiply by 16 - fits in 8 bits
   add a,a
   add a,a
   add a,a
@@ -509,6 +512,7 @@ Intermission:
   ld d,0
   ld hl,IntermissionsLookup
   add hl,de
+++:
   push hl
     ; get a random number (0,2,4,6) to add on
     ld a,r
@@ -552,8 +556,9 @@ GameModeScreen:
 
 GameOverScreen:
   ld hl,GameOverPimple
-  ld a,($c8c6)
-  or a
+  ld ix,(RAM_CharacterDataPointer)
+  ld a,(ix+0)
+  cp 1
   jr z,+
   ld hl,GameOverRash
 +:call _ScriptLoop
@@ -579,6 +584,8 @@ _ScriptLoop:
   jp z,_Wait
   cp SCRIPT_BLANK_TEXT
   jp z,_blank
+  cp SCRIPT_FADEOUT
+  jp z,_FadeOut
   ; else it's text
   ; location is next, we need to put it in bc
   ld c,(hl)
@@ -640,6 +647,11 @@ _blank:
   pop hl
   jp _ScriptLoop
 
+_FadeOut:
+  push hl
+    call FadeOut
+  pop hl
+  jp _ScriptLoop
 
 _LoadPicture:
   ; Clear the tilemap
@@ -715,7 +727,7 @@ _End:
 .macro Text args text, length, seconds
   ; If the text is (length) long, we want to draw it at (31 - length)/2+1
   ; This centres it within the 31 tiles on-screen, with a bias to the left for even lengths.
-  .db SCRIPT_TEXT, (31-length)/2+1, textY, text, 0
+  .db SCRIPT_TEXT, (31-length)/2+2-(length&1), textY, text, 0
   .if NARGS > 2
   .db SCRIPT_WAIT, seconds * 50
   .endif
@@ -766,6 +778,7 @@ PreTitleScript:
   Text "PUBLISHED AND DISTRIBUTED BY" ,28
   Text "VIRGIN INTERACTIVE", 18
   Text "ENTERTAINMENT (EUROPE) LTD.", 27
+  StartText 20
   Text "LICENSED BY", 11
   Text "SEGA ENTERPRISES, LTD.", 22
   Wait 3
@@ -794,11 +807,13 @@ IntroScript:
   ;    Text, Length, (optional) Wait
   Text "THE 'TOADS ARE AT THE", 21
   Text "GYACHUNG-LA FORTRESS", 20, 2
+  .db SCRIPT_FADEOUT
 
   Picture Intro2Palette, Intro2Tiles, Intro2Tilemap
   StartText 21
   Text "LOCATED IN", 10
   Text "NORTHERN TIBET, ASIA", 20, 2
+  .db SCRIPT_FADEOUT
 
   Picture Intro3Palette, Intro3Tiles, Intro3Tilemap
   StartText 21
@@ -811,6 +826,7 @@ IntroScript:
   StartText 21
   Text "DEMONSTRATION OF PSICONE'S", 26
   Text "NEW GAMES GENERATOR.", 20, 2
+  .db SCRIPT_FADEOUT
 
   Picture Intro4Palette, Intro4Tiles, Intro4Tilemap
   StartText 21
@@ -823,6 +839,7 @@ IntroScript:
   StartText 21
   Text "WE'VE NAMED ITS ARTIFICIAL", 26
   Text "WORLD \"THE GAMESCAPE\".", 22, 2
+  .db SCRIPT_FADEOUT
 
   Picture Intro5Palette, Intro5Tiles, Intro5Tilemap
   StartText 21
@@ -831,30 +848,35 @@ IntroScript:
   Clear 21
   StartText 21
   Text "ONE OF THE GAMES T...", 21, 1
+  .db SCRIPT_FADEOUT
 
   Picture Intro6Palette, Intro6Tiles, Intro6Tilemap
   StartText 19
   Text "BEFORE THE PROFESSOR CAN", 24
   Text "FINISH, THE PIG LEAPS OUT", 25
   Text "OF THE SCREEN!!", 15, 3
+  .db SCRIPT_FADEOUT
 
   Picture Intro7Palette, Intro7Tiles, Intro7Tilemap
   StartText 19
   Text "IT GRABS MICHIKO TASHOKU,", 25
   Text "DAUGHTER OF PSICONE'S", 21
   Text "HEAD HONCHO!!", 13, 3
+  .db SCRIPT_FADEOUT
 
   Picture Intro8Palette, Intro8Tiles, Intro8Tilemap
   StartText 19
   Text "ZITZ LEAPS TO HER RESCUE,", 25
   Text "BUT HE TAKES A BEASTLY BASHING", 30
   Text "AND IS CAPTURED TOO!", 20, 3
+  .db SCRIPT_FADEOUT
 
   Picture Intro9Palette, Intro9Tiles, Intro9Tilemap
   StartText 19
   Text "WITH MICHIKO AND ZITZ ITS", 25
   Text "PRISONER, THE EVIL PIG ESCAPES", 30
   Text "BACK INTO THE GAMESCAPE!", 24, 3
+  .db SCRIPT_FADEOUT
 
   Picture Intro10Palette, Intro10Tiles, Intro10Tilemap
   StartText 21
@@ -877,6 +899,7 @@ IntroScript:
   Clear 21
   StartText 21
   Text "HA-HA-HA-HA!!", 13, 2
+  .db SCRIPT_FADEOUT
 
 ; ***********************************
 ; Beginning of level 1 (I guess the easiest is to add this as a Prologue scene)
@@ -889,15 +912,20 @@ IntroScript:
   StartText 21
   Text "LET'S GATECRASH THE GAMESCAPE", 29
   Text "AN' COOK SOME BEASTIN' BACON!", 29, 2
+  .db SCRIPT_FADEOUT
 .db SCRIPT_END_BLANK
 
 ; Intermission scripts
 
 GameOverLookup:
-.dw GameOverA
-.dw GameOverB
-.dw GameOverC
-.dw GameOverD
+.dw GameOverDarkQueenA
+.dw GameOverDarkQueenB
+.dw GameOverDarkQueenC
+.dw GameOverDarkQueenD
+.dw GameOverTBirdA
+.dw GameOverTBirdB
+.dw GameOverTBirdC
+.dw GameOverTBirdD
 
 IntermissionsLookup:
 .dw Intermission1DarkQueenA
@@ -1664,7 +1692,7 @@ Ending Part 2 (Good Ending)
 Continue (In the Master System version these messages appear before continuing, not after continuing like in the SNES)
 *************************************/
 
-GameOverA:
+;GameOverA:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
   Text "THINGS ARE LOOKING GOOD", 23, 0.33
@@ -1673,7 +1701,7 @@ GameOverA:
   Text "EFFORT! GET A GRIP GUYS -", 25, 0.33
   Text "LET'S MOTIVATE!", 15, 4
   .db SCRIPT_END_BLANK
-GameOverB:
+;GameOverB:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
   Text "WHADYA MEAN, THE ACTION GOT", 27, 0.33
@@ -1681,7 +1709,7 @@ GameOverB:
   Text "YOU A THICK EAR IF YOU DON'T", 28, 0.33
   Text "RESCUE MICHIKO AND ZITZ!", 24, 4
   .db SCRIPT_END_BLANK
-GameOverC:
+;GameOverC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
   Text "DID THE NASTY QUEEN NOT PLAY", 28, 0.33
@@ -1689,7 +1717,7 @@ GameOverC:
   Text "GET BACK IN THERE AND", 21, 0.33
   Text "ROAST SOME PORK!", 16, 4
   .db SCRIPT_END_BLANK
-GameOverD:
+;GameOverD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
   Text "I CAN'T BELIEVE WHAT'S", 22, 0.33
@@ -1702,47 +1730,73 @@ GameOverD:
 Game Over (No Game Over messages in the Master System version, don't know if these could be implemented)
 *************************************/
 
-;Dark Queen A:
-  Text "YOU'RE NO MATCH FOR ME-I'M", 26
-  Text "THE STRONGEST WOMAN IN", 22
-  Text "THE UNIVERSE!!", 14
-;Dark Queen B:
-  Text "YOU'VE GOT A LOT TO LEARN,", 26
-  Text "BEFORE YOU BEAT ME. TRY", 23
-  Text "AGAIN, 'TOADIES, HA-HA-HA-HA!", 29
-;Dark Queen C:
-  Text "IS THAT THE BEST YOUR SWAMP", 27
-  Text "CRAWLERS CAN DO, TURKEY", 23
-  Text "BRAINS? I FEEL SORRY FOR", 24
-  Text "YOU, I REALLY DO!!", 18
-;Dark Queen D:
-  Text "AND ANOTHER 'TOAD BITES THE", 27
-  Text "DUST! C'MON BEAKY, TAKE A", 25
-  Text "PICTURE OF THE BEATEN", 21
-  Text "BATTLEFAILURES FOR YOUR", 23
-  Text "FREAKY FAMILY ALBUM!", 20
-  Text "HA-HA-HA-HA!", 12
-;T-Bird A:
-  Text "OUR LUCK'S FINALLY RUN OUT", 26
-  Text "'TOADS, AND WE'RE OUT OF THE", 28
-  Text "GAME. HEAD BACK TO BASE AND", 27
-  Text "WE'LL PLAN A REMATCH....", 24
-;T-Bird B:
-  Text "IT'S ALL OVER, I NEVER", 22
-  Text "THOUGHT I'D SEE THE BATTLE", 26
-  Text "'TOADS BEATEN. IT'S A SAD", 25
-  Text "DAY FOR ALL 'TOADKIND...", 24
-;T-Bird C:
-  Text "NO MORE CHANCES,'TOADS.", 23
-  Text "TIME'S UP AND WE'VE LOST BY", 27
-  Text "A WASHOUT. WE'LL HAVE TO", 24
-  Text "REGROUP AND TRY AGAIN...", 24
-;T-Bird D:
-  Text "THAT'S IT, THE GAME'S OVER", 26
-  Text "FOR US, FINITO, END OF THE", 26
-  Text "LINE...WE'D BETTER RETURN", 25
-  Text "TO PSICONE AND WORK OUT", 23
-  Text "A NEW PLAN.", 11
+GameOverDarkQueenA:
+  Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
+  StartText 19
+  Text "YOU'RE NO MATCH FOR ME-I'M", 26, 0.33
+  Text "THE STRONGEST WOMAN IN", 22, 0.33
+  Text "THE UNIVERSE!!", 14, 3
+  .db SCRIPT_END_BLANK
+GameOverDarkQueenB:
+  Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
+  StartText 19
+  Text "YOU'VE GOT A LOT TO LEARN,", 26, 0.33
+  Text "BEFORE YOU BEAT ME. TRY", 23, 0.33
+  Text "AGAIN, 'TOADIES, HA-HA-HA-HA!", 29, 3
+  .db SCRIPT_END_BLANK
+GameOverDarkQueenC:
+  Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
+  StartText 19
+  Text "IS THAT THE BEST YOUR SWAMP", 27, 0.33
+  Text "CRAWLERS CAN DO, TURKEY", 23, 0.33
+  Text "BRAINS? I FEEL SORRY FOR", 24, 0.33
+  Text "YOU, I REALLY DO!!", 18, 4
+  .db SCRIPT_END_BLANK
+GameOverDarkQueenD:
+  Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
+  StartText 19
+  Text "AND ANOTHER 'TOAD BITES THE", 27, 0.33
+  Text "DUST! C'MON BEAKY, TAKE A", 25, 0.33
+  Text "PICTURE OF THE BEATEN", 21, 0.33
+  Text "BATTLEFAILURES FOR YOUR", 23, 0.33
+  Text "FREAKY FAMILY ALBUM!", 20, 5
+  Clear 19
+  StartText 19
+  Text "HA-HA-HA-HA!", 12, 1
+  .db SCRIPT_END_BLANK
+GameOverTBirdA:
+  Picture TBirdPalette,TBirdTiles,TBirdTilemap
+  StartText 18
+  Text "OUR LUCK'S FINALLY RUN OUT", 26, 0.33
+  Text "'TOADS, AND WE'RE OUT OF THE", 28, 0.33
+  Text "GAME. HEAD BACK TO BASE AND", 27, 0.33
+  Text "WE'LL PLAN A REMATCH....", 24, 4
+  .db SCRIPT_END_BLANK
+GameOverTBirdB:
+  Picture TBirdPalette,TBirdTiles,TBirdTilemap
+  StartText 18
+  Text "IT'S ALL OVER, I NEVER", 22, 0.33
+  Text "THOUGHT I'D SEE THE BATTLE", 26, 0.33
+  Text "'TOADS BEATEN. IT'S A SAD", 25, 0.33
+  Text "DAY FOR ALL 'TOADKIND...", 24, 4
+  .db SCRIPT_END_BLANK
+GameOverTBirdC:
+  Picture TBirdPalette,TBirdTiles,TBirdTilemap
+  StartText 18
+  Text "NO MORE CHANCES,'TOADS.", 23, 0.33
+  Text "TIME'S UP AND WE'VE LOST BY", 27, 0.33
+  Text "A WASHOUT. WE'LL HAVE TO", 24, 0.33
+  Text "REGROUP AND TRY AGAIN...", 24, 4
+  .db SCRIPT_END_BLANK
+GameOverTBirdD:
+  Picture TBirdPalette,TBirdTiles,TBirdTilemap
+  StartText 18
+  Text "THAT'S IT, THE GAME'S OVER", 26, 0.33
+  Text "FOR US, FINITO, END OF THE", 26, 0.33
+  Text "LINE...WE'D BETTER RETURN", 25, 0.33
+  Text "TO PSICONE AND WORK OUT", 23, 0.33
+  Text "A NEW PLAN.", 11, 5
+  .db SCRIPT_END_BLANK
 
 /*
 converted in the uk.
