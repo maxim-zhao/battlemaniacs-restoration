@@ -39,7 +39,6 @@ banks 32
 ; Unused space throughout ROM - may not be useful
 .unbackground $7bb5 $7bff
 .unbackground $7fe3 $7fff
-.unbackground $9020 $bbff
 .unbackground $bf68 $bfff
 .unbackground $dd45 $ffff
 .unbackground $13e45 $13fff
@@ -2220,4 +2219,74 @@ GameOverRashTiles:
 .incbin "images\Game Over - Rash.png.tiles.zx7"
 GameOverRashTilemap:
 .incbin "images\Game Over - Rash.png.tilemap.zx7"
+.ends
+
+
+.bank 2 slot 2
+.unbackground $8ee9 $bbff
+.orga $8ee9
+.section "Credits text" force
+.db "   CONVERTED IN THE UK",0
+.db 0
+.db "            BY",0
+.db "  SYROX DEVELOPMENTS LTD",0
+.dsb 3, 0
+.db "        PROGRAMMER",0
+.db 0
+.db "       DOMINIC WOOD",0
+.db 0
+.db 0
+.db "      GRAPHIC ARTIST",0
+.db 0
+.db "        JOCK GREEN",0
+.db 0
+.db 0
+.db "      MUSIC AND SOUND",0
+.db 0
+.db "         KRISALIS:",0
+.db "       MATT FURNISS",0
+.db "            ...",0
+.dsb 7, 0
+.db "    VIRGIN INTERACTIVE",0
+.db "ENTERTAINMENT (EUROPE) LTD",0
+.db 3, 0
+.db "     PRODUCT PRODUCER",0
+.db 0
+.db "       MATTHEW SPALL",0
+.dsb 7, 0
+.db "  BATTLETOADS RESTORATION",0
+.db 3, 0
+.db "       DISASSEMBLER",0
+.db "        PROGRAMMER",0
+.db 0
+.db "           MAXIM",0
+.db 0
+.db 0
+.db "           MUSIC",0
+.db 0
+.db "      MOTAVIAN RAIDER",0
+.db 0
+.db 0
+.db "          ARTIST",0
+.db 0
+.db "           PYRON",0
+.db 0
+.db 0
+.db "        COORDINATOR",0
+.db 0
+.db "          WESKER",0
+.dsb 14 0
+CreditsEnd:
+.ends
+
+.bank 0 slot 0
+.orga $39d7
+.section "Patch credits palette" overwrite
+  jp $39e0
+.ends
+.orga $39d7
+
+.orga $3a5c
+.section "Patch credits ending pointer"overwrite
+  ld de,CreditsEnd
 .ends
