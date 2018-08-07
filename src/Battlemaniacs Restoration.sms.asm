@@ -791,7 +791,7 @@ PreTitleScript:
   LoadTilemap StarfieldTilemap
   PictureNoBlank PreTitlePalette, PreTitleTiles, PreTitleTilemap
   Wait 2
-.db SCRIPT_END_BLANK
+.db SCRIPT_END_NOBLANK
 
 TitleScript:
   LoadTilemap StarfieldTilemap
