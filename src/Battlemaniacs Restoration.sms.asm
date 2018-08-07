@@ -2245,7 +2245,7 @@ GameOverRashTilemap:
 .db 0
 .db "         KRISALIS:",0
 .db "       MATT FURNISS",0
-.db "            ...",0
+.db "    SHAUN HOLLINGWORTH",0
 .dsb 7, 0
 .db "    VIRGIN INTERACTIVE",0
 .db "ENTERTAINMENT (EUROPE) LTD",0
@@ -2256,7 +2256,6 @@ GameOverRashTilemap:
 .dsb 7, 0
 .db "  BATTLETOADS RESTORATION",0
 .db 3, 0
-.db "       DISASSEMBLER",0
 .db "        PROGRAMMER",0
 .db 0
 .db "           MAXIM",0
