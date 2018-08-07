@@ -426,6 +426,7 @@ _RAM_C81C_ db
 _RAM_C81D_ dw
 _RAM_C81F_ dw
 _RAM_C821_ db
+_RAM_C822_ScrollCounter .db
 _RAM_C822_IntroButtonPressed dw
 _RAM_C824_ db
 _RAM_C825_ db
@@ -7904,7 +7905,7 @@ _LABEL_33A6_:
 
 +:
 	call _LABEL_3914_ ; Game Completed
-	call _LABEL_39CD_ ; Credits
+	call _LABEL_39CD_Credits ; Credits
 	jp _LABEL_23B_Startup
 
 _LABEL_33C7_:
@@ -8653,87 +8654,104 @@ _LABEL_3914_:
 	jp z, -
 	jp _LABEL_6D6B_AudioStop
 
-_LABEL_39CD_:
+_LABEL_39CD_Credits:
+  ; Blank screen
 	call _LABEL_4EA_ResetScrollTile0AndTilemap
+  ; Load font
 	ld ix, $2000
 	call _LABEL_1557_LoadFont
+  ; Load palette
 	ld hl, _DATA_1AC41_TitleScreenSpritePalette
 	ld (_RAM_C769_SpritePalettePointer), hl
 	call _LABEL_1583_LoadPalettes
+  ; Page in data
 	ld a, $C2
 	ld (_RAM_FFFF_), a
-	ld ix, $8EE9
+  ; Point at text
+	ld ix, _DATA_8EE9_Text_EndCredits
 	xor a
 	ld (_RAM_C822_IntroButtonPressed), a
+  ; Initial drawing location
 	ld bc, $1803
 	call _LABEL_57E7_SetTextToVRAMLocation
-_LABEL_39F3_:
+
+_LABEL_39F3_Loop:
 	xor a
 	ld (_RAM_C851_FrameCounter), a
+  ; Add 2 rows to the pointer
 	ld hl, (_RAM_C854_TextToVRAMDestPointer)
 	ld bc, $0080
 	add hl, bc
+  ; Check for overflow
 	ld a, h
 	cp $3F
 	jr c, +
 	ld h, $38
-+:
-	ld (_RAM_C854_TextToVRAMDestPointer), hl
++:ld (_RAM_C854_TextToVRAMDestPointer), hl
+  ; Draw a blank line
 	push ix
 	push hl
-	ld ix, $8ECC
-	call _LABEL_579B_TextToVRAM
+    ld ix, _DATA_8ECC_Text_BlankLine
+    call _LABEL_579B_TextToVRAM
 	pop hl
 	pop ix
+  ; Then draw text over it (as the string may be shorter)
 	ld (_RAM_C854_TextToVRAMDestPointer), hl
 	push hl
-	call _LABEL_579B_TextToVRAM
+    call _LABEL_579B_TextToVRAM
 	pop hl
 	ld (_RAM_C854_TextToVRAMDestPointer), hl
+  ; ???
 	ld b, $10
--:
-	ld a, (_RAM_C822_IntroButtonPressed)
+  ; Increment scroll counter
+-:ld a, (_RAM_C822_ScrollCounter)
 	inc a
 	cp $E0
 	jr c, +
 	xor a
-+:
-	ld (_RAM_C822_IntroButtonPressed), a
++:ld (_RAM_C822_ScrollCounter), a
 	di
-	ld a, a
-	out (Port_VDPAddress), a
-	nop
-	nop
-	nop
-	nop
-	ld a, $89
-	out (Port_VDPAddress), a
-	nop
-	nop
-	nop
-	nop
+    ; Set scroll value
+    ld a, a
+    out (Port_VDPAddress), a
+    nop
+    nop
+    nop
+    nop
+    ld a, $89
+    out (Port_VDPAddress), a
+    nop
+    nop
+    nop
+    nop
 	ei
 	ld a, b
 	cp $10
 	jp z, _LABEL_3A49_
+  ; Skip wait
 	xor a
 	ld (_RAM_C851_FrameCounter), a
 _LABEL_3A49_:
-	ld a, (_RAM_C851_FrameCounter)
+  ; Wait for 2 frames to pass
+-:ld a, (_RAM_C851_FrameCounter)
 	cp $02
-	jp c, _LABEL_3A49_
+	jp c, -
+  ; x16?
 	djnz -
+  ; Let a button break it
 	call _LABEL_E7A_CheckForButton1
 	jp nz, +
+  ; Or when we get to the end
 	push ix
 	pop hl
-	ld de, $9020
+	ld de, _LABEL_9020_CreditsEnd
 	and a
 	sbc hl, de
-	jp c, _LABEL_39F3_
-+:
+	jp c, _LABEL_39F3_Loop
++:; At the end, wait 1s...
 	ld b, $01
 	call _LABEL_D43_DelaySeconds
+  ; Then blank the screen and return
 	call _LABEL_4EA_ResetScrollTile0AndTilemap
 	ret
 
@@ -8807,7 +8825,7 @@ _LABEL_3A6E_GameOver:
 	call _LABEL_5790_TextToVRAM
   ; Start timer
 	ld a, $09
-	ld (_RAM_C822_IntroButtonPressed), a
+	ld (_RAM_C822_ScrollCounter), a
 --:
 	call _LABEL_3B5E_
 	call _LABEL_3B78_
@@ -16169,7 +16187,9 @@ _DATA_8CF0_Text_Splash:
 _DATA_8E9A_Text_Credits:
 .db "          LICENSED BY", 0
 .db "     SEGA ENTERPRISES, LTD.", 0
+_DATA_8ECC_Text_BlankLine:
 .db "                            ", 0
+_DATA_8EE9_Text_EndCredits:
 .db "   converted in the uk.", 0
 .db "            by", 0
 .db "  syrox developments ltd.", 0
@@ -16216,7 +16236,9 @@ _DATA_8E9A_Text_Credits:
 .db 0
 .db 0
 .db 0
+_LABEL_9020_CreditsEnd:
 
+.orga $bc00
 _LABEL_BC00_DecompressToVRAM:
   ; de = VRAM address (may not have write bit set)
   ; 
