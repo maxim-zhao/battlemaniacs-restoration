@@ -436,16 +436,9 @@ SFX19:
 .ends
 
 .bank 1 slot 1
-.unbackground $40cd $40d4 ; caller of the intro
-.orga $40cd
-.section "IntroTrampoline" force
-  ; Original game does:
-  ; ld a, :_LABEL_18000_Intro;$06
-  ; ld (_RAM_FFFF_), a
-  ; call _LABEL_18000_Intro
-  ld a,:Intro
-  ld (PAGING_REGISTER_2),a
-  call Intro
+.orga $6D31
+.section "Level music lookup" overwrite
+.db $0D $15 $1B $03 $23 $23 $23 $23 $00 $00 $02 $1B
 .ends
 
 ; =======================================================================================
@@ -462,6 +455,19 @@ SFX19:
 ; * Waits should all be skippable
 ;
 ; =======================================================================================
+
+.bank 1 slot 1
+.unbackground $40cd $40d4 ; caller of the intro
+.orga $40cd
+.section "IntroTrampoline" force
+  ; Original game does:
+  ; ld a, :_LABEL_18000_Intro;$06
+  ; ld (_RAM_FFFF_), a
+  ; call _LABEL_18000_Intro
+  ld a,:Intro
+  ld (PAGING_REGISTER_2),a
+  call Intro
+.ends
 
 .slot 2
 .section "Scripting" superfree
@@ -1805,57 +1811,10 @@ GameOverTBirdD:
   Text "A NEW PLAN.", 11, 5
   .db SCRIPT_END_BLANK
 
-/*
-converted in the uk.
-
-by
-
-syrox developments ltd.
-
-
-
-programmer
-
-dominic wood
-
-
-
-graphic artist
-
-jock green
-
-
-
-music and sound
-
-krisalis
-
-
-
-
-
-
-virgin interactive
-
-entertainment (europe) ltd.
-
-
-
-product producer
-
-matthew spall
-
-
-
-
-
-(new credits of the hack)
-*/
-
 GameModeScreenScript:
   Picture ToadsPalette, ToadsTiles, ToadsTilemap
-  TextAt 6, 0, "PIMPLE", 
-  TextAt 22, 0, "RASH"
+;  TextAt 6, 0, "PIMPLE", 
+;  TextAt 22, 0, "RASH"
   TextAt 11, 15, "1 PLAYER"
   TextAt 11, 17, "2 PLAYERS A"
   TextAt 11, 19, "2 PLAYERS B"
@@ -1872,7 +1831,6 @@ GameOverText:
   TextAt 11, 13, "GAME OVER"
 .db SCRIPT_END_NOBLANK
   
-
 .endb
 .ends
 
