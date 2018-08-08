@@ -494,20 +494,24 @@ Title:
 ; Post-title-timeout sequence - the story
 Intro:
   ; Start off blank
-  call ResetScrollTile0AndTilemap
+  ;call ResetScrollTile0AndTilemap
   ld hl,IntroScript
   jp _ScriptStart
+  
+Continue:
+  ld hl,ContinueLookup
+  jp _TBird
+  
+GameOver:
+  ld hl,GameOverLookup
+  jp ++
 
 ; Inter-level sequence - randomly chosen from 4 items each time
 Intermission:
-  ; Check if it's the continue screen
+  ; Check if it's game over
   ld a,(RAM_GameState)
   cp 3
-  jp nz,+
-  ; Continue screen graphics
-  ld hl,GameOverLookup
-  ld de,0
-  jp ++
+  ret z ; disable - we will re-enable it later
 
   ; ELse look up a random text based on the level
 +:ld a,(RAM_LevelNumber) ; 0..11
@@ -525,6 +529,7 @@ Intermission:
     ld a,r
     and 6
     ld e,a
+    ld d,0
     add hl,de
     ; read value
     ld a,(hl)
@@ -920,6 +925,12 @@ IntroScript:
 .db SCRIPT_END_BLANK
 
 ; Intermission scripts
+
+ContinueLookup:
+.dw ContinueA
+.dw ContinueB
+.dw ContinueC
+.dw ContinueD
 
 GameOverLookup:
 .dw GameOverDarkQueenA
@@ -1705,7 +1716,7 @@ Ending Part 2 (Good Ending)
 Continue (in the Master System version these messages appear before continuing, not after continuing like in the SNES)
 *************************************/
 
-;GameOverA:
+ContinueA:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
   Text "THINGS ARE LOOKING GOOD,", 24, 0.33
@@ -1714,7 +1725,7 @@ Continue (in the Master System version these messages appear before continuing, 
   Text "EFFORT! GET A GRIP GUYS -", 25, 0.33
   Text "LET'S MOTIVATE!", 15, 4
   .db SCRIPT_END_BLANK
-;GameOverB:
+ContinueB:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
   Text "WHADYA MEAN, THE ACTION GOT", 27, 0.33
@@ -1722,7 +1733,7 @@ Continue (in the Master System version these messages appear before continuing, 
   Text "YOU A THICK EAR IF YOU DON'T", 28, 0.33
   Text "RESCUE MICHIKO AND ZITZ!", 24, 4
   .db SCRIPT_END_BLANK
-;GameOverC:
+ContinueC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
   Text "DID THE NASTY QUEEN NOT PLAY", 28, 0.33
@@ -1730,7 +1741,7 @@ Continue (in the Master System version these messages appear before continuing, 
   Text "GET BACK IN THERE AND", 21, 0.33
   Text "ROAST SOME PORK!", 16, 4
   .db SCRIPT_END_BLANK
-;GameOverD:
+ContinueD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
   Text "I CAN'T BELIEVE WHAT'S", 22, 0.33
@@ -2255,4 +2266,44 @@ CreditsEnd:
 .orga $3a5c
 .section "Patch credits ending pointer"overwrite
   ld de,CreditsEnd
+.ends
+
+
+.bank 0 slot 0
+.orga $3382
+.section "Continue hook" overwrite
+  call ContinuePatch
+.ends
+.section "Continue patch" free
+ContinuePatch:
+  ld a,(PAGING_REGISTER_2)
+  push af
+    ld a,:Continue
+    ld (PAGING_REGISTER_2),a
+    call Continue
+  pop af
+  ld (PAGING_REGISTER_2),a
+
+  ; What we replaced to get here...  
+  ld a, (RAM_CharacterDataPointer)
+  ret
+.ends
+
+.orga $334f
+.section "Game over hook" overwrite
+  ; was jp z,$30B4 = back to title screen
+  jp z,GameOverPatch
+.ends
+.section "Game over patch" free
+GameOverPatch:
+  ld a,(PAGING_REGISTER_2)
+  push af
+    ld a,:GameOver
+    ld (PAGING_REGISTER_2),a
+    call GameOver
+  pop af
+  ld (PAGING_REGISTER_2),a
+
+  ; What we replaced to get here...  
+  jp $30B4
 .ends

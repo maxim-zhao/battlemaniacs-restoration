@@ -7847,7 +7847,7 @@ _LABEL_332D_:
     call _LABEL_14AC_FadeOut
     call _LABEL_282_ScreenOff
 	pop af
-	and a ; CHeck if continuing
+	and a ; Check if continuing
 	jr nz, ++
   ; No...
 	ld a, (_RAM_C771_Is2Player)
