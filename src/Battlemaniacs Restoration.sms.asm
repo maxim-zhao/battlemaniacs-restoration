@@ -2221,7 +2221,7 @@ GameOverRashTilemap:
 .db 0
 .db "       MATTHEW SPALL",0
 .dsb 7, 0
-.db "  BATTLETOADS RESTORATION",0
+.db "  BATTLEMANIACS RESTORATION",0
 .dsb 3, 0
 .db "        PROGRAMMER",0
 .db 0
