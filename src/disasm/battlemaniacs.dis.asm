@@ -7853,6 +7853,8 @@ _LABEL_332D_:
 	ld a, (_RAM_C771_Is2Player)
 	and a
 	jp z, _LABEL_30B4_
+  ; 2-player non-continue
+  ; Transform to 1-player mode
 	xor a
 	ld (_RAM_C771_Is2Player), a
 	ld hl, $C400
@@ -7877,14 +7879,15 @@ _LABEL_332D_:
   ; Continuing
 	ld a, (_RAM_C8C6_CharacterDataPointer)
 	and a
-	jr nz, + ; ???
+	jr nz, + ; For P2 in 2-player mode, the low byte of the pointer happens to be non-zero
+  ; P1
 	ld a, (_RAM_C764_)
 	ld (_RAM_C782_), a
 	ld a, (_RAM_C762_)
 	ld (_RAM_C781_), a
 	jp _LABEL_3101_StartLevel
 
-+:
++:; P2
 	ld a, (_RAM_C764_)
 	ld (_RAM_C78D_), a
 	ld a, (_RAM_C762_)
@@ -7904,7 +7907,7 @@ _LABEL_33A6_:
 	jp _LABEL_3101_StartLevel
 
 +:
-	call _LABEL_3914_ ; Game Completed
+	call _LABEL_3914_GameComplete ; Game Completed
 	call _LABEL_39CD_Credits ; Credits
 	jp _LABEL_23B_Startup
 
@@ -8574,7 +8577,7 @@ _LABEL_38E7_IntroPicture1:
 	ld (_RAM_FFFF_), a
 	ret
 
-_LABEL_3914_:
+_LABEL_3914_GameComplete:
 	call _LABEL_4EA_ResetScrollTile0AndTilemap
 	
   ld ix, $2000 ; Tile 256
@@ -8598,6 +8601,7 @@ _LABEL_3914_:
 	ld a, (_RAM_C771_Is2Player)
 	and a
 	jr z, +
+  ; 2-player - load both portraits
 	ld a, $07
 	ld (_RAM_FFFF_), a
 	ld hl, _DATA_1C000_
@@ -8605,7 +8609,7 @@ _LABEL_3914_:
 	ld de, $3804
 	jr ++
 
-+:
++:; 1-player - load the appropriate portrait
 	ld a, $06
 	ld (_RAM_FFFF_), a
 	ld hl, _DATA_1884D_
@@ -8618,7 +8622,7 @@ _LABEL_3914_:
 	ld bc, $0C0C
 ++:
 	call _LABEL_D4D_EmitTilemapRect
-	call _LABEL_295_ScreenOn
+	call _LABEL_295_ScreenOn ; Silly? Turned off almost immediately after
 	ld a, $01
 	call _LABEL_6D54_AudioPlayMusic
 	call _LABEL_E7A_CheckForButton1

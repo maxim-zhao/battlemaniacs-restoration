@@ -1590,7 +1590,7 @@ Intermission9TBirdB:
   Text "WOOOOO! I LIKE IT, 'TOADS!", 26, 0.33
   Text "WE SURE TAUGHT THAT DARK", 24, 0.33
   Text "QUEEN NOT TO MESS WITH THE", 26, 0.33
-  Text "AWESOME T.BIRD AND HIS", 22, 0.33
+  Text "AWESOME T. BIRD AND HIS", 23, 0.33
   Text "BATTLETOADS!", 12, 4
   .db SCRIPT_END_BLANK
 Intermission9TBirdC:
@@ -2204,6 +2204,12 @@ GameOverRashTilemap:
 .unbackground $8ee9 $bbff
 .orga $8ee9
 .section "Credits text" force
+; This is the original game data format.
+; There's plenty of room for expansion.
+; It comes out in uppercase, so we store it as such,
+; although for some reason the original uses lowercase here.
+; We centre the text just by left-padding - the left-padding 
+; should be floor((26-width)/2). A zero means end of line.
 .db "   CONVERTED IN THE UK",0
 .db 0
 .db "            BY",0
@@ -2232,7 +2238,7 @@ GameOverRashTilemap:
 .db 0
 .db "       MATTHEW SPALL",0
 .dsb 7, 0
-.db "  BATTLEMANIACS RESTORATION",0
+.db " BATTLEMANIACS RESTORATION",0
 .dsb 3, 0
 .db "        PROGRAMMER",0
 .db 0
@@ -2307,3 +2313,18 @@ GameOverPatch:
   ; What we replaced to get here...  
   jp $30B4
 .ends
+/*
+.unbackground $3914 $3981
+.orga $3914
+.section "Game complete patch" overwrite
+  ld a,(PAGING_REGISTER_2)
+  push af
+    ld a,:GameComplete
+    ld (PAGING_REGISTER_2),a
+    call GameComplete ; TODO
+  pop af
+  ld (PAGING_REGISTER_2),a
+
+  jp $3982
+.ends
+*/
