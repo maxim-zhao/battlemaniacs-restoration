@@ -282,49 +282,52 @@ _lookup:
 .ends
 
 .section "Music player" free
+
+.define MUSIC_SILENCE 0
+.define MUSIC_TITLE 1
+.define MUSIC_RAGNAROK_CANYON $d
+.define MUSIC_HOLLOW_TREE $15
+.define MUSIC_SNAKE_PIT $23
+.define MUSIC_BONUS_STAGE $1b
+.define MUSIC_DARK_TOWER $02
+.define MUSIC_TURBO_TUNNEL $03
+
 PlayMusic:
   ; We do a dumb if-then-else. This costs about 12 bytes per item and isn't very fast, but doing it by a lookup would be a pain as we have large indices.
-  cp 1
+  cp MUSIC_TITLE
   jr nz,+
-  ; 1 = title screen
   ld a,:MusicTitle
   ld hl,MusicTitle
 _play:
   ld (CurrentMusicBank),a
   jp PSGPlay ; and ret
-+:cp $0d
++:cp MUSIC_RAGNAROK_CANYON
   jr nz,+
-  ; d = ragnarok canyon
   ld a,:MusicRagnarokCanyon
   ld hl,MusicRagnarokCanyon
   jp _play
-+:cp $15
++:cp MUSIC_HOLLOW_TREE
   jr nz,+
-  ; $15 = hollow tree
   ld a,:MusicHollowTree
   ld hl,MusicHollowTree
   jp _play
-+:cp $23
++:cp MUSIC_SNAKE_PIT
   jr nz,+
-  ; $23 = snake pit
   ld a,:MusicSnakePit
   ld hl,MusicSnakePit
   jp _play
-+:cp $1b
++:cp MUSIC_BONUS_STAGE
   jr nz,+
-  ; $1b = bonus stage
   ld a,:MusicBonusStage
   ld hl,MusicBonusStage
   jp _play
-+:cp $02
++:cp MUSIC_DARK_TOWER
   jr nz,+
-  ; $02 = dark tower (new)
   ld a,:MusicDarkTower
   ld hl,MusicDarkTower
   jp _play
-+:cp $03
++:cp MUSIC_TURBO_TUNNEL
   jr nz,+
-  ; $03 = turbo tunnel (new)
   ld a,:MusicTurboTunnel
   ld hl,MusicTurboTunnel
   jp _play
@@ -438,7 +441,16 @@ SFX19:
 .bank 1 slot 1
 .orga $6D31
 .section "Level music lookup" overwrite
-.db $0D $15 $1B $03 $23 $23 $23 $23 $00 $00 $02 $1B
+LevelMusicLookup:
+.db MUSIC_RAGNAROK_CANYON
+.db MUSIC_HOLLOW_TREE
+.db MUSIC_BONUS_STAGE
+.db MUSIC_TURBO_TUNNEL
+.dsb 4 MUSIC_SNAKE_PIT ; 4 levels joined together
+.db MUSIC_SILENCE ; Awaiting music
+.db MUSIC_SILENCE ; Awaiting music
+.db MUSIC_DARK_TOWER
+.db MUSIC_BONUS_STAGE
 .ends
 
 ; =======================================================================================
@@ -457,16 +469,24 @@ SFX19:
 ; =======================================================================================
 
 .bank 1 slot 1
-.unbackground $40cd $40d4 ; caller of the intro
+.unbackground $40cd $40dc ; caller of the intro
 .orga $40cd
 .section "IntroTrampoline" force
   ; Original game does:
   ; ld a, :_LABEL_18000_Intro;$06
   ; ld (_RAM_FFFF_), a
   ; call _LABEL_18000_Intro
+	; ld a, (_RAM_C822_IntroButtonPressed)
+	; and a
+	; jp z, _LABEL_3F74_ShowMenus ; restart loop
+	; ret ; Or break out of it
   ld a,:Intro
   ld (PAGING_REGISTER_2),a
   call Intro
+	ld a, (RAM_IntroButtonPressed)
+	and a
+	jp z, TitleScreenLoop ; restart loop
+	ret ; Or break out of it
 .ends
 
 .slot 2
@@ -484,7 +504,7 @@ SFX19:
 .ende
 
 ; Pre-title sequence and title screen
-Title:
+Title: 
   ld hl,PreTitleScript
   call _ScriptStart
   ; Separate script so this isn't skipped
@@ -2036,9 +2056,12 @@ TBirdTilemap:
 .orga $3f74
 .unbackground $3f74 $40ad ; pre-title screens up to title screen
 .section "Pre-title and title replacement" force
+TitleScreenStart:
+  ld a,MUSIC_TITLE
+  call PlayMusicTrampoline
   ld ix,$3000 + 32 * 4
   call LoadFont
-  call LoadPalettes
+TitleScreenLoop:
   ld a,(PAGING_REGISTER_2)
   push af
     ld a,:Title
