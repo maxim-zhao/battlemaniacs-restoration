@@ -88,6 +88,7 @@ CurrentMusicBank  db
 .define RAM_GameState               $c779 ; 3 = continue screen?
 .define RAM_LevelNumber             $C792 ; 0, 1, ...
 .define RAM_CharacterDataPointer    $c8c6 ; Points to character data, the first byte of which tells me if it's Pimple (1) or Rash (2)
+.define RAM_Is2Player               $C771 ; 1 if 2-player
 
 ; Data locations from the original game we want to use
 .define DATA_FontPalette            $AC41
@@ -595,6 +596,27 @@ GameOverScreen:
   ld hl,GameOverRash
 +:call _ScriptLoop
   ld hl,GameOverText
+  jp _ScriptLoop
+  
+GameComplete:
+  ld ix,$3000 + 32 * 4
+  call LoadFont
+
+  ld a,MUSIC_TITLE ; TODO change?
+  call PlayMusicTrampoline
+  
+  ; TODO the actual ending can go here
+  
+  ld a,(RAM_Is2Player)
+  or a
+  ld hl,Complete2Player
+  jp nz,_ScriptLoop
+  ; 1 player
+  ld a,($c400)
+  dec a
+  ld hl,CompletePimple
+  jp z,_ScriptLoop
+  ld hl,CompleteRash
   jp _ScriptLoop
   
 _ScriptStart:
@@ -1844,8 +1866,6 @@ GameOverTBirdD:
 
 GameModeScreenScript:
   Picture ToadsPalette, ToadsTiles, ToadsTilemap
-;  TextAt 6, 0, "PIMPLE", 
-;  TextAt 22, 0, "RASH"
   TextAt 11, 15, "1 PLAYER"
   TextAt 11, 17, "2 PLAYERS A"
   TextAt 11, 19, "2 PLAYERS B"
@@ -1861,7 +1881,16 @@ GameOverRash:
 GameOverText:
   TextAt 11, 13, "GAME OVER"
 .db SCRIPT_END_NOBLANK
-  
+
+CompletePimple:
+  Picture CompletePimplePalette, CompletePimpleTiles, CompletePimpleTilemap
+.db SCRIPT_END_NOBLANK
+CompleteRash:
+  Picture CompleteRashPalette, CompleteRashTiles, CompleteRashTilemap
+.db SCRIPT_END_NOBLANK
+Complete2Player:
+  Picture Complete2PlayerPalette, Complete2PlayerTiles, Complete2PlayerTilemap
+.db SCRIPT_END_NOBLANK
 .endb
 .ends
 
@@ -1953,6 +1982,15 @@ GameOverPimplePalette:
   NewSection
 GameOverRashPalette:
 .incbin "images\Game Over - Rash.png.palette.bin"
+  NewSection
+CompleteRashPalette:
+.incbin "images\Complete 1 player - Rash.png.palette.bin"
+  NewSection
+CompletePimplePalette:
+.incbin "images\Complete 1 player - Pimple.png.palette.bin"
+  NewSection
+Complete2PlayerPalette:
+.incbin "images\Complete 2 players.png.palette.bin"
 .ends
 
 ; Compressed data needs to be in slot 1, but we don't care what bank.
@@ -2211,15 +2249,35 @@ ToadsTilemap:
 .ends
 
 .slot 1
-.section "Game over screen data" superfree
+.section "Game over screen data - Pimple" superfree
 GameOverPimpleTiles:
 .incbin "images\Game Over - Pimple.png.tiles.zx7"
 GameOverPimpleTilemap:
 .incbin "images\Game Over - Pimple.png.tilemap.zx7"
+.ends
+.section "Game over screen data - Rash" superfree
 GameOverRashTiles:
 .incbin "images\Game Over - Rash.png.tiles.zx7"
 GameOverRashTilemap:
 .incbin "images\Game Over - Rash.png.tilemap.zx7"
+.ends
+.section "Complete screen data - Pimple" superfree
+CompletePimpleTiles:
+.incbin "images\Complete 1 player - Pimple.png.tiles.zx7"
+CompletePimpleTilemap:
+.incbin "images\Complete 1 player - Pimple.png.tilemap.zx7"
+.ends
+.section "Complete screen data - Rash" superfree
+CompleteRashTiles:
+.incbin "images\Complete 1 player - Rash.png.tiles.zx7"
+CompleteRashTilemap:
+.incbin "images\Complete 1 player - Rash.png.tilemap.zx7"
+.ends
+.section "Complete screen data - 2 players" superfree
+Complete2PlayerTiles:
+.incbin "images\Complete 2 players.png.tiles.zx7"
+Complete2PlayerTilemap:
+.incbin "images\Complete 2 players.png.tilemap.zx7"
 .ends
 
 
@@ -2336,18 +2394,17 @@ GameOverPatch:
   ; What we replaced to get here...  
   jp $30B4
 .ends
-/*
-.unbackground $3914 $3981
+
+.unbackground $3914 $3980
 .orga $3914
 .section "Game complete patch" overwrite
   ld a,(PAGING_REGISTER_2)
   push af
     ld a,:GameComplete
     ld (PAGING_REGISTER_2),a
-    call GameComplete ; TODO
+    call GameComplete
   pop af
   ld (PAGING_REGISTER_2),a
 
-  jp $3982
+  jp $3981
 .ends
-*/
