@@ -2408,3 +2408,31 @@ GameOverPatch:
 
   jp $3981
 .ends
+
+.bank 1 slot 1
+.unbackground $51D0 $51df
+.unbackground $88ED $8A4C
+.orga $51D0
+.section "In-game font replacement" force
+  ld a,:InGameFontTiles
+  ld (PAGING_REGISTER_2),a
+  ld hl,InGameFontTiles
+  ld de,$76A0
+  call zx7_decompress ; we call the decompressor directly
+  nop ; fill space
+  nop
+; Original:
+;	ld a, $C2
+;	ld (_RAM_FFFF_), a
+;	ld hl, _DATA_88ED_InGameNumbers
+;	ld de, $36A0 ; Destination
+;	ld b, $0B ; Count
+;	call _LABEL_6A7_EmitTiles
+.ends
+
+.slot 2
+.section "In-game font data" superfree
+InGameFontTiles:
+.incbin "images/fonts/In-game font.png.tiles.zx7"
+.ends
+

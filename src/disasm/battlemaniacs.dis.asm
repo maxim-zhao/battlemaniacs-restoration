@@ -11825,9 +11825,9 @@ _LABEL_51C0_:
 _LABEL_51D0_:
 	ld a, $C2
 	ld (_RAM_FFFF_), a
-	ld hl, _DATA_88ED_
-	ld de, $36A0
-	ld b, $0B
+	ld hl, _DATA_88ED_InGameNumbers
+	ld de, $36A0 ; Destination
+	ld b, $0B ; Count
 	call _LABEL_6A7_EmitTiles
 	call _LABEL_51B0_
 	ld a, (_RAM_C7C0_)
@@ -16084,7 +16084,7 @@ _DATA_816D_FontTiles:
 .incbin "battlemaniacs.dis_DATA_816D_FontTiles.inc"
 
 ; Data from 88ED to 8A4C (352 bytes)
-_DATA_88ED_:
+_DATA_88ED_InGameNumbers:
 .db $0C $00 $00 $00 $1E $00 $20 $20 $37 $48 $25 $25 $33 $00 $44 $44
 .db $33 $00 $44 $44 $3F $00 $68 $68 $1E $40 $32 $32 $00 $24 $18 $18
 .db $38 $00 $00 $00 $18 $20 $40 $40 $18 $00 $30 $30 $18 $00 $20 $20
