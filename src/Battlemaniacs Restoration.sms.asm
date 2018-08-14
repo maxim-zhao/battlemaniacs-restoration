@@ -74,12 +74,12 @@ CurrentMusicBank  db
 .define ResetScrollTile0AndTilemap  $04EA ; resets scrolling, blanks tile 0 and fills tilemap with that index
 .define LoadPalettes                $1583 ; loads palettes from RAM pointers to VRAM
 ;.define EmitTilemapRect             $0D4D ; emits tilemap data from hl to vram address de with dimensions bxc
-.define SkippableDelay              $0E9C ; delays for b*20ms, e.g. $64 => 2s
+.define SkippableDelay              $0E9C ; delays for b*20ms, e.g. $64 => 2s. Maximum wait is ~5s.
 .define ScreenOn                    $0295 ; turns screen on
 .define ScreenOff                   $0282 ; turns screen off
 .define FadeOut                     $14ac ; fades screen out
 
-.export TextToVRAM,CheckForButton1,ResetScrollTile0AndTilemap,LoadPalettes,SkippableDelay,ScreenOn,ScreenOff
+.export TextToVRAM,CheckForButton1,ResetScrollTile0AndTilemap,LoadPalettes,SkippableDelay,ScreenOn,ScreenOff,FadeOut
 
 ; RAM locations from the original game we want to use
 .define RAM_TilePalettePointer      $C7C7 ; pointer to palette for tiles, used by LoadPalettes
@@ -502,6 +502,7 @@ LevelMusicLookup:
   SCRIPT_BLANK_TEXT db
   SCRIPT_FADEOUT db
   SCRIPT_TILEMAP db
+  SCRIPT_RESTORESCREEN db
 .ende
 
 ; Pre-title sequence and title screen
@@ -602,10 +603,13 @@ GameComplete:
   ld ix,$3000 + 32 * 4
   call LoadFont
 
-  ld a,MUSIC_TITLE ; TODO change?
+  ld a,MUSIC_TITLE ; TODO change
   call PlayMusicTrampoline
   
-  ; TODO the actual ending can go here
+  call ResetScrollTile0AndTilemap
+  call ScreenOn
+  ld hl,Ending
+  call _ScriptLoop
   
   ld a,(RAM_Is2Player)
   or a
@@ -644,6 +648,8 @@ _ScriptLoop:
   jp z,_FadeOut
   cp SCRIPT_TILEMAP
   jp z,_LoadTilemap
+  cp SCRIPT_RESTORESCREEN
+  jp z,_RestoreScreenToBlank
   ; else it's text
   ; location is next, we need to put it in bc
   ld c,(hl)
@@ -657,6 +663,7 @@ _ScriptLoop:
   push ix
   pop hl
   ; check for key press
+  ; TODO: this means that pressing a button during text makes the script be entirely skipped, but at other times it does nothing
   call CheckForButton1
   jr z, _ScriptLoop ; loop if not pressed
   ; else fall through
@@ -752,6 +759,13 @@ _LoadPictureNoBlank:
     ; de = VRAM address to write to
     ld de,$7800 ; tilemap start
     call decompress
+  pop hl
+  jp _ScriptLoop
+  
+_RestoreScreenToBlank:
+  push hl
+    call ResetScrollTile0AndTilemap
+    call LoadPalettes
   pop hl
   jp _ScriptLoop
   
@@ -1729,49 +1743,67 @@ Ending Part 1
 ************************************/
 
 Ending:
+  ; TODO make this unskippable?
+  Picture TBirdPalette,TBirdTiles,TBirdTilemap
+  StartText 18
   Text "ER...", 5, 1
-  Clear 23
+  ; TODO rectangle clear here
+  Clear 18
+  StartText 18
   Text "HOLD THE PARTY, 'TOADS...", 25, 1
-  Clear 23
-  Text "I'VE JUST PICKED UP SILAS", 25
-  Text "VOLKMIRE ON MY SCANNERS,", 24
-  Text "TRYING TO ESCAPE USING", 22
+  Clear 18
+  StartText 18
+  Text "I'VE JUST PICKED UP SILAS", 25, 0.33
+  Text "VOLKMIRE ON MY SCANNERS,", 24, 0.33
+  Text "TRYING TO ESCAPE USING", 22, 0.33
   Text "A TELEPORTER!!", 14, 4
-  Clear 23
-  Text "HOLD ON, I'LL LOCATE HIS", 24
+  Clear 18
+  StartText 18
+  Text "HOLD ON, I'LL LOCATE HIS", 24, 0.33
   Text "TARGET DESTINATION...", 21, 2
-  Clear 23
-  Text "FOUND IT! TWEAK MY BEAK,", 24
-  Text "HE'S GONNA APPEAR ABOVE THE", 27
-  Text "PSICONE BUILDING ANY", 20
+  Clear 18
+  StartText 18
+  Text "FOUND IT! TWEAK MY BEAK,", 24, 0.33
+  Text "HE'S GONNA APPEAR ABOVE THE", 27, 0.33
+  Text "PSICONE BUILDING ANY", 20, 0.33
   Text "MINUTE NOW!!", 12, 4
-  Clear 23
-  Text "YOU'D BETTER GET BACK HERE", 26
-  Text "PRONTO, 'TOADS! YOU'RE OUR", 26
+  Clear 18
+  StartText 18
+  Text "YOU'D BETTER GET BACK HERE", 26, 0.33
+  Text "PRONTO, 'TOADS! YOU'RE OUR", 26, 0.33
   Text "ONLY HOPE OF CATCHING HIM!", 26, 3
-  Clear 23
-;Scene 1:
-  Text "WE'RE BACK ON THE SCENE AN'", 27
-  Text "RARIN' TO GO, PROF!", 19
-;Scene 2:
-  Text "THERE HE IS, GUYS! QUICK,", 25
-  Text "INTO THE BATTLECOPTER!", 22
-;Scene 3:
-  Text "PUT YOUR FOOT DOWN PIMPLE,", 26
-  Text "HE'S GETTIN' AWAY!", 18
-;Scene 4:
-  Text "WE'VE CAUGHT UP! HURRY RASH,", 28
-  Text "FIRE THE MISSILES! WE WON'T", 27
-  Text "BE ABLE TO STAY WITH HIM", 24
-  Text "MUCH LONGER!", 12
-;Scene 5:
-  Text "SO LONG, BATTLELOSERS!!", 23
-  Text "HA-HA-HA-HA!!", 13
+  .db SCRIPT_FADEOUT
+  Picture Ending1Palette,Ending1Tiles,Ending1Tilemap
+  StartText 18
+  Text "WE'RE BACK ON THE SCENE AN'", 27, 0.33
+  Text "RARIN' TO GO, PROF!", 19, 2
+  .db SCRIPT_FADEOUT
+  Picture Ending2Palette,Ending2Tiles,Ending2Tilemap
+  StartText 21
+  Text "THERE HE IS, GUYS! QUICK,", 25, 0.33
+  Text "INTO THE BATTLECOPTER!", 22, 2
+  .db SCRIPT_FADEOUT
+  Picture Ending3Palette,Ending3Tiles,Ending3Tilemap
+  StartText 21
+  Text "PUT YOUR FOOT DOWN PIMPLE,", 26, 0.33
+  Text "HE'S GETTIN' AWAY!", 18, 2
+  .db SCRIPT_FADEOUT
 
 
 /*************************************
 Ending Part 2 (Bad Ending) (This will probably be left unused)
 *************************************/
+/*
+  StartText 20
+  Text "WE'VE CAUGHT UP! HURRY RASH,", 28, 0.33
+  Text "FIRE THE MISSILES! WE WON'T", 27, 0.33
+  Text "BE ABLE TO STAY WITH HIM", 24, 0.33
+  Text "MUCH LONGER!", 12, 4
+  Clear 20
+  StartText 21
+  Text "SO LONG, BATTLELOSERS!!", 23, 0.33
+  Text "HA-HA-HA-HA!!", 13, 2
+  .db SCRIPT_FADEOUT
 
 ;Text 1:
   Text "VOLKMIRE BREATHES A SIGH OF", 27
@@ -1795,36 +1827,45 @@ Ending Part 2 (Bad Ending) (This will probably be left unused)
   Text "DUO TRY AGAIN...", 16
 ;Text 4:
   Text "THE END?", 8
-
+*/
 /*************************************
 Ending Part 2 (Good Ending)
 *************************************/
-;Scene 4:
-  Text "WE'VE CAUGHT UP! HURRY RASH,", 28
-  Text "FIRE THE MISSILES! WE WON'T", 27
-  Text "BE ABLE TO STAY WITH HIM", 24
-  Text "MUCH LONGER!", 12
-;Scene 5:
-  Text "ARRGGGHHHHHHH!", 14
-;Text 1:
-  Text "AND SO, THE SINISTER SILAS", 26
-  Text "VOLKMIRE IS ONCE AGAIN", 22
-  Text "THWARTED BY THE VICTORIOUS", 26
-  Text "BATTLETOADS.", 12
-;Text 2:
-  Text "VOLKMIRE'S BURNT OUT SHIP IS", 28
-  Text "RETRIEVED FROM THE HIMALAYAS,", 29
-  Text "BUT OF HIS BODY, THERE IS", 25
-  Text "NO TRACE...", 11
-;Text 3:
-  Text "WHO KNOWS WHAT HAPPENED TO", 26
-  Text "HIM, BUT YOU CAN BE SURE OF", 27
-  Text "ONE THING - BOTH HE AND THE", 27
-  Text "DARK QUEEN WILL REMEMBER THE", 28
-  Text "DAY THEY TOOK ON THE", 20
-  Text "BATTLETOADS - AND LOST!!", 24
-;Text 4:
-  Text "THE END.", 8
+  Picture EndingGood1Palette,EndingGood1Tiles,EndingGood1Tilemap
+  StartText 20
+  Text "WE'VE CAUGHT UP! HURRY RASH,", 28, 0.33
+  Text "FIRE THE MISSILES! WE WON'T", 27, 0.33
+  Text "BE ABLE TO STAY WITH HIM", 24, 0.33
+  Text "MUCH LONGER!", 12, 4
+  .db SCRIPT_FADEOUT
+  Picture EndingGood2Palette,EndingGood2Tiles,EndingGood2Tilemap
+  StartText 21
+  Text "ARRGGGHHHHHHH!", 14, 1
+  .db SCRIPT_FADEOUT
+  
+  .db SCRIPT_RESTORESCREEN
+  StartText 2
+  Text "AND SO, THE SINISTER SILAS", 26, 0.33
+  Text "VOLKMIRE IS ONCE AGAIN", 22, 0.33
+  Text "THWARTED BY THE VICTORIOUS", 26, 0.33
+  Text "BATTLETOADS.", 12, 4
+  StartText 7
+  Text "VOLKMIRE'S BURNT OUT SHIP IS", 28, 0.33
+  Text "RETRIEVED FROM THE HIMALAYAS,", 29, 0.33
+  Text "BUT OF HIS BODY, THERE IS", 25, 0.33
+  Text "NO TRACE...", 11, 4
+  StartText 12
+  Text "WHO KNOWS WHAT HAPPENED TO", 26, 0.33
+  Text "HIM, BUT YOU CAN BE SURE OF", 27, 0.33
+  Text "ONE THING - BOTH HE AND THE", 27, 0.33
+  Text "DARK QUEEN WILL REMEMBER THE", 28, 0.33
+  Text "DAY THEY TOOK ON THE", 20, 0.33
+  Text "BATTLETOADS - AND LOST!!", 24, 5
+  StartText 20
+  Text "THE END.", 8, 5
+  
+  .db SCRIPT_FADEOUT
+  .db SCRIPT_END_BLANK
 
 /*************************************
 Continue (in the Master System version these messages appear before continuing, not after continuing like in the SNES)
@@ -2075,6 +2116,29 @@ CompletePimplePalette:
   NewSection
 Complete2PlayerPalette:
 .incbin "images\Complete 2 players.png.palette.bin"
+  NewSection
+Ending1Palette:
+.incbin "images\Ending 01.png.palette.bin"
+  NewSection
+Ending2Palette:
+.incbin "images\Ending 02.png.palette.bin"
+  NewSection
+Ending3Palette:
+.incbin "images\Ending 03.png.palette.bin"
+  NewSection
+EndingGood1Palette:
+.incbin "images\Ending Good 01.png.palette.bin"
+  NewSection
+EndingGood2Palette:
+.incbin "images\Ending Good 02.png.palette.bin"
+/*
+  NewSection
+EndingBad1Palette:
+.incbin "images\Ending Bad 01.png.palette.bin"
+  NewSection
+EndingBad2Palette:
+.incbin "images\Ending Bad 02.png.palette.bin"
+*/
 .ends
 
 ; Compressed data needs to be in slot 1, but we don't care what bank.
@@ -2363,6 +2427,26 @@ Complete2PlayerTiles:
 Complete2PlayerTilemap:
 .incbin "images\Complete 2 players.png.tilemap.zx7"
 .ends
+.section "Ending graphics 1" superfree
+Ending1Tiles:   .incbin "images\Ending 01.png.tiles.zx7"
+Ending1Tilemap: .incbin "images\Ending 01.png.tilemap.zx7"
+.ends
+.section "Ending graphics 2" superfree
+Ending2Tiles:   .incbin "images\Ending 02.png.tiles.zx7"
+Ending2Tilemap: .incbin "images\Ending 02.png.tilemap.zx7"
+.ends
+.section "Ending graphics 3" superfree
+Ending3Tiles:   .incbin "images\Ending 03.png.tiles.zx7"
+Ending3Tilemap: .incbin "images\Ending 03.png.tilemap.zx7"
+.ends
+.section "Ending graphics Good 1" superfree
+EndingGood1Tiles:   .incbin "images\Ending Good 01.png.tiles.zx7"
+EndingGood1Tilemap: .incbin "images\Ending Good 01.png.tilemap.zx7"
+.ends
+.section "Ending graphics Good 2" superfree
+EndingGood2Tiles:   .incbin "images\Ending Good 02.png.tiles.zx7"
+EndingGood2Tilemap: .incbin "images\Ending Good 02.png.tilemap.zx7"
+.ends
 
 
 .bank 2 slot 2
@@ -2481,7 +2565,7 @@ GameOverPatch:
 
 .unbackground $3914 $3980
 .orga $3914
-.section "Game complete patch" overwrite
+.section "Game complete patch" force
   ld a,(PAGING_REGISTER_2)
   push af
     ld a,:GameComplete
@@ -2519,4 +2603,3 @@ GameOverPatch:
 InGameFontTiles:
 .incbin "images/fonts/In-game font.png.tiles.zx7"
 .ends
-
