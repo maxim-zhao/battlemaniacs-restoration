@@ -8627,6 +8627,7 @@ _LABEL_3914_GameComplete:
 	call _LABEL_6D54_AudioPlayMusic
 	call _LABEL_E7A_CheckForButton1
 	call _LABEL_282_ScreenOff
+
 	ld bc, $0E08
 	call _LABEL_57E7_SetTextToVRAMLocation
 	ld ix, _DATA_6E5A_Text_GameCompleted
@@ -8639,7 +8640,7 @@ _LABEL_3914_GameComplete:
 	jr z, +
 	ld bc, $1405
 	call _LABEL_57E7_SetTextToVRAMLocation
-	call _LABEL_582A_
+	call _LABEL_582A_PrintScore
 	ld bc, $1415
 	ld ix, _RAM_C786_
 	jr ++
@@ -8648,7 +8649,7 @@ _LABEL_3914_GameComplete:
 	ld bc, $140D
 ++:
 	call _LABEL_57E7_SetTextToVRAMLocation
-	call _LABEL_582A_
+	call _LABEL_582A_PrintScore
 	call _LABEL_295_ScreenOn
 	ld b, $02
 	call _LABEL_D43_DelaySeconds
@@ -12668,14 +12669,15 @@ _LABEL_57E7_SetTextToVRAMLocation:
 .db $7B $32 $9A $C7 $01 $0A $00 $1E $00 $A7 $ED $42 $DA $20 $58 $1C
 .db $C3 $16 $58 $09 $7B $32 $9B $C7 $7D $32 $9C $C7 $C9
 
-_LABEL_582A_:
-	ld b, $06
+_LABEL_582A_PrintScore:
+  ; ix points to score data
+	ld b, $06 ; digits
 -:
 	push bc
-	ld a, (ix+0)
-	add a, $30
-	call _LABEL_57AB_CharToVRAM
-	inc ix
+    ld a, (ix+0)
+    add a, $30 ; index of '0'
+    call _LABEL_57AB_CharToVRAM
+    inc ix
 	pop bc
 	djnz -
 	ret

@@ -78,6 +78,8 @@ CurrentMusicBank  db
 .define ScreenOn                    $0295 ; turns screen on
 .define ScreenOff                   $0282 ; turns screen off
 .define FadeOut                     $14ac ; fades screen out
+.define SetOutputLocation           $57e7 ; sets the output location
+.define PrintScore                  $582a ; prints a 6-byte byte-per-digit number from ix to the current output location
 
 .export TextToVRAM,CheckForButton1,ResetScrollTile0AndTilemap,LoadPalettes,SkippableDelay,ScreenOn,ScreenOff,FadeOut
 
@@ -613,15 +615,26 @@ GameComplete:
   
   ld a,(RAM_Is2Player)
   or a
-  ld hl,Complete2Player
-  jp nz,_ScriptLoop
+  jr nz,@2P
   ; 1 player
   ld a,($c400)
   dec a
-  ld hl,CompletePimple
-  jp z,_ScriptLoop
+  jr z,@Pimple
+@Rash:
   ld hl,CompleteRash
-  jp _ScriptLoop
+  call _ScriptLoop
+  ld ix,$c77b ; 1P score
+  jp PrintScore ; and ret
+@Pimple:
+  ld hl,CompletePimple
+  call _ScriptLoop
+  ; TODO: score
+  ret
+@2P:
+  ld hl,Complete2Player
+  call _ScriptLoop
+  ; TODO: scores
+  ret
   
 _ScriptStart:
   push hl
@@ -2012,6 +2025,11 @@ CompletePimple:
 .db SCRIPT_END_NOBLANK
 CompleteRash:
   Picture CompleteRashPalette, CompleteRashTiles, CompleteRashTilemap
+  TextAt 3,2 "GAME"
+  TextAt 3,4 "COMPLETED"
+  TextAt 3,14 "YOUR FINAL"
+  TextAt 3,16 "SCORE"
+  TextAt 3,18 "" ; ready for score
 .db SCRIPT_END_NOBLANK
 Complete2Player:
   Picture Complete2PlayerPalette, Complete2PlayerTiles, Complete2PlayerTilemap
@@ -2519,7 +2537,7 @@ CreditsEnd:
 .orga $39d7
 
 .orga $3a5c
-.section "Patch credits ending pointer"overwrite
+.section "Patch credits ending pointer" overwrite
   ld de,CreditsEnd
 .ends
 
@@ -2563,7 +2581,7 @@ GameOverPatch:
   jp $30B4
 .ends
 
-.unbackground $3914 $3980
+.unbackground $3914 $39B8
 .orga $3914
 .section "Game complete patch" force
   ld a,(PAGING_REGISTER_2)
@@ -2574,7 +2592,7 @@ GameOverPatch:
   pop af
   ld (PAGING_REGISTER_2),a
 
-  jp $3981
+  jp $39B9
 .ends
 
 .bank 1 slot 1
