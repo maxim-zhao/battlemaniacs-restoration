@@ -505,6 +505,7 @@ LevelMusicLookup:
   SCRIPT_FADEOUT db
   SCRIPT_TILEMAP db
   SCRIPT_RESTORESCREEN db
+  SCRIPT_BLANK_TBIRD db
 .ende
 
 ; Pre-title sequence and title screen
@@ -623,18 +624,20 @@ GameComplete:
 @Rash:
   ld hl,CompleteRash
   call _ScriptLoop
-  ld ix,$c77b ; 1P score
+-:ld ix,$c77b ; 1P score
   jp PrintScore ; and ret
 @Pimple:
   ld hl,CompletePimple
   call _ScriptLoop
-  ; TODO: score
-  ret
+  jr -
 @2P:
   ld hl,Complete2Player
   call _ScriptLoop
-  ; TODO: scores
-  ret
+  ld ix,$c786 ; 2P score
+  call PrintScore
+	ld bc, 7 + 21 << 8 ; x, y
+	call SetOutputLocation
+  jr -
   
 _ScriptStart:
   push hl
@@ -663,6 +666,8 @@ _ScriptLoop:
   jp z,_LoadTilemap
   cp SCRIPT_RESTORESCREEN
   jp z,_RestoreScreenToBlank
+  cp SCRIPT_BLANK_TBIRD
+  jp z,_BlankRectTBird
   ; else it's text
   ; location is next, we need to put it in bc
   ld c,(hl)
@@ -685,6 +690,33 @@ _IntroSkipped:
   ld a, 1
   ld (RAM_IntroButtonPressed), a
   ret
+  
+_BlankRectTBird:
+  push hl
+    ; We set the write address
+    ld hl,$3800 + (18 * 32 + 2) * 2
+    di
+    ld de,32*2
+    ld c,$bf
+    xor a
+    ld b,5 ; rows
+--: out (c),l
+    out (c),h
+    push bc
+      ld b,28*2 ; columns
+-:    out ($be),a
+      push ix ; delay
+      pop ix
+      djnz -
+    pop bc
+    ; add 32 to hl
+    add hl,de
+    ; and repeat
+    djnz --
+    ei
+  pop hl
+  jp _ScriptLoop
+  
 
 _blank:
   ; next byte is the row index
@@ -1758,30 +1790,29 @@ Ending Part 1
 Ending:
   ; TODO make this unskippable?
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
-  StartText 18
-  Text "ER...", 5, 1
-  ; TODO rectangle clear here
-  Clear 18
-  StartText 18
-  Text "HOLD THE PARTY, 'TOADS...", 25, 1
-  Clear 18
+  StartText 20
+  Text "ER...", 5, 2
+  .db SCRIPT_BLANK_TBIRD
+  StartText 20
+  Text "HOLD THE PARTY, 'TOADS...", 25, 2
+  .db SCRIPT_BLANK_TBIRD
   StartText 18
   Text "I'VE JUST PICKED UP SILAS", 25, 0.33
   Text "VOLKMIRE ON MY SCANNERS,", 24, 0.33
   Text "TRYING TO ESCAPE USING", 22, 0.33
   Text "A TELEPORTER!!", 14, 4
-  Clear 18
-  StartText 18
+  .db SCRIPT_BLANK_TBIRD
+  StartText 19
   Text "HOLD ON, I'LL LOCATE HIS", 24, 0.33
   Text "TARGET DESTINATION...", 21, 2
-  Clear 18
+  .db SCRIPT_BLANK_TBIRD
   StartText 18
   Text "FOUND IT! TWEAK MY BEAK,", 24, 0.33
   Text "HE'S GONNA APPEAR ABOVE THE", 27, 0.33
   Text "PSICONE BUILDING ANY", 20, 0.33
   Text "MINUTE NOW!!", 12, 4
-  Clear 18
-  StartText 18
+  .db SCRIPT_BLANK_TBIRD
+  StartText 19
   Text "YOU'D BETTER GET BACK HERE", 26, 0.33
   Text "PRONTO, 'TOADS! YOU'RE OUR", 26, 0.33
   Text "ONLY HOPE OF CATCHING HIM!", 26, 3
@@ -2022,6 +2053,12 @@ GameOverText:
 
 CompletePimple:
   Picture CompletePimplePalette, CompletePimpleTiles, CompletePimpleTilemap
+  TextAt 26,2 "GAME"
+  TextAt 21,4 "COMPLETED"
+  TextAt 26,13 "YOUR"
+  TextAt 25,15 "FINAL"
+  TextAt 25,17 "SCORE"
+  TextAt 24,21 "" ; ready for score
 .db SCRIPT_END_NOBLANK
 CompleteRash:
   Picture CompleteRashPalette, CompleteRashTiles, CompleteRashTilemap
@@ -2029,10 +2066,15 @@ CompleteRash:
   TextAt 3,4 "COMPLETED"
   TextAt 3,14 "YOUR FINAL"
   TextAt 3,16 "SCORE"
-  TextAt 3,18 "" ; ready for score
+  TextAt 3,19 "" ; ready for score
 .db SCRIPT_END_NOBLANK
 Complete2Player:
   Picture Complete2PlayerPalette, Complete2PlayerTiles, Complete2PlayerTilemap
+  TextAt 10,13 "GAME COMPLETED"
+  TextAt 8,16 "YOUR FINAL SCORES"
+  TextAt 7,19 "PIMPLE"
+  TextAt 21,19 "RASH"
+  TextAt 20,21 "" ; ready for P2 score
 .db SCRIPT_END_NOBLANK
 .endb
 .ends
@@ -2525,6 +2567,20 @@ EndingGood2Tilemap: .incbin "images\Ending Good 02.png.tilemap.zx7"
 .db "        COORDINATOR",0
 .db 0
 .db "          WESKER",0
+.dsb 7, 0
+.db "       SPECIAL THANKS",0
+.dsb 3, 0
+.db "           PIMPLE",0
+.db 0
+.db "            RASH",0
+.db 0
+.db "            ZITZ",0
+.db 0
+.db "     PROFESSOR T. BIRD",0
+.dsb 3, 0
+.db "            AND",0
+.db 0
+.db "            YOU",0
 .dsb 14 0
 CreditsEnd:
 .ends
