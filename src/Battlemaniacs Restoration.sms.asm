@@ -292,11 +292,15 @@ _lookup:
 .define MUSIC_HOLLOW_TREE $15
 .define MUSIC_SNAKE_PIT $23
 .define MUSIC_BONUS_STAGE $1b
+; Additions
 .define MUSIC_DARK_TOWER $02
 .define MUSIC_TURBO_TUNNEL $03
+.define MUSIC_ROLLER_COASTER $04
+.define MUSIC_BONUS_STAGE_2 $05
 
 PlayMusic:
   ; We do a dumb if-then-else. This costs about 12 bytes per item and isn't very fast, but doing it by a lookup would be a pain as we have large indices.
+  ; (We could use more sensible indices if we re-wrote all callers to use the new indices.)
   cp MUSIC_TITLE
   jr nz,+
   ld a,:MusicTitle
@@ -333,6 +337,16 @@ _play:
   jr nz,+
   ld a,:MusicTurboTunnel
   ld hl,MusicTurboTunnel
+  jp _play
++:cp MUSIC_ROLLER_COASTER
+  jr nz,+
+  ld a,:MusicRollerCoaster
+  ld hl,MusicRollerCoaster
+  jp _play
++:cp MUSIC_BONUS_STAGE_2
+  jr nz,+
+  ld a,:MusicBonusStage2
+  ld hl,MusicBonusStage2
   jp _play
   ; unhandled
 +:jp StopMusic ; and ret
@@ -375,6 +389,14 @@ MusicDarkTower:
 .section "Music data 7" superfree
 MusicTurboTunnel:
 .incbin "vgms/music/Turbo Tunnel.psg"
+.ends
+.section "Music data 8" superfree
+MusicRollerCoaster:
+.incbin "vgms/music/Roller Coaster.psg"
+.ends
+.section "Music data 9" superfree
+MusicBonusStage2:
+.incbin "vgms/music/Bonus Stage 2.psg"
 .ends
 
 .section "SFX data" superfree
@@ -450,8 +472,8 @@ LevelMusicLookup:
 .db MUSIC_BONUS_STAGE
 .db MUSIC_TURBO_TUNNEL
 .dsb 4 MUSIC_SNAKE_PIT ; 4 levels joined together
-.db MUSIC_SILENCE ; Awaiting music
-.db MUSIC_SILENCE ; Awaiting music
+.db MUSIC_BONUS_STAGE_2
+.db MUSIC_ROLLER_COASTER
 .db MUSIC_DARK_TOWER
 .db MUSIC_BONUS_STAGE
 .ends
