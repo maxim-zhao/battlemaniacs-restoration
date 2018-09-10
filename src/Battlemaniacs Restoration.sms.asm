@@ -2592,13 +2592,32 @@ EndingGood2Tilemap: .incbin "images\Ending Good 02.png.tilemap.zx7"
 .dsb 7, 0
 .db "       SPECIAL THANKS",0
 .dsb 3, 0
-.db "           PIMPLE",0
+.db "            ZITZ",0
 .db 0
 .db "            RASH",0
 .db 0
-.db "            ZITZ",0
+.db "           PIMPLE",0
 .db 0
 .db "     PROFESSOR T. BIRD",0
+.db 0
+.db "      MICHIKO TASHOKU",0
+.db 0
+.db "      YURIKO TASHOKU",0
+.db 0
+.db "    PSICONE CORPORATION",0
+.db 0
+.db "    THE EVIL DARK QUEEN",0
+.db 0
+.db "       SILAS VOLKMIRE",0
+.db 0
+.db "           SCUZZ",0
+.db 0
+.db "            FUZZ",0
+.db 0
+.db "           KARNATH",0
+.db 0
+.db "  THE PIGS OF THE APOCALYPSE",0
+.db 0
 .dsb 3, 0
 .db "            AND",0
 .db 0
