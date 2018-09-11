@@ -2605,19 +2605,50 @@ EndingGood2Tilemap: .incbin "images\Ending Good 02.png.tilemap.zx7"
 .db "      YURIKO TASHOKU",0
 .db 0
 .db "    PSICONE CORPORATION",0
-.db 0
+.dsb 7, 0
+.db "   NOT SO SPECIAL THANKS",0
+.dsb 3, 0
 .db "    THE EVIL DARK QUEEN",0
-.db 0
+.db 0.
 .db "       SILAS VOLKMIRE",0
+.db 0
+.db "           KARNATH",0
 .db 0
 .db "           SCUZZ",0
 .db 0
 .db "            FUZZ",0
 .db 0
-.db "           KARNATH",0
+.db "           SPARKZ",0
+.db 0
+.db "       THE GREAT RATSO",0
+.db 0
+.db "       THE RAT WORKERS",0
 .db 0
 .db "  THE PIGS OF THE APOCALYPSE",0
 .db 0
+.db "      ROCKY THE STONE PIG",0
+.db 0
+.db "        THE PORKA PIGS",0
+.db 0
+.db "     THE SKELLINGTON BONES",0
+.db 0
+.db "      THE SATURN TOADTRAPS",0
+.db 0
+.db "         THE WASPLINGS",0
+.db 0
+.db "          THE LAZBOTS",0
+.db 0
+.db "     THE TURBO TUNNEL WALLS",0
+..dsb 7, 0
+.db "     VERY SPECIAL THANKS",0
+.dsb 3, 0
+.db "           RARE LTD",0
+.db 0.
+.db "        TRADEWEST, INC",0
+.db 0
+.db "     SEGA ENTERPRISES, LTD",0
+.db 0
+.db "    THE SMS POWER COMMUNITY",0
 .dsb 3, 0
 .db "            AND",0
 .db 0
