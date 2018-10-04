@@ -2540,120 +2540,180 @@ EndingGood2Tilemap: .incbin "images\Ending Good 02.png.tilemap.zx7"
 ; It comes out in uppercase, so we store it as such,
 ; although for some reason the original uses lowercase here.
 ; We centre the text just by left-padding - the left-padding 
-; should be floor((26-width)/2). A zero means end of line.
-.db "   CONVERTED IN THE UK",0
-.db 0
-.db "            BY",0
-.db "  SYROX DEVELOPMENTS LTD",0
-.dsb 3, 0
-.db "        PROGRAMMER",0
-.db 0
-.db "       DOMINIC WOOD",0
-.db 0
-.db 0
-.db "      GRAPHIC ARTIST",0
-.db 0
-.db "        JOCK GREEN",0
-.db 0
-.db 0
-.db "      MUSIC AND SOUND",0
-.db 0
-.db "         KRISALIS:",0
-.db "       MATT FURNISS",0
-.db "    SHAUN HOLLINGWORTH",0
-.dsb 7, 0
-.db "    VIRGIN INTERACTIVE",0
-.db "ENTERTAINMENT (EUROPE) LTD",0
-.db 3, 0
-.db "     PRODUCT PRODUCER",0
-.db 0
-.db "       MATTHEW SPALL",0
-.dsb 7, 0
-.db " BATTLEMANIACS RESTORATION",0
-.dsb 3, 0
-.db "        PROGRAMMER",0
-.db 0
-.db "           MAXIM",0
-.db 0
-.db 0
-.db "           MUSIC",0
-.db 0
-.db "      MOTAVIAN RAIDER",0
-.db 0
-.db 0
-.db "          ARTIST",0
-.db 0
-.db "           PYRON",0
-.db 0
-.db 0
-.db "        COORDINATOR",0
-.db 0
-.db "          WESKER",0
-.dsb 7, 0
-.db "       SPECIAL THANKS",0
-.dsb 3, 0
-.db "            ZITZ",0
-.db 0
-.db "            RASH",0
-.db 0
-.db "           PIMPLE",0
-.db 0
-.db "     PROFESSOR T. BIRD",0
-.db 0
-.db "      MICHIKO TASHOKU",0
-.db 0
-.db "      YURIKO TASHOKU",0
-.db 0
-.db "    PSICONE CORPORATION",0
-.dsb 7, 0
-.db "   NOT SO SPECIAL THANKS",0
-.dsb 3, 0
-.db "    THE EVIL DARK QUEEN",0
-.db 0.
-.db "       SILAS VOLKMIRE",0
-.db 0
-.db "           KARNATH",0
-.db 0
-.db "           SCUZZ",0
-.db 0
-.db "            FUZZ",0
-.db 0
-.db "           SPARKZ",0
-.db 0
-.db "       THE GREAT RATSO",0
-.db 0
-.db "       THE RAT WORKERS",0
-.db 0
-.db "  THE PIGS OF THE APOCALYPSE",0
-.db 0
-.db "      ROCKY THE STONE PIG",0
-.db 0
-.db "        THE PORKA PIGS",0
-.db 0
-.db "     THE SKELLINGTON BONES",0
-.db 0
-.db "      THE SATURN TOADTRAPS",0
-.db 0
-.db "         THE WASPLINGS",0
-.db 0
-.db "          THE LAZBOTS",0
-.db 0
-.db "     THE TURBO TUNNEL WALLS",0
-..dsb 7, 0
-.db "     VERY SPECIAL THANKS",0
-.dsb 3, 0
-.db "           RARE LTD",0
-.db 0.
-.db "        TRADEWEST, INC",0
-.db 0
-.db "     SEGA ENTERPRISES, LTD",0
-.db 0
-.db "    THE SMS POWER COMMUNITY",0
-.dsb 3, 0
-.db "            AND",0
-.db 0
-.db "            YOU",0
-.dsb 14 0
+; should be floor((27-width)/2). A zero means end of line.
+
+.macro CreditsText args s
+  .if s.length > 0
+    .if s.length < 26
+      .dsb (27-s.length)/2, ' '
+    .endif
+    .db s
+  .endif
+  .db 0
+.endm
+
+  CreditsText "CONVERTED IN THE UK"
+  CreditsText ""
+  CreditsText "BY"
+  CreditsText "SYROX DEVELOPMENTS LTD"
+  CreditsText ""
+  CreditsText ""
+  CreditsText ""
+  CreditsText "PROGRAMMER"
+  CreditsText ""
+  CreditsText "DOMINIC WOOD"
+  CreditsText ""
+  CreditsText ""
+  CreditsText "GRAPHIC ARTIST"
+  CreditsText ""
+  CreditsText "JOCK GREEN"
+  CreditsText ""
+  CreditsText ""
+  CreditsText "MUSIC AND SOUND"
+  CreditsText ""
+  CreditsText "KRISALIS:"
+  CreditsText "MATT FURNISS"
+  CreditsText "SHAUN HOLLINGWORTH"
+  CreditsText ""
+  CreditsText ""
+  CreditsText ""
+  CreditsText ""
+  CreditsText ""
+  CreditsText ""
+  CreditsText ""
+  CreditsText "VIRGIN INTERACTIVE"
+  CreditsText "ENTERTAINMENT (EUROPE) LTD"
+  CreditsText ""
+  CreditsText ""
+  CreditsText ""
+  CreditsText "PRODUCT PRODUCER"
+  CreditsText ""
+  CreditsText "MATTHEW SPALL"
+  CreditsText ""
+  CreditsText ""
+  CreditsText ""
+  CreditsText ""
+  CreditsText ""
+  CreditsText ""
+  CreditsText ""
+  CreditsText "BATTLEMANIACS RESTORATION"
+  CreditsText ""
+  CreditsText ""
+  CreditsText ""
+  CreditsText "PROGRAMMER"
+  CreditsText ""
+  CreditsText "MAXIM"
+  CreditsText ""
+  CreditsText ""
+  CreditsText "MUSIC"
+  CreditsText ""
+  CreditsText "MOTAVIAN RAIDER",0
+  CreditsText ""
+  CreditsText ""
+  CreditsText "ARTIST"
+  CreditsText ""
+  CreditsText "PYRON"
+  CreditsText ""
+  CreditsText ""
+  CreditsText "COORDINATOR"
+  CreditsText ""
+  CreditsText "WESKER"
+  CreditsText ""
+  CreditsText ""
+  CreditsText ""
+  CreditsText ""
+  CreditsText ""
+  CreditsText ""
+  CreditsText ""
+  CreditsText "SPECIAL THANKS"
+  CreditsText ""
+  CreditsText ""
+  CreditsText ""
+  CreditsText "ZITZ"
+  CreditsText ""
+  CreditsText "RASH"
+  CreditsText ""
+  CreditsText "PIMPLE"
+  CreditsText ""
+  CreditsText "PROFESSOR T. BIRD"
+  CreditsText ""
+  CreditsText "MICHIKO TASHOKU"
+  CreditsText ""
+  CreditsText "YURIKO TASHOKU"
+  CreditsText ""
+  CreditsText "PSICONE CORPORATION"
+  CreditsText ""
+  CreditsText "NOT SO SPECIAL THANKS"
+  CreditsText ""
+  CreditsText "THE EVIL DARK QUEEN"
+  CreditsText ""
+  CreditsText "SILAS VOLKMIRE"
+  CreditsText ""
+  CreditsText "KARNATH"
+  CreditsText ""
+  CreditsText "SCUZZ"
+  CreditsText ""
+  CreditsText "FUZZ"
+  CreditsText ""
+  CreditsText "SPARKZ"
+  CreditsText ""
+  CreditsText "THE GREAT RATSO"
+  CreditsText ""
+  CreditsText "THE RAT WORKERS"
+  CreditsText ""
+  CreditsText "THE PIGS OF THE APOCALYPSE"
+  CreditsText ""
+  CreditsText "ROCKY THE STONE PIG"
+  CreditsText ""
+  CreditsText "THE PORKA PIGS"
+  CreditsText ""
+  CreditsText "THE SKELLINGTON BONES"
+  CreditsText ""
+  CreditsText "THE SATURN TOADTRAPS"
+  CreditsText ""
+  CreditsText "THE WASPLINGS"
+  CreditsText ""
+  CreditsText "THE LAZBOTS"
+  CreditsText ""
+  CreditsText "THE TURBO TUNNEL WALLS"
+  CreditsText ""
+  CreditsText ""
+  CreditsText ""
+  CreditsText ""
+  CreditsText ""
+  CreditsText ""
+  CreditsText ""
+  CreditsText "VERY SPECIAL THANKS"
+  CreditsText ""
+  CreditsText ""
+  CreditsText ""
+  CreditsText "RARE LTD"
+  CreditsText ""
+  CreditsText "TRADEWEST, INC"
+  CreditsText ""
+  CreditsText "SEGA ENTERPRISES, LTD"
+  CreditsText ""
+  CreditsText "THE SMS POWER! COMMUNITY"
+  CreditsText ""
+  CreditsText ""
+  CreditsText ""
+  CreditsText "AND"
+  CreditsText ""
+  CreditsText "YOU"
+  CreditsText ""
+  CreditsText ""
+  CreditsText ""
+  CreditsText ""
+  CreditsText ""
+  CreditsText ""
+  CreditsText ""
+  CreditsText ""
+  CreditsText ""
+  CreditsText ""
+  CreditsText ""
+  CreditsText ""
+  CreditsText ""
+  CreditsText ""
 CreditsEnd:
 .ends
 
