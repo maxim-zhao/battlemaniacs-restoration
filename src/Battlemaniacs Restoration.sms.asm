@@ -2131,37 +2131,37 @@ decompress:
 .bank 0 slot 0
 .section "Palettes" free
 Intro1Palette:
-.incbin "images\intro1.png.palette.bin"
+.incbin "images\Intro 01.png.palette.bin"
   NewSection
 Intro2Palette:
-.incbin "images\intro2.png.palette.bin"
+.incbin "images\Intro 02.png.palette.bin"
   NewSection
 Intro3Palette:
-.incbin "images\intro3.png.palette.bin"
+.incbin "images\Intro 03.png.palette.bin"
   NewSection
 Intro4Palette:
-.incbin "images\intro4.png.palette.bin"
+.incbin "images\Intro 04.png.palette.bin"
   NewSection
 Intro5Palette:
-.incbin "images\intro5.png.palette.bin"
+.incbin "images\Intro 05.png.palette.bin"
   NewSection
 Intro6Palette:
-.incbin "images\intro6.png.palette.bin"
+.incbin "images\Intro 06.png.palette.bin"
   NewSection
 Intro7Palette:
-.incbin "images\intro7.png.palette.bin"
+.incbin "images\Intro 07.png.palette.bin"
   NewSection
 Intro8Palette:
-.incbin "images\intro8.png.palette.bin"
+.incbin "images\Intro 08.png.palette.bin"
   NewSection
 Intro9Palette:
-.incbin "images\intro9.png.palette.bin"
+.incbin "images\Intro 09.png.palette.bin"
   NewSection
 Intro10Palette:
-.incbin "images\intro10.png.palette.bin"
+.incbin "images\Intro 10.png.palette.bin"
   NewSection
 Intro11Palette:
-.incbin "images\intro11.png.palette.bin"
+.incbin "images\Intro 11.png.palette.bin"
   NewSection
 DarkQueenPalette:
 .incbin "images\Dark Queen.png.palette.bin"
@@ -2228,69 +2228,69 @@ EndingBad2Palette:
 
 .section "image 1" superfree
 Intro1Tiles:
-.incbin "images\intro1.png.tiles.zx7"
+.incbin "images\Intro 01.png.tiles.zx7"
 Intro1Tilemap:
-.incbin "images\intro1.png.tilemap.zx7"
+.incbin "images\Intro 01.png.tilemap.zx7"
 .ends
 .section "image 2" superfree
 Intro2Tiles:
-.incbin "images\intro2.png.tiles.zx7"
+.incbin "images\Intro 02.png.tiles.zx7"
 Intro2Tilemap:
-.incbin "images\intro2.png.tilemap.zx7"
+.incbin "images\Intro 02.png.tilemap.zx7"
 .ends
 .section "image 3" superfree
 Intro3Tiles:
-.incbin "images\intro3.png.tiles.zx7"
+.incbin "images\Intro 03.png.tiles.zx7"
 Intro3Tilemap:
-.incbin "images\intro3.png.tilemap.zx7"
+.incbin "images\Intro 03.png.tilemap.zx7"
 .ends
 .section "image 4" superfree
 Intro4Tiles:
-.incbin "images\intro4.png.tiles.zx7"
+.incbin "images\Intro 04.png.tiles.zx7"
 Intro4Tilemap:
-.incbin "images\intro4.png.tilemap.zx7"
+.incbin "images\Intro 04.png.tilemap.zx7"
 .ends
 .section "image 5" superfree
 Intro5Tiles:
-.incbin "images\intro5.png.tiles.zx7"
+.incbin "images\Intro 05.png.tiles.zx7"
 Intro5Tilemap:
-.incbin "images\intro5.png.tilemap.zx7"
+.incbin "images\Intro 05.png.tilemap.zx7"
 .ends
 .section "image 6" superfree
 Intro6Tiles:
-.incbin "images\intro6.png.tiles.zx7"
+.incbin "images\Intro 06.png.tiles.zx7"
 Intro6Tilemap:
-.incbin "images\intro6.png.tilemap.zx7"
+.incbin "images\Intro 06.png.tilemap.zx7"
 .ends
 .section "image 7" superfree
 Intro7Tiles:
-.incbin "images\intro7.png.tiles.zx7"
+.incbin "images\Intro 07.png.tiles.zx7"
 Intro7Tilemap:
-.incbin "images\intro7.png.tilemap.zx7"
+.incbin "images\Intro 07.png.tilemap.zx7"
 .ends
 .section "image 8" superfree
 Intro8Tiles:
-.incbin "images\intro8.png.tiles.zx7"
+.incbin "images\Intro 08.png.tiles.zx7"
 Intro8Tilemap:
-.incbin "images\intro8.png.tilemap.zx7"
+.incbin "images\Intro 08.png.tilemap.zx7"
 .ends
 .section "image 9" superfree
 Intro9Tiles:
-.incbin "images\intro9.png.tiles.zx7"
+.incbin "images\Intro 09.png.tiles.zx7"
 Intro9Tilemap:
-.incbin "images\intro9.png.tilemap.zx7"
+.incbin "images\Intro 09.png.tilemap.zx7"
 .ends
 .section "image 10" superfree
 Intro10Tiles:
-.incbin "images\intro10.png.tiles.zx7"
+.incbin "images\Intro 10.png.tiles.zx7"
 Intro10Tilemap:
-.incbin "images\intro10.png.tilemap.zx7"
+.incbin "images\Intro 10.png.tilemap.zx7"
 .ends
 .section "image 11" superfree
 Intro11Tiles:
-.incbin "images\intro11.png.tiles.zx7"
+.incbin "images\Intro 11.png.tiles.zx7"
 Intro11Tilemap:
-.incbin "images\intro11.png.tilemap.zx7"
+.incbin "images\Intro 11.png.tilemap.zx7"
 .ends
 .section "Dark Queen Intermissions" superfree
 DarkQueenTiles:
