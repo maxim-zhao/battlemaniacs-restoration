@@ -962,7 +962,7 @@ IntroScript:
 
   Picture Intro4Palette, Intro4Tiles, Intro4Tilemap
   StartText 21
-  Text "TRIPS 21", 8, 2
+  Text "T.R.I.P.S. 21", 13, 2
   Clear 21
   StartText 21
   Text "TOTAL REALITY INTEGRATED", 24
@@ -1006,7 +1006,7 @@ IntroScript:
   Picture Intro9Palette, Intro9Tiles, Intro9Tilemap
   StartText 19
   Text "WITH MICHIKO AND ZITZ ITS", 25
-  Text "PRISONER, THE EVIL PIG ESCAPES", 30
+  Text "CAPTIVES, THE EVIL PIG ESCAPES", 30
   Text "BACK INTO THE GAMESCAPE!", 24, 3
   .db SCRIPT_FADEOUT
 
@@ -2667,21 +2667,21 @@ EndingGood2Tilemap: .incbin "images\Ending Good 02.png.tilemap.zx7"
   CreditsText ""
   CreditsText "THE GREAT RATSO"
   CreditsText ""
-  CreditsText "THE RAT WORKERS"
+  CreditsText "RAT WORKERS"
   CreditsText ""
   CreditsText "THE PIGS OF THE APOCALYPSE"
   CreditsText ""
   CreditsText "ROCKY THE STONE PIG"
   CreditsText ""
-  CreditsText "THE PORKA PIGS"
+  CreditsText "PORKA PIGS"
   CreditsText ""
-  CreditsText "THE SKELLINGTON BONES"
+  CreditsText "SKELLINGTON BONES"
   CreditsText ""
-  CreditsText "THE SATURN TOADTRAPS"
+  CreditsText "SATURN TOADTRAPS"
   CreditsText ""
-  CreditsText "THE WASPLINGS"
+  CreditsText "WASPLINGS"
   CreditsText ""
-  CreditsText "THE LAZBOTS"
+  CreditsText "LAZBOTS"
   CreditsText ""
   CreditsText "THE TURBO TUNNEL WALLS"
   CreditsText ""
