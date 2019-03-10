@@ -2609,6 +2609,8 @@ EndingGood2Tilemap: .incbin "images\Ending Good 02.png.tilemap.zx7"
   CreditsText ""
   CreditsText "MOTAVIAN RAIDER",0
   CreditsText ""
+  CreditsText "DAVID BONUS"
+  CreditsText ""
   CreditsText ""
   CreditsText "ARTIST"
   CreditsText ""
