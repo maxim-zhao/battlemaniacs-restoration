@@ -26,6 +26,10 @@ Maxim - programmer
 
 Pyron - artist
 
-Motavian Raider - composer
+David Bonus - composer
 
 Wesker - coordinator
+
+Former project members:
+
+Motavian Raider - composer
