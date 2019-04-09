@@ -297,59 +297,37 @@ _lookup:
 .define MUSIC_TURBO_TUNNEL $03
 .define MUSIC_ROLLER_COASTER $04
 .define MUSIC_BONUS_STAGE_2 $05
+.define MUSIC_T_BIRD $06
 
 PlayMusic:
   ; We do a dumb if-then-else. This costs about 12 bytes per item and isn't very fast, but doing it by a lookup would be a pain as we have large indices.
   ; (We could use more sensible indices if we re-wrote all callers to use the new indices.)
-  cp MUSIC_TITLE
+  
+.macro HandleMusic args name, label
+  cp name
   jr nz,+
-  ld a,:MusicTitle
-  ld hl,MusicTitle
+  ld a,:label
+  ld hl,label
+  jp _play
++:
+.endm
+
+  HandleMusic MUSIC_TITLE           MusicTitle
+  HandleMusic MUSIC_RAGNAROK_CANYON MusicRagnarokCanyon
+  HandleMusic MUSIC_HOLLOW_TREE     MusicHollowTree
+  HandleMusic MUSIC_SNAKE_PIT       MusicSnakePit
+  HandleMusic MUSIC_BONUS_STAGE     MusicBonusStage
+  HandleMusic MUSIC_DARK_TOWER      MusicDarkTower
+  HandleMusic MUSIC_TURBO_TUNNEL    MusicTurboTunnel
+  HandleMusic MUSIC_ROLLER_COASTER  MusicRollerCoaster
+  HandleMusic MUSIC_BONUS_STAGE_2   MusicBonusStage2
+  HandleMusic MUSIC_T_BIRD          MusicTBird
+  ; Any other index
+  jp StopMusic ; and ret
+
 _play:
   ld (CurrentMusicBank),a
   jp PSGPlay ; and ret
-+:cp MUSIC_RAGNAROK_CANYON
-  jr nz,+
-  ld a,:MusicRagnarokCanyon
-  ld hl,MusicRagnarokCanyon
-  jp _play
-+:cp MUSIC_HOLLOW_TREE
-  jr nz,+
-  ld a,:MusicHollowTree
-  ld hl,MusicHollowTree
-  jp _play
-+:cp MUSIC_SNAKE_PIT
-  jr nz,+
-  ld a,:MusicSnakePit
-  ld hl,MusicSnakePit
-  jp _play
-+:cp MUSIC_BONUS_STAGE
-  jr nz,+
-  ld a,:MusicBonusStage
-  ld hl,MusicBonusStage
-  jp _play
-+:cp MUSIC_DARK_TOWER
-  jr nz,+
-  ld a,:MusicDarkTower
-  ld hl,MusicDarkTower
-  jp _play
-+:cp MUSIC_TURBO_TUNNEL
-  jr nz,+
-  ld a,:MusicTurboTunnel
-  ld hl,MusicTurboTunnel
-  jp _play
-+:cp MUSIC_ROLLER_COASTER
-  jr nz,+
-  ld a,:MusicRollerCoaster
-  ld hl,MusicRollerCoaster
-  jp _play
-+:cp MUSIC_BONUS_STAGE_2
-  jr nz,+
-  ld a,:MusicBonusStage2
-  ld hl,MusicBonusStage2
-  jp _play
-  ; unhandled
-+:jp StopMusic ; and ret
 .ends
 
 .section "Audio stop" free
@@ -397,6 +375,10 @@ MusicRollerCoaster:
 .section "Music data 9" superfree
 MusicBonusStage2:
 .incbin "vgms/music/Bonus Stage 2.psg"
+.ends
+.section "Music data 10" superfree
+MusicTBird:
+.incbin "vgms/music/T. Bird v1.psg"
 .ends
 
 .section "SFX data" superfree
@@ -699,7 +681,7 @@ _ScriptLoop:
   ; then we need to put hl in ix
   push hl
   pop ix
-  call TextToVRAM ; writes chars util a zero is met
+  call TextToVRAM ; writes chars until a zero is met
   push ix
   pop hl
   ; check for key press
