@@ -976,7 +976,7 @@ IntroScript:
 
   Picture Intro7Palette, Intro7Tiles, Intro7Tilemap
   StartText 19
-  Text "IT GRABS MICHIKO TASHOKU,", 25
+  Text "HE GRABS MICHIKO TASHOKU,", 25
   Text "DAUGHTER OF PSICONE'S", 21
   Text "HEAD HONCHO!!", 13, 3
   .db SCRIPT_FADEOUT
@@ -990,7 +990,7 @@ IntroScript:
 
   Picture Intro9Palette, Intro9Tiles, Intro9Tilemap
   StartText 19
-  Text "WITH MICHIKO AND ZITZ ITS", 25
+  Text "WITH MICHIKO AND ZITZ HIS", 25
   Text "CAPTIVES, THE EVIL PIG ESCAPES", 30
   Text "BACK INTO THE GAMESCAPE!", 24, 3
   .db SCRIPT_FADEOUT
