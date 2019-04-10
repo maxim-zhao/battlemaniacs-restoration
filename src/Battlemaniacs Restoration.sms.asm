@@ -541,6 +541,9 @@ Intermission:
   ld a,(RAM_GameState)
   cp 3
   ret z ; disable - we will re-enable it later
+  
+  ld a,MUSIC_T_BIRD
+  call PlayMusicTrampoline
 
   ; ELse look up a random text based on the level
 +:ld a,(RAM_LevelNumber) ; 0..11
