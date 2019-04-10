@@ -572,7 +572,7 @@ Intermission:
   cp 3
   ret z ; disable - we will re-enable it later
   
-  ld a,MUSIC_T_BIRD
+  ld a, MUSIC_T_BIRD
   call PlayMusicTrampoline
 
   ; ELse look up a random text based on the level
@@ -643,7 +643,7 @@ GameComplete:
   ld ix,$3000 + 32 * 4
   call LoadFont
 
-  ld a,MUSIC_TITLE ; TODO change
+  ld a, MUSIC_TITLE ; TODO change to ending music when it exists
   call PlayMusicTrampoline
   
   call ResetScrollTile0AndTilemap
@@ -2487,6 +2487,8 @@ ToadsTilemap:
   call ResetScrollTile0AndTilemap
   ld ix,$3000 + 32 * 4
   call LoadFont
+  ld a, MUSIC_T_BIRD
+  call PlayMusicTrampoline
   ld a,:GameOverScreen
   ld (PAGING_REGISTER_2),a
   call GameOverScreen
@@ -2762,6 +2764,8 @@ CreditsEnd:
 .ends
 .section "Continue patch" free
 ContinuePatch:
+  ld a, MUSIC_T_BIRD
+  call PlayMusicTrampoline
   ld a,(PAGING_REGISTER_2)
   push af
     ld a,:Continue
