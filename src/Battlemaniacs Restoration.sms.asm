@@ -913,11 +913,11 @@ _End:
 .define rowAdvance 1
 
 ; Draws some text at the given location, with an optional pause
-.macro Text args text, length, seconds
+.macro Text args text, seconds
   ; If the text is (length) long, we want to draw it at (31 - length)/2+1
   ; This centres it within the 31 tiles on-screen, with a bias to the left for even lengths.
-  .db SCRIPT_TEXT, (31-length)/2+2-(length&1), textY, text, 0
-  .if NARGS > 2
+  .db SCRIPT_TEXT, (31-text.length)/2+2-(text.length&1), textY, text, 0
+  .if NARGS > 1
   .db SCRIPT_WAIT, seconds * 50
   .endif
   .redefine textY textY+rowAdvance
@@ -967,100 +967,100 @@ IntroScript:
   Picture Intro1Palette, Intro1Tiles, Intro1Tilemap
   StartText 21
   ;    Text, Length, (optional) Wait
-  Text "THE 'TOADS ARE AT THE", 21
-  Text "GYACHUNG-LA FORTRESS", 20, 2
+  Text "THE 'TOADS ARE AT THE"
+  Text "GYACHUNG-LA FORTRESS", 2
   .db SCRIPT_FADEOUT
 
   Picture Intro2Palette, Intro2Tiles, Intro2Tilemap
   StartText 21
-  Text "LOCATED IN", 10
-  Text "NORTHERN TIBET, ASIA", 20, 2
+  Text "LOCATED IN"
+  Text "NORTHERN TIBET, ASIA", 2
   .db SCRIPT_FADEOUT
 
   Picture Intro3Palette, Intro3Tiles, Intro3Tilemap
   StartText 21
-  Text "PROFESSOR T. BIRD STARTS...", 27, 2
+  Text "PROFESSOR T. BIRD STARTS...", 2
   Clear 21
   StartText 21
-  Text "'TOADS, I HAVE INVITED YOU", 26
-  Text "HERE TO WITNESS THE FIRST", 25, 2
+  Text "'TOADS, I HAVE INVITED YOU"
+  Text "HERE TO WITNESS THE FIRST", 2
   Clear 21
   StartText 21
-  Text "DEMONSTRATION OF PSICONE'S", 26
-  Text "NEW GAMES GENERATOR.", 20, 2
+  Text "DEMONSTRATION OF PSICONE'S"
+  Text "NEW GAMES GENERATOR.", 2
   .db SCRIPT_FADEOUT
 
   Picture Intro4Palette, Intro4Tiles, Intro4Tilemap
   StartText 21
-  Text "T.R.I.P.S. 21", 13, 2
+  Text "T.R.I.P.S. 21", 2
   Clear 21
   StartText 21
-  Text "TOTAL REALITY INTEGRATED", 24
-  Text "PLAYING SYSTEM.", 15, 2
+  Text "TOTAL REALITY INTEGRATED"
+  Text "PLAYING SYSTEM.", 2
   Clear 21
   StartText 21
-  Text "WE'VE NAMED ITS ARTIFICIAL", 26
-  Text "WORLD \"THE GAMESCAPE\".", 22, 2
+  Text "WE'VE NAMED ITS ARTIFICIAL"
+  Text "WORLD \"THE GAMESCAPE\".", 2
   .db SCRIPT_FADEOUT
 
   Picture Intro5Palette, Intro5Tiles, Intro5Tilemap
   StartText 21
-  Text "THIS APPROACHING IMAGE IS A", 27
-  Text "PIG OF THE APOCALYPSE,", 22, 2
+  Text "THIS APPROACHING IMAGE IS A"
+  Text "PIG OF THE APOCALYPSE,", 2
   Clear 21
   StartText 21
-  Text "ONE OF THE GAMES T...", 21, 1
+  Text "ONE OF THE GAMES T...", 1
   .db SCRIPT_FADEOUT
 
   Picture Intro6Palette, Intro6Tiles, Intro6Tilemap
   StartText 19
-  Text "BEFORE THE PROFESSOR CAN", 24
-  Text "FINISH, THE PIG LEAPS OUT", 25
-  Text "OF THE SCREEN!!", 15, 3
+  Text "BEFORE THE PROFESSOR CAN"
+  Text "FINISH, THE PIG LEAPS OUT"
+  Text "OF THE SCREEN!!", 3
   .db SCRIPT_FADEOUT
 
   Picture Intro7Palette, Intro7Tiles, Intro7Tilemap
   StartText 19
-  Text "HE GRABS MICHIKO TASHOKU,", 25
-  Text "DAUGHTER OF PSICONE'S", 21
-  Text "HEAD HONCHO!!", 13, 3
+  Text "HE GRABS MICHIKO TASHOKU,"
+  Text "DAUGHTER OF PSICONE'S"
+  Text "HEAD HONCHO!!", 3
   .db SCRIPT_FADEOUT
 
   Picture Intro8Palette, Intro8Tiles, Intro8Tilemap
   StartText 19
-  Text "ZITZ LEAPS TO HER RESCUE,", 25
-  Text "BUT HE TAKES A BEASTLY BASHING", 30
-  Text "AND IS CAPTURED TOO!", 20, 3
+  Text "ZITZ LEAPS TO HER RESCUE,"
+  Text "BUT HE TAKES A BEASTLY BASHING"
+  Text "AND IS CAPTURED TOO!", 3
   .db SCRIPT_FADEOUT
 
   Picture Intro9Palette, Intro9Tiles, Intro9Tilemap
   StartText 19
-  Text "WITH MICHIKO AND ZITZ HIS", 25
-  Text "CAPTIVES, THE EVIL PIG ESCAPES", 30
-  Text "BACK INTO THE GAMESCAPE!", 24, 3
+  Text "WITH MICHIKO AND ZITZ HIS"
+  Text "CAPTIVES, THE EVIL PIG ESCAPES"
+  Text "BACK INTO THE GAMESCAPE!", 3
   .db SCRIPT_FADEOUT
 
   Picture Intro10Palette, Intro10Tiles, Intro10Tilemap
   StartText 21
-  Text "PAY ATTENTION, BATTLEJERKS!", 27, 2
+  Text "PAY ATTENTION, BATTLEJERKS!", 2
   Clear 21
   StartText 21
-  Text "I, SILAS VOLKMIRE, INTEND TO", 28
-  Text "TURN YOUR MISERABLE WORLD INTO", 30, 2
+  Text "I, SILAS VOLKMIRE, INTEND TO"
+  Text "TURN YOUR MISERABLE WORLD INTO", 2
   Clear 21
   StartText 21
-  Text "MY VERY OWN GAMESCAPE!", 22, 2
+  Text "MY VERY OWN GAMESCAPE!", 2
   Clear 21
   StartText 21
-  Text "THE DARK QUEEN HOLDS YOUR", 25
-  Text "FEEBLE FRIENDS CAPTIVE,", 23, 2
+  Text "THE DARK QUEEN HOLDS YOUR"
+  Text "FEEBLE FRIENDS CAPTIVE,", 2
   Clear 21
   StartText 21
-  Text "AND IF YOU TRY ANYTHING,", 24
-  Text "YOU'LL NEVER SEE THEM AGAIN!", 28, 2
+  Text "AND IF YOU TRY ANYTHING,"
+  Text "YOU'LL NEVER SEE THEM AGAIN!", 2
   Clear 21
   StartText 21
-  Text "HA-HA-HA-HA!!", 13, 2
+  Text "HA-HA-HA-HA!!", 2
   .db SCRIPT_FADEOUT
 
 ; ***********************************
@@ -1069,11 +1069,11 @@ IntroScript:
 
   Picture Intro11Palette, Intro11Tiles, Intro11Tilemap
   StartText 21
-  Text "WE GOTTA GET 'EM BACK!!", 23, 2
+  Text "WE GOTTA GET 'EM BACK!!", 2
   Clear 21
   StartText 21
-  Text "LET'S GATECRASH THE GAMESCAPE", 29
-  Text "AN' COOK SOME BEASTIN' BACON!", 29, 2
+  Text "LET'S GATECRASH THE GAMESCAPE"
+  Text "AN' COOK SOME BEASTIN' BACON!", 2
   .db SCRIPT_FADEOUT
 .db SCRIPT_END_BLANK
 
@@ -1176,662 +1176,662 @@ IntermissionsLookup:
 Intermission1DarkQueenA:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "Y'KNOW BATTLEBARF, THEY SAY", 27, 0.33
-  Text "TREES ARE ENVIRONMENTALLY", 25, 0.33
-  Text "FRIENDLY. BAD NEWS FOR YOU,", 27, 0.33
-  Text "'CUZ OURS DEFINITELY ISN'T,", 27, 0.33
-  Text "AND YOU'LL FIND OUT WHY!", 24, 4
+  Text "Y'KNOW BATTLEBARF, THEY SAY", 0.33
+  Text "TREES ARE ENVIRONMENTALLY", 0.33
+  Text "FRIENDLY. BAD NEWS FOR YOU,", 0.33
+  Text "'CUZ OURS DEFINITELY ISN'T,", 0.33
+  Text "AND YOU'LL FIND OUT WHY!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission1DarkQueenB:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "MY WASPLINGS WILL SORT YOU", 26, 0.33
-  Text "OUT, WART FEATURES, 'CUZ", 24, 0.33
-  Text "THEY'LL BE STINGIN', AN'", 24, 0.33
-  Text "YOU'LL BE SINGIN'!", 18, 4
+  Text "MY WASPLINGS WILL SORT YOU", 0.33
+  Text "OUT, WART FEATURES, 'CUZ", 0.33
+  Text "THEY'LL BE STINGIN', AN'", 0.33
+  Text "YOU'LL BE SINGIN'!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission1DarkQueenC:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "DO YOU REALLY THINK A", 21, 0.33
-  Text "CLUCKING FOOL AND HIS SLIMY", 27, 0.33
-  Text "SNOT SNAFFLERS CAN BEAT US?", 27, 0.33
-  Text "PREPARE TO MEET MY SATURN", 25, 0.33
-  Text "TOADTRAPS!", 10, 4
+  Text "DO YOU REALLY THINK A", 0.33
+  Text "CLUCKING FOOL AND HIS SLIMY", 0.33
+  Text "SNOT SNAFFLERS CAN BEAT US?", 0.33
+  Text "PREPARE TO MEET MY SATURN", 0.33
+  Text "TOADTRAPS!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission1DarkQueenD:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "SO, THE MUTANT RATPACK AND", 26, 0.33
-  Text "THAT USELESS STONE PIG", 22, 0.33
-  Text "DIDN'T GET YOU? NEVER MIND,", 27, 0.33
-  Text "'CUZ THE REAL CHALLENGE", 23, 0.33
-  Text "STARTS HERE, SO COME ON IN!!", 28, 4
+  Text "SO, THE MUTANT RATPACK AND", 0.33
+  Text "THAT USELESS STONE PIG", 0.33
+  Text "DIDN'T GET YOU? NEVER MIND,", 0.33
+  Text "'CUZ THE REAL CHALLENGE", 0.33
+  Text "STARTS HERE, SO COME ON IN!!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission1TBirdA:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "THIS IS ONE BIG TREE YOU'RE", 27, 0.33
-  Text "FACING NEXT, 'TOADS! ABOUT", 26, 0.33
-  Text "A MILE DOWN, AND THE EXIT'S", 27, 0.33
-  Text "AT THE BOTTOM!!", 15, 4
+  Text "THIS IS ONE BIG TREE YOU'RE", 0.33
+  Text "FACING NEXT, 'TOADS! ABOUT", 0.33
+  Text "A MILE DOWN, AND THE EXIT'S", 0.33
+  Text "AT THE BOTTOM!!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission1TBirdB:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "WE TAUGHT THAT STONY", 20, 0.33
-  Text "SNORTER A LESSON, DIDN'T", 24, 0.33
-  Text "WE, GUYS? NOW LET'S LEAP", 24, 0.33
-  Text "THROUGH THE LEAVES AND", 22, 0.33
-  Text "TACKLE THAT TREE!", 17, 4
+  Text "WE TAUGHT THAT STONY", 0.33
+  Text "SNORTER A LESSON, DIDN'T", 0.33
+  Text "WE, GUYS? NOW LET'S LEAP", 0.33
+  Text "THROUGH THE LEAVES AND", 0.33
+  Text "TACKLE THAT TREE!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission1TBirdC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "I'VE LOCATED SOME HOVER", 23, 0.33
-  Text "DISCS THAT YOU CAN USE, BUT", 27, 0.33
-  Text "I BET MY BEAK THERE'S A", 23, 0.33
-  Text "WHOLE 'TOAD-LOAD OF TROUBLE", 27, 0.33
-  Text "WAITING DOWN IN THAT TREE!", 26, 4
+  Text "I'VE LOCATED SOME HOVER", 0.33
+  Text "DISCS THAT YOU CAN USE, BUT", 0.33
+  Text "I BET MY BEAK THERE'S A", 0.33
+  Text "WHOLE 'TOAD-LOAD OF TROUBLE", 0.33
+  Text "WAITING DOWN IN THAT TREE!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission1TBirdD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "MY SENSORS INDICATE THAT", 24, 0.33
-  Text "THIS WHOLE TREE IS HOLLOW,", 26, 0.33
-  Text "SO HEAD FOR THE BOTTOM", 22, 0.33
-  Text "AND DON'T LOOK DOWN!", 20, 4
+  Text "MY SENSORS INDICATE THAT", 0.33
+  Text "THIS WHOLE TREE IS HOLLOW,", 0.33
+  Text "SO HEAD FOR THE BOTTOM", 0.33
+  Text "AND DON'T LOOK DOWN!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 
 Intermission2DarkQueenA:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "I'M SO SURE THAT I'M GONNA", 26, 0.33
-  Text "WIN, WARTBODIES, THAT I'LL", 26, 0.33
-  Text "LET YOU ATTEMPT A", 17, 0.33
-  Text "BONUS LEVEL!", 12, 4
+  Text "I'M SO SURE THAT I'M GONNA", 0.33
+  Text "WIN, WARTBODIES, THAT I'LL", 0.33
+  Text "LET YOU ATTEMPT A", 0.33
+  Text "BONUS LEVEL!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission2DarkQueenB:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "GRR! I SUPPOSE YOU SNOTSKINS", 28, 0.33
-  Text "DESERVE A SHOT AT THIS BONUS", 28, 0.33
-  Text "LEVEL FOR GETTIN' THIS FAR.", 27, 0.33
-  Text "BUT ONCE IT'S OVER, I'M", 23, 0.33
-  Text "GONNA FINISH YOU FOR GOOD!", 26, 4
+  Text "GRR! I SUPPOSE YOU SNOTSKINS", 0.33
+  Text "DESERVE A SHOT AT THIS BONUS", 0.33
+  Text "LEVEL FOR GETTIN' THIS FAR.", 0.33
+  Text "BUT ONCE IT'S OVER, I'M", 0.33
+  Text "GONNA FINISH YOU FOR GOOD!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission2DarkQueenC:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "YOU'D BETTER COLLECT ENOUGH", 27, 0.33
-  Text "PINS TO GAIN AN EXTRA", 21, 0.33
-  Text "LIFE HERE, SWAMPSUCKERS, 'CUZ", 29, 0.33
-  Text "YOU'LL SURELY BE NEEDIN' IT!", 28, 4
+  Text "YOU'D BETTER COLLECT ENOUGH", 0.33
+  Text "PINS TO GAIN AN EXTRA", 0.33
+  Text "LIFE HERE, SWAMPSUCKERS, 'CUZ", 0.33
+  Text "YOU'LL SURELY BE NEEDIN' IT!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission2DarkQueenD:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "YOU CAN'T SAY THAT I DON'T", 26, 0.33
-  Text "PLAY FAIR, PENCIL NECK. I'LL", 28, 0.33
-  Text "LET THE BATTLEWIMPS PLAY MY", 27, 0.33
-  Text "NICE EASY BONUS LEVEL BEFORE", 28, 0.33
-  Text "I GET REALLY NASTY!!", 20, 4
+  Text "YOU CAN'T SAY THAT I DON'T", 0.33
+  Text "PLAY FAIR, PENCIL NECK. I'LL", 0.33
+  Text "LET THE BATTLEWIMPS PLAY MY", 0.33
+  Text "NICE EASY BONUS LEVEL BEFORE", 0.33
+  Text "I GET REALLY NASTY!!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission2TBirdA:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "SNATCH THE PINS, 'TOADS!", 24, 0.33
-  Text "COLLECT ENOUGH AN' WE'RE", 24, 0.33
-  Text "TALKIN' EXTRA LIVES HERE!!", 26, 4
+  Text "SNATCH THE PINS, 'TOADS!", 0.33
+  Text "COLLECT ENOUGH AN' WE'RE", 0.33
+  Text "TALKIN' EXTRA LIVES HERE!!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission2TBirdB:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "TAKE A REST FROM THE ACTION,", 28, 0.33
-  Text "GUYS! TRY OUT THE BONUS", 23, 0.33
-  Text "LEVEL, AND IF YOU COLLECT", 25, 0.33
-  Text "ENOUGH PINS, YOU'LL WIN AN", 26, 0.33
-  Text "EXTRA LIFE OR TWO!", 18, 4
+  Text "TAKE A REST FROM THE ACTION,", 0.33
+  Text "GUYS! TRY OUT THE BONUS", 0.33
+  Text "LEVEL, AND IF YOU COLLECT", 0.33
+  Text "ENOUGH PINS, YOU'LL WIN AN", 0.33
+  Text "EXTRA LIFE OR TWO!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission2TBirdC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "THE MORE THE MERRIER, 'TOADS!", 29, 0.33
-  Text "LET'S CHECK OUT THAT CHECKER", 28, 0.33
-  Text "AND WIN US SOME LIVES!", 22, 4
+  Text "THE MORE THE MERRIER, 'TOADS!", 0.33
+  Text "LET'S CHECK OUT THAT CHECKER", 0.33
+  Text "AND WIN US SOME LIVES!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission2TBirdD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "C'MON, 'TOADS, IT'S BONUS", 25, 0.33
-  Text "TIME! COLLECT THE WHITES", 24, 0.33
-  Text "TO WIN A LIFE! AVOID", 20, 0.33
-  Text "THE SKULLS AS THEY", 18, 0.33
-  Text "MEAN STRIFE!", 12, 4
+  Text "C'MON, 'TOADS, IT'S BONUS", 0.33
+  Text "TIME! COLLECT THE WHITES", 0.33
+  Text "TO WIN A LIFE! AVOID", 0.33
+  Text "THE SKULLS AS THEY", 0.33
+  Text "MEAN STRIFE!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 
 Intermission3DarkQueenA:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "THIS IS WHERE THE ACTION", 24, 0.33
-  Text "GETS FAST AN' YOUR SLIME", 24, 0.33
-  Text "BACKS COME LAST, YOU", 20, 0.33
-  Text "FLAPPIN' FOOL!", 14, 4
+  Text "THIS IS WHERE THE ACTION", 0.33
+  Text "GETS FAST AN' YOUR SLIME", 0.33
+  Text "BACKS COME LAST, YOU", 0.33
+  Text "FLAPPIN' FOOL!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission3DarkQueenB:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "HAVE YOU GOT THE STOMACH", 24, 0.33
-  Text "FOR SPEED? I SINCERELY", 22, 0.33
-  Text "HOPE NOT, YOU HOPPING", 21, 0.33
-  Text "HALF-WITS!", 10, 4
+  Text "HAVE YOU GOT THE STOMACH", 0.33
+  Text "FOR SPEED? I SINCERELY", 0.33
+  Text "HOPE NOT, YOU HOPPING", 0.33
+  Text "HALF-WITS!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission3DarkQueenC:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "YOU MIGHT THINK YOUR", 20, 0.33
-  Text "BATTLENERDS ARE WINNING,", 24, 0.33
-  Text "HOOKBILL, BUT LET ME ASSURE", 27, 0.33
-  Text "YOU, I HAVEN'T EVEN", 19, 0.33
-  Text "WARMED UP YET!!", 15, 4
+  Text "YOU MIGHT THINK YOUR", 0.33
+  Text "BATTLENERDS ARE WINNING,", 0.33
+  Text "HOOKBILL, BUT LET ME ASSURE", 0.33
+  Text "YOU, I HAVEN'T EVEN", 0.33
+  Text "WARMED UP YET!!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission3DarkQueenD:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "I HOPE YOU ENJOYED YOURSELF", 27, 0.33
-  Text "BACK THERE, 'CUZ I KNOW THAT", 28, 0.33
-  Text "SOMETHING REALLY NASTY", 22, 0.33
-  Text "IS GONNA HAPPEN TO YOU", 22, 0.33
-  Text "ON THOSE BIKES!!", 16, 4
+  Text "I HOPE YOU ENJOYED YOURSELF", 0.33
+  Text "BACK THERE, 'CUZ I KNOW THAT", 0.33
+  Text "SOMETHING REALLY NASTY", 0.33
+  Text "IS GONNA HAPPEN TO YOU", 0.33
+  Text "ON THOSE BIKES!!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission3TBirdA:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "BE CAREFUL, 'TOADS, I'M", 23, 0.33
-  Text "PICKIN' UP IMAGES OF", 20, 0.33
-  Text "WHIZZIN' WALLS AND MASSIVE", 26, 0.33
-  Text "GAPS IN THAT TUNNEL!!", 21, 4
+  Text "BE CAREFUL, 'TOADS, I'M", 0.33
+  Text "PICKIN' UP IMAGES OF", 0.33
+  Text "WHIZZIN' WALLS AND MASSIVE", 0.33
+  Text "GAPS IN THAT TUNNEL!!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission3TBirdB:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "YOU'RE DOIN' GREAT, 'TOADS!", 27, 0.33
-  Text "LET'S HEAD FOR THE BIKES AND", 28, 0.33
-  Text "HIT THAT TUNNEL - HARD!", 23, 4
+  Text "YOU'RE DOIN' GREAT, 'TOADS!", 0.33
+  Text "LET'S HEAD FOR THE BIKES AND", 0.33
+  Text "HIT THAT TUNNEL - HARD!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission3TBirdC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "REMEMBER, 'TOADS! IN HERE,", 26, 0.33
-  Text "IT'S THE SURVIVAL OF THE", 24, 0.33
-  Text "FASTEST!", 8, 4
+  Text "REMEMBER, 'TOADS! IN HERE,", 0.33
+  Text "IT'S THE SURVIVAL OF THE", 0.33
+  Text "FASTEST!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission3TBirdD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "IT'S THE NEED-TO-SPEED", 22, 0.33
-  Text "ONCE AGAIN, 'TOADS! PUT YOUR", 28, 0.33
-  Text "FOOT TO THE FLOOR AND HANG", 26, 0.33
-  Text "ON TIGHT!", 9, 4
+  Text "IT'S THE NEED-TO-SPEED", 0.33
+  Text "ONCE AGAIN, 'TOADS! PUT YOUR", 0.33
+  Text "FOOT TO THE FLOOR AND HANG", 0.33
+  Text "ON TIGHT!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 
 Intermission4DarkQueenA:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "'TOAD VERSUS SNAKE, EH?", 23, 0.33
-  Text "THEY DON'T HAVE A CHANCE", 24, 0.33
-  Text "IN THIS ONE, MR. BEAKY FREAK!", 29, 4
+  Text "'TOAD VERSUS SNAKE, EH?", 0.33
+  Text "THEY DON'T HAVE A CHANCE", 0.33
+  Text "IN THIS ONE, MR. BEAKY FREAK!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission4DarkQueenB:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "THE BIKE LEVEL'S OVER,", 22, 0.33
-  Text "MANGROVE LURKERS, SO I", 22, 0.33
-  Text "SUGGEST YOU RUN HOME TO THAT", 28, 0.33
-  Text "FEATHERED FREAK WHILE", 21, 0.33
-  Text "YOU STILL CAN!", 14, 4
+  Text "THE BIKE LEVEL'S OVER,", 0.33
+  Text "MANGROVE LURKERS, SO I", 0.33
+  Text "SUGGEST YOU RUN HOME TO THAT", 0.33
+  Text "FEATHERED FREAK WHILE", 0.33
+  Text "YOU STILL CAN!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission4DarkQueenC:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "THIS IS IT, YOU GOBBLIN'", 24, 0.33
-  Text "GEEK! YOUR MISERABLE BOTTLED", 28, 0.33
-  Text "NERDS ARE GONNA PERISH", 22, 0.33
-  Text "IN MY SNAKE PIT!", 16, 4
+  Text "THIS IS IT, YOU GOBBLIN'", 0.33
+  Text "GEEK! YOUR MISERABLE BOTTLED", 0.33
+  Text "NERDS ARE GONNA PERISH", 0.33
+  Text "IN MY SNAKE PIT!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission4DarkQueenD:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "PREPARE TO MEET KARNATH -", 25, 0.33
-  Text "KING OF THE SNAKES!! YOU'LL", 27, 0.33
-  Text "NEVER ESCAPE FROM HIS LETHAL", 28, 0.33
-  Text "LAIR, NEVER! HA-HA-HA-HA!", 25, 4
+  Text "PREPARE TO MEET KARNATH -", 0.33
+  Text "KING OF THE SNAKES!! YOU'LL", 0.33
+  Text "NEVER ESCAPE FROM HIS LETHAL", 0.33
+  Text "LAIR, NEVER! HA-HA-HA-HA!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission4TBirdA:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "MY INFO REVEALS THAT THESE", 26, 0.33
-  Text "SNAKES DON'T BITE, SO IT", 24, 0.33
-  Text "SHOULD BE A PIECE OF CAKE!", 26, 4
+  Text "MY INFO REVEALS THAT THESE", 0.33
+  Text "SNAKES DON'T BITE, SO IT", 0.33
+  Text "SHOULD BE A PIECE OF CAKE!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission4TBirdB:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "IT LOOKS LIKE IT'S TIME FOR", 27, 0.33
-  Text "SOME SKILLFUL SCALING FROM", 26, 0.33
-  Text "THE BATTLETOADS!", 16, 4
+  Text "IT LOOKS LIKE IT'S TIME FOR", 0.33
+  Text "SOME SKILLFUL SCALING FROM", 0.33
+  Text "THE BATTLETOADS!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission4TBirdC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "SLITHER ON UP TO THE TOP", 24, 0.33
-  Text "OF THESE SNAKE PITS, 'TOADS!", 28, 4
+  Text "SLITHER ON UP TO THE TOP", 0.33
+  Text "OF THESE SNAKE PITS, 'TOADS!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission4TBirdD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "THE EXIT'S AT THE TOP,", 22, 0.33
-  Text "'TOADS, SO GRAB A SNAKE", 23, 0.33
-  Text "AND HOLD ON TIGHT!", 18, 4
+  Text "THE EXIT'S AT THE TOP,", 0.33
+  Text "'TOADS, SO GRAB A SNAKE", 0.33
+  Text "AND HOLD ON TIGHT!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 
 Intermission5DarkQueenA:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "SO, YOU MADE IT TO THE", 22, 0.33
-  Text "SECOND BONUS LEVEL. MAKE THE", 28, 0.33
-  Text "MOST OF IT, 'CUZ IT'LL", 22, 0.33
-  Text "BE YOUR LAST!!", 14, 4
+  Text "SO, YOU MADE IT TO THE", 0.33
+  Text "SECOND BONUS LEVEL. MAKE THE", 0.33
+  Text "MOST OF IT, 'CUZ IT'LL", 0.33
+  Text "BE YOUR LAST!!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission5DarkQueenB:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "TOO MUCH FOR YOU, HUH, BEAKY?", 29, 0.33
-  Text "I'LL GIVE YOUR PATHETIC", 23, 0.33
-  Text "PRATTLETOADS ONE MORE CHANCE", 28, 0.33
-  Text "AT MY BONUS LEVEL...", 20, 4
+  Text "TOO MUCH FOR YOU, HUH, BEAKY?", 0.33
+  Text "I'LL GIVE YOUR PATHETIC", 0.33
+  Text "PRATTLETOADS ONE MORE CHANCE", 0.33
+  Text "AT MY BONUS LEVEL...", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission5DarkQueenC:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "I'M FEELING SO SORRY FOR YOU", 28, 0.33
-  Text "IN YOUR PITIFUL ATTEMPTS TO", 27, 0.33
-  Text "BEAT ME, THAT I'LL LET YOU", 26, 0.33
-  Text "TRY ANOTHER BONUS LEVEL!", 24, 4
+  Text "I'M FEELING SO SORRY FOR YOU", 0.33
+  Text "IN YOUR PITIFUL ATTEMPTS TO", 0.33
+  Text "BEAT ME, THAT I'LL LET YOU", 0.33
+  Text "TRY ANOTHER BONUS LEVEL!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission5DarkQueenD:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "YOUR LAST CHANCE TO GAIN", 24, 0.33
-  Text "SOME LIVES, SWAMP FEATURES,", 27, 0.33
-  Text "'CUZ IT'LL SOON BE THE END", 26, 0.33
-  Text "OF THE ROAD FOR YOU IN THE", 26, 0.33
-  Text "DARK TOWER!", 11, 4
+  Text "YOUR LAST CHANCE TO GAIN", 0.33
+  Text "SOME LIVES, SWAMP FEATURES,", 0.33
+  Text "'CUZ IT'LL SOON BE THE END", 0.33
+  Text "OF THE ROAD FOR YOU IN THE", 0.33
+  Text "DARK TOWER!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission5TBirdA:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "WATCH OUT, THERE'S", 18, 0.33
-  Text "MORE BEASTLY BAD ONES TO", 24, 0.33
-  Text "AVOID HERE! LET'S MOTIVATE!!", 28, 4
+  Text "WATCH OUT, THERE'S", 0.33
+  Text "MORE BEASTLY BAD ONES TO", 0.33
+  Text "AVOID HERE! LET'S MOTIVATE!!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission5TBirdB:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "THE QUEEN'S RUNNING SCARED!", 27, 0.33
-  Text "LET'S TRY FOR SOME LIVES,", 25, 0.33
-  Text "THEN GO GET HER, 'TOADS!", 24, 4
+  Text "THE QUEEN'S RUNNING SCARED!", 0.33
+  Text "LET'S TRY FOR SOME LIVES,", 0.33
+  Text "THEN GO GET HER, 'TOADS!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission5TBirdC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "GRAB AS MANY PINS AS YOU CAN!", 29, 0.33
-  Text "MY SCANNERS REVEAL THAT", 23, 0.33
-  Text "VOLKMIRE'S TOWER IS NEAR!!", 26, 4
+  Text "GRAB AS MANY PINS AS YOU CAN!", 0.33
+  Text "MY SCANNERS REVEAL THAT", 0.33
+  Text "VOLKMIRE'S TOWER IS NEAR!!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission5TBirdD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "BACK ON THE CHECKERS,'TOADS!", 28, 0.33
-  Text "THERE'S PINS TO COLLECT", 23, 0.33
-  Text "AND EXTRA LIVES TO GET!!", 24, 4
+  Text "BACK ON THE CHECKERS,'TOADS!", 0.33
+  Text "THERE'S PINS TO COLLECT", 0.33
+  Text "AND EXTRA LIVES TO GET!!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 
 Intermission6DarkQueenA:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "I CAN'T BELIEVE YOU ESCAPED", 27, 0.33
-  Text "FROM KARNATH! YOU'RE PRETTY", 27, 0.33
-  Text "GOOD, FROGGIES, BUT IT", 22, 0.33
-  Text "AIN'T OVER YET!", 15, 4
+  Text "I CAN'T BELIEVE YOU ESCAPED", 0.33
+  Text "FROM KARNATH! YOU'RE PRETTY", 0.33
+  Text "GOOD, FROGGIES, BUT IT", 0.33
+  Text "AIN'T OVER YET!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission6DarkQueenB:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "RIDE MY RACKETY ROLLER", 22, 0.33
-  Text "COASTER IF YOU DARE! BUT", 24, 0.33
-  Text "WATCH OUT FOR FUZZ, 'CUZ", 24, 0.33
-  Text "FUZZ CAN BUZZ!", 14, 4
+  Text "RIDE MY RACKETY ROLLER", 0.33
+  Text "COASTER IF YOU DARE! BUT", 0.33
+  Text "WATCH OUT FOR FUZZ, 'CUZ", 0.33
+  Text "FUZZ CAN BUZZ!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission6DarkQueenC:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "MMM, I WONDER WHAT THIN,", 24, 0.33
-  Text "SUCCULENT SLICES OF GREEN", 25, 0.33
-  Text "'TOAD TASTE LIKE? WELL, I'M", 27, 0.33
-  Text "SURE I'LL FIND OUT SHORTLY!!", 28, 4
+  Text "MMM, I WONDER WHAT THIN,", 0.33
+  Text "SUCCULENT SLICES OF GREEN", 0.33
+  Text "'TOAD TASTE LIKE? WELL, I'M", 0.33
+  Text "SURE I'LL FIND OUT SHORTLY!!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission6DarkQueenD:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "UP AN' DOWN N' ROUND YOU GO!", 28, 0.33
-  Text "YOU'D BEST BE FAST, 'CUZ", 24, 0.33
-  Text "FUZZ AIN'T SLOW!", 16, 4
+  Text "UP AN' DOWN N' ROUND YOU GO!", 0.33
+  Text "YOU'D BEST BE FAST, 'CUZ", 0.33
+  Text "FUZZ AIN'T SLOW!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission6TBirdA:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "POWER UP THOSE JET TRACKTORS,", 29, 0.33
-  Text "'TOADS, AND HIT THEM", 20, 0.33
-  Text "CORNERS FAST!", 13, 4
+  Text "POWER UP THOSE JET TRACKTORS,", 0.33
+  Text "'TOADS, AND HIT THEM", 0.33
+  Text "CORNERS FAST!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission6TBirdB:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "DON'T LET THAT MOBILE MINCER", 28, 0.33
-  Text "NEAR YOU, 'TOADS. MICHIKO", 25, 0.33
-  Text "AND ZITZ ARE STILL", 18, 0.33
-  Text "COUNTING ON YOU!", 16, 4
+  Text "DON'T LET THAT MOBILE MINCER", 0.33
+  Text "NEAR YOU, 'TOADS. MICHIKO", 0.33
+  Text "AND ZITZ ARE STILL", 0.33
+  Text "COUNTING ON YOU!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission6TBirdC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "LISTEN, 'TOADS! IT'S NOT THE", 28, 0.33
-  Text "TAKING PART THAT COUNTS,", 24, 0.33
-  Text "IT'S THE WINNING!", 17, 4
+  Text "LISTEN, 'TOADS! IT'S NOT THE", 0.33
+  Text "TAKING PART THAT COUNTS,", 0.33
+  Text "IT'S THE WINNING!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission6TBirdD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "HIT THE TRACK AND DON'T LOOK", 28, 0.33
-  Text "BACK, 'TOADS! YOU'VE GOT A", 26, 0.33
-  Text "CRAZY RIDE AHEAD OF YOU!", 24, 4
+  Text "HIT THE TRACK AND DON'T LOOK", 0.33
+  Text "BACK, 'TOADS! YOU'VE GOT A", 0.33
+  Text "CRAZY RIDE AHEAD OF YOU!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 
 Intermission7DarkQueenA:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "FEELING WEARY YET, SWAMP", 24, 0.33
-  Text "DWELLERS? I HOPE SO, 'CUZ I'M", 29, 0.33
-  Text "SENDIN' IN SCUZZ TO BLOW UP", 27, 0.33
-  Text "THE TOWER WITH YOU STILL", 24, 0.33
-  Text "INSIDE IT!", 10, 4
+  Text "FEELING WEARY YET, SWAMP", 0.33
+  Text "DWELLERS? I HOPE SO, 'CUZ I'M", 0.33
+  Text "SENDIN' IN SCUZZ TO BLOW UP", 0.33
+  Text "THE TOWER WITH YOU STILL", 0.33
+  Text "INSIDE IT!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission7DarkQueenB:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "TELL THEM TO QUIT WHILE", 23, 0.33
-  Text "THEY'RE AHEAD, FEATHERY", 23, 0.33
-  Text "FOOL, 'CUZ IT'S CURTAINS FOR", 28, 0.33
-  Text "THE FROGS IF THEY ENTER", 23, 0.33
-  Text "THE DARK TOWER!", 15, 4
+  Text "TELL THEM TO QUIT WHILE", 0.33
+  Text "THEY'RE AHEAD, FEATHERY", 0.33
+  Text "FOOL, 'CUZ IT'S CURTAINS FOR", 0.33
+  Text "THE FROGS IF THEY ENTER", 0.33
+  Text "THE DARK TOWER!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission7DarkQueenC:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "YOU CROAKING CLOWNS MUST", 24, 0.33
-  Text "HAVE TAKEN A SHORT CUT TO", 25, 0.33
-  Text "GET HERE! I'M WAITIN' FOR", 25, 0.33
-  Text "YOU AT THE BOTTOM, IF", 21, 0.33
-  Text "YOU GET THAT FAR...", 19, 4
+  Text "YOU CROAKING CLOWNS MUST", 0.33
+  Text "HAVE TAKEN A SHORT CUT TO", 0.33
+  Text "GET HERE! I'M WAITIN' FOR", 0.33
+  Text "YOU AT THE BOTTOM, IF", 0.33
+  Text "YOU GET THAT FAR...", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission7DarkQueenD:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "I'M IMPRESSED, PROFESSOR", 24, 0.33
-  Text "NERD! I DIDN'T THINK YOUR", 25, 0.33
-  Text "BATTLEFOOLS WOULD GET THIS", 26, 0.33
-  Text "FAR! UNFORTUNATELY, THEIR", 25, 0.33
-  Text "MISSION ENDS HERE!", 18, 4
+  Text "I'M IMPRESSED, PROFESSOR", 0.33
+  Text "NERD! I DIDN'T THINK YOUR", 0.33
+  Text "BATTLEFOOLS WOULD GET THIS", 0.33
+  Text "FAR! UNFORTUNATELY, THEIR", 0.33
+  Text "MISSION ENDS HERE!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission7TBirdA:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "C'MON, GUYS, THE END'S IN", 25, 0.33
-  Text "SIGHT! BEAT THE RAT TWO", 23, 0.33
-  Text "TIMES, AND HE'LL LEAD YOU", 25, 0.33
-  Text "TO THE DARK QUEEN!", 18, 4
+  Text "C'MON, GUYS, THE END'S IN", 0.33
+  Text "SIGHT! BEAT THE RAT TWO", 0.33
+  Text "TIMES, AND HE'LL LEAD YOU", 0.33
+  Text "TO THE DARK QUEEN!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission7TBirdB:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "THE QUEEN'S PLACED TWO", 22, 0.33
-  Text "BOMBS IN THE TOWER! YOU MUST", 28, 0.33
-  Text "DEFUSE THEM ALL, OTHERWISE", 26, 0.33
-  Text "YOU'RE HISTORY!!", 16, 4
+  Text "THE QUEEN'S PLACED TWO", 0.33
+  Text "BOMBS IN THE TOWER! YOU MUST", 0.33
+  Text "DEFUSE THEM ALL, OTHERWISE", 0.33
+  Text "YOU'RE HISTORY!!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission7TBirdC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "WE'RE ALMOST THERE, 'TOADS!", 27, 0.33
-  Text "PUT ON YOUR RUNNING SHOES,", 26, 0.33
-  Text "AND LET'S DROP IN ON", 20, 0.33
-  Text "THE DARK QUEEN!!", 16, 4
+  Text "WE'RE ALMOST THERE, 'TOADS!", 0.33
+  Text "PUT ON YOUR RUNNING SHOES,", 0.33
+  Text "AND LET'S DROP IN ON", 0.33
+  Text "THE DARK QUEEN!!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission7TBirdD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "YOU'RE IN THE QUEEN'S HOME", 26, 0.33
-  Text "TERRITORY NOW, 'TOADS! JUST", 27, 0.33
-  Text "TWO RAT RACES, AND YOU GET", 26, 0.33
-  Text "TO 'TOADSLAM HER REAL GOOD!!", 28, 4
+  Text "YOU'RE IN THE QUEEN'S HOME", 0.33
+  Text "TERRITORY NOW, 'TOADS! JUST", 0.33
+  Text "TWO RAT RACES, AND YOU GET", 0.33
+  Text "TO 'TOADSLAM HER REAL GOOD!!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 
 Intermission8DarkQueenA:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "WELL, WELL, WELL, YOU FROGS", 27, 0.33
-  Text "MUST THINK YOU'RE REALLY", 24, 0.33
-  Text "SOMETHING. WELL, YOU'VE", 23, 0.33
-  Text "FOUGHT THE REST, NOW YOU'RE", 27, 0.33
-  Text "GONNA LOSE TO THE BEST!", 23, 4
+  Text "WELL, WELL, WELL, YOU FROGS", 0.33
+  Text "MUST THINK YOU'RE REALLY", 0.33
+  Text "SOMETHING. WELL, YOU'VE", 0.33
+  Text "FOUGHT THE REST, NOW YOU'RE", 0.33
+  Text "GONNA LOSE TO THE BEST!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission8DarkQueenB:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "I HOPE YOU'RE STILL WATCHING", 28, 0.33
-  Text "THIS, BIRD BRAIN, 'CUZ I'M", 26, 0.33
-  Text "GONNA FINISH THE BATTLETOADS", 28, 0.33
-  Text "OFF MYSELF!", 11, 4
+  Text "I HOPE YOU'RE STILL WATCHING", 0.33
+  Text "THIS, BIRD BRAIN, 'CUZ I'M", 0.33
+  Text "GONNA FINISH THE BATTLETOADS", 0.33
+  Text "OFF MYSELF!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission8DarkQueenC:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "JUST YOU AND ME LEFT NOW,", 25, 0.33
-  Text "'TOADIES! THERE'S NO ROUNDS,", 28, 0.33
-  Text "NO FALLS, NO RULES, AN' WHEN", 28, 0.33
-  Text "I'VE FINISHED - NO YOU!", 23, 4
+  Text "JUST YOU AND ME LEFT NOW,", 0.33
+  Text "'TOADIES! THERE'S NO ROUNDS,", 0.33
+  Text "NO FALLS, NO RULES, AN' WHEN", 0.33
+  Text "I'VE FINISHED - NO YOU!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission8DarkQueenD:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "PAH! IF YOU WANT A JOB DONE", 27, 0.33
-  Text "PROPERLY, NEVER TRUST A", 23, 0.33
-  Text "USELESS BUNCH OF PIGS AND", 25, 0.33
-  Text "RATS! C'MON 'TOADIES,", 21, 0.33
-  Text "LET'S FIGHT!", 12, 4
+  Text "PAH! IF YOU WANT A JOB DONE", 0.33
+  Text "PROPERLY, NEVER TRUST A", 0.33
+  Text "USELESS BUNCH OF PIGS AND", 0.33
+  Text "RATS! C'MON 'TOADIES,", 0.33
+  Text "LET'S FIGHT!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission8TBirdA:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "IT'S SHOWDOWN TIME, 'TOADS!!", 28, 0.33
-  Text "JUST THE DARK QUEEN STANDS", 26, 0.33
-  Text "BETWEEN YOU AND OUR BUDDIES!", 28, 4
+  Text "IT'S SHOWDOWN TIME, 'TOADS!!", 0.33
+  Text "JUST THE DARK QUEEN STANDS", 0.33
+  Text "BETWEEN YOU AND OUR BUDDIES!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission8TBirdB:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "SHOW THAT DARK QUEEN WHO YOU", 28, 0.33
-  Text "ARE! YOU AIN'T NO FEEBLE", 24, 0.33
-  Text "FROGS - YOU'RE THE", 18, 0.33
-  Text "BATTLETOADS!", 12, 4
+  Text "SHOW THAT DARK QUEEN WHO YOU", 0.33
+  Text "ARE! YOU AIN'T NO FEEBLE", 0.33
+  Text "FROGS - YOU'RE THE", 0.33
+  Text "BATTLETOADS!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission8TBirdC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "WAYDIGO, 'TOADS! THE QUEEN'S", 28, 0.33
-  Text "ARMY IS BEATEN, AND SHE'S", 25, 0.33
-  Text "SHAKIN' IN FEAR! GO GET HER!", 28, 4
+  Text "WAYDIGO, 'TOADS! THE QUEEN'S", 0.33
+  Text "ARMY IS BEATEN, AND SHE'S", 0.33
+  Text "SHAKIN' IN FEAR! GO GET HER!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission8TBirdD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "I KNEW YOU'D MAKE IT, 'TOADS!", 29, 0.33
-  Text "BOY, I WOULDN'T WANT TO BE", 26, 0.33
-  Text "IN THE QUEEN'S SHOES NOW!", 25, 0.33
-  Text "SHE'S IN FOR ONE", 16, 0.33
-  Text "HUMUNGOUS SURPRISE!!", 20, 4
+  Text "I KNEW YOU'D MAKE IT, 'TOADS!", 0.33
+  Text "BOY, I WOULDN'T WANT TO BE", 0.33
+  Text "IN THE QUEEN'S SHOES NOW!", 0.33
+  Text "SHE'S IN FOR ONE", 0.33
+  Text "HUMUNGOUS SURPRISE!!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 
 Intermission9DarkQueenA:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "NOOOO, THIS CAN'T BE", 20, 0.33
-  Text "HAPPENING!! YOU CAN'T BEAT", 26, 0.33
-  Text "ME, I'M THE DARK QUEEN!! I'M", 28, 0.33
-  Text "MEAN, I'M NASTY AND I WANT", 26, 0.33
-  Text "TO WIN! GRR, I HATE 'TOADS!", 27, 4
+  Text "NOOOO, THIS CAN'T BE", 0.33
+  Text "HAPPENING!! YOU CAN'T BEAT", 0.33
+  Text "ME, I'M THE DARK QUEEN!! I'M", 0.33
+  Text "MEAN, I'M NASTY AND I WANT", 0.33
+  Text "TO WIN! GRR, I HATE 'TOADS!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission9DarkQueenB:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "IT'S JUST NOT FAIR! I'M FED", 27, 0.33
-  Text "UP BEING BEATEN BY A SCRAWNY", 28, 0.33
-  Text "BEAK AND HIS SLIMY SWAMP", 24, 0.33
-  Text "SWIMMERS!! I'LL GET YOU NEXT", 28, 0.33
-  Text "TIME, ALL OF YOU!!", 18, 4
+  Text "IT'S JUST NOT FAIR! I'M FED", 0.33
+  Text "UP BEING BEATEN BY A SCRAWNY", 0.33
+  Text "BEAK AND HIS SLIMY SWAMP", 0.33
+  Text "SWIMMERS!! I'LL GET YOU NEXT", 0.33
+  Text "TIME, ALL OF YOU!!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission9DarkQueenC:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "UH - YOU WOULDN'T HIT A LADY", 28, 0.33
-  Text "WHILE SHE'S DOWN, WOULD YOU?", 28, 0.33
-  Text "GOOD, 'CUZ THIS GIVES ME A", 26, 0.33
-  Text "CHANCE TO ESCAPE! FAREWELL,", 27, 0.33
-  Text "FOUNTAIN FREAKS!", 16, 4
+  Text "UH - YOU WOULDN'T HIT A LADY", 0.33
+  Text "WHILE SHE'S DOWN, WOULD YOU?", 0.33
+  Text "GOOD, 'CUZ THIS GIVES ME A", 0.33
+  Text "CHANCE TO ESCAPE! FAREWELL,", 0.33
+  Text "FOUNTAIN FREAKS!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission9DarkQueenD:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "WHAT STRENGTH!! BUT DON'T", 25, 0.33
-  Text "FORGET, THERE ARE MANY", 22, 0.33
-  Text "TYRANTS LIKE ME ALL", 19, 0.33
-  Text "OVER THE WORLD!!", 16, 4
+  Text "WHAT STRENGTH!! BUT DON'T", 0.33
+  Text "FORGET, THERE ARE MANY", 0.33
+  Text "TYRANTS LIKE ME ALL", 0.33
+  Text "OVER THE WORLD!!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission9TBirdA:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "COSMICALLY COOL!! THE MAD,", 26, 0.33
-  Text "BAD N' CRAZY 'TOADS SAVE THE", 28, 0.33
-  Text "DAY, AND THE DARK QUEEN IS", 26, 0.33
-  Text "NOW THE DARK HAS-BEEN!", 22, 0.33
-  Text "HEH-HEH-CACKLE-CACKLE!", 22, 4
+  Text "COSMICALLY COOL!! THE MAD,", 0.33
+  Text "BAD N' CRAZY 'TOADS SAVE THE", 0.33
+  Text "DAY, AND THE DARK QUEEN IS", 0.33
+  Text "NOW THE DARK HAS-BEEN!", 0.33
+  Text "HEH-HEH-CACKLE-CACKLE!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission9TBirdB:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "WOOOOO! I LIKE IT, 'TOADS!", 26, 0.33
-  Text "WE SURE TAUGHT THAT DARK", 24, 0.33
-  Text "QUEEN NOT TO MESS WITH THE", 26, 0.33
-  Text "AWESOME T. BIRD AND HIS", 23, 0.33
-  Text "BATTLETOADS!", 12, 4
+  Text "WOOOOO! I LIKE IT, 'TOADS!", 0.33
+  Text "WE SURE TAUGHT THAT DARK", 0.33
+  Text "QUEEN NOT TO MESS WITH THE", 0.33
+  Text "AWESOME T. BIRD AND HIS", 0.33
+  Text "BATTLETOADS!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission9TBirdC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "TOUCHDOWN! THE BATTLIN'", 23, 0.33
-  Text "BATTLETOADS COME THROUGH", 24, 0.33
-  Text "IN THE LAST QUARTER AND", 23, 0.33
-  Text "THE GOOD GUYS WIN AGAIN!", 24, 4
+  Text "TOUCHDOWN! THE BATTLIN'", 0.33
+  Text "BATTLETOADS COME THROUGH", 0.33
+  Text "IN THE LAST QUARTER AND", 0.33
+  Text "THE GOOD GUYS WIN AGAIN!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 Intermission9TBirdD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "WE'LL HAVE TO WRITE A BOOK", 26, 0.33
-  Text "AND MAKE A MOVIE ABOUT YOU", 26, 0.33
-  Text "GUYS! IT'LL MAKE ME... ER,", 26, 0.33
-  Text "US A FORTUNE!", 13, 4
+  Text "WE'LL HAVE TO WRITE A BOOK", 0.33
+  Text "AND MAKE A MOVIE ABOUT YOU", 0.33
+  Text "GUYS! IT'LL MAKE ME... ER,", 0.33
+  Text "US A FORTUNE!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 
@@ -1843,46 +1843,46 @@ Ending:
   ; TODO make this unskippable?
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 20
-  Text "ER...", 5, 2
+  Text "ER...", 2
   .db SCRIPT_BLANK_TBIRD
   StartText 20
-  Text "HOLD THE PARTY, 'TOADS...", 25, 2
+  Text "HOLD THE PARTY, 'TOADS...", 2
   .db SCRIPT_BLANK_TBIRD
   StartText 18
-  Text "I'VE JUST PICKED UP SILAS", 25, 0.33
-  Text "VOLKMIRE ON MY SCANNERS,", 24, 0.33
-  Text "TRYING TO ESCAPE USING", 22, 0.33
-  Text "A TELEPORTER!!", 14, 4
+  Text "I'VE JUST PICKED UP SILAS", 0.33
+  Text "VOLKMIRE ON MY SCANNERS,", 0.33
+  Text "TRYING TO ESCAPE USING", 0.33
+  Text "A TELEPORTER!!", 4
   .db SCRIPT_BLANK_TBIRD
   StartText 19
-  Text "HOLD ON, I'LL LOCATE HIS", 24, 0.33
-  Text "TARGET DESTINATION...", 21, 2
+  Text "HOLD ON, I'LL LOCATE HIS", 0.33
+  Text "TARGET DESTINATION...", 2
   .db SCRIPT_BLANK_TBIRD
   StartText 18
-  Text "FOUND IT! TWEAK MY BEAK,", 24, 0.33
-  Text "HE'S GONNA APPEAR ABOVE THE", 27, 0.33
-  Text "PSICONE BUILDING ANY", 20, 0.33
-  Text "MINUTE NOW!!", 12, 4
+  Text "FOUND IT! TWEAK MY BEAK,", 0.33
+  Text "HE'S GONNA APPEAR ABOVE THE", 0.33
+  Text "PSICONE BUILDING ANY", 0.33
+  Text "MINUTE NOW!!", 4
   .db SCRIPT_BLANK_TBIRD
   StartText 19
-  Text "YOU'D BETTER GET BACK HERE", 26, 0.33
-  Text "PRONTO, 'TOADS! YOU'RE OUR", 26, 0.33
-  Text "ONLY HOPE OF CATCHING HIM!", 26, 3
+  Text "YOU'D BETTER GET BACK HERE", 0.33
+  Text "PRONTO, 'TOADS! YOU'RE OUR", 0.33
+  Text "ONLY HOPE OF CATCHING HIM!", 3
   .db SCRIPT_FADEOUT
   Picture Ending1Palette,Ending1Tiles,Ending1Tilemap
   StartText 18
-  Text "WE'RE BACK ON THE SCENE AN'", 27, 0.33
-  Text "RARIN' TO GO, PROF!", 19, 2
+  Text "WE'RE BACK ON THE SCENE AN'", 0.33
+  Text "RARIN' TO GO, PROF!", 2
   .db SCRIPT_FADEOUT
   Picture Ending2Palette,Ending2Tiles,Ending2Tilemap
   StartText 21
-  Text "THERE HE IS, GUYS! QUICK,", 25, 0.33
-  Text "INTO THE BATTLECOPTER!", 22, 2
+  Text "THERE HE IS, GUYS! QUICK,", 0.33
+  Text "INTO THE BATTLECOPTER!", 2
   .db SCRIPT_FADEOUT
   Picture Ending3Palette,Ending3Tiles,Ending3Tilemap
   StartText 21
-  Text "PUT YOUR FOOT DOWN PIMPLE,", 26, 0.33
-  Text "HE'S GETTIN' AWAY!", 18, 2
+  Text "PUT YOUR FOOT DOWN PIMPLE,", 0.33
+  Text "HE'S GETTIN' AWAY!", 2
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 
@@ -1893,43 +1893,43 @@ Ending Part 2 (Bad Ending)
 BadEnding:
   Picture EndingBad1Palette,EndingBad1Tiles,EndingBad1Tilemap
   StartText 20
-  Text "WE'VE CAUGHT UP! HURRY RASH,", 28, 0.33
-  Text "FIRE THE MISSILES! WE WON'T", 27, 0.33
-  Text "BE ABLE TO STAY WITH HIM", 24, 0.33
-  Text "MUCH LONGER!", 12, 4
+  Text "WE'VE CAUGHT UP! HURRY RASH,", 0.33
+  Text "FIRE THE MISSILES! WE WON'T", 0.33
+  Text "BE ABLE TO STAY WITH HIM", 0.33
+  Text "MUCH LONGER!", 4
   .db SCRIPT_FADEOUT
   Picture EndingBad2Palette,EndingBad2Tiles,EndingBad2Tilemap
   StartText 21
-  Text "SO LONG, BATTLELOSERS!!", 23, 0.33
-  Text "HA-HA-HA-HA!!", 13, 2
+  Text "SO LONG, BATTLELOSERS!!", 0.33
+  Text "HA-HA-HA-HA!!", 2
   .db SCRIPT_FADEOUT
 
   .db SCRIPT_RESTORESCREEN
   StartText 2
-  Text "VOLKMIRE BREATHES A SIGH OF", 27, 0.33
-  Text "RELIEF AS HIS SPACESHIP", 23, 0.33
-  Text "ACCELERATES OUT OF THE", 22, 0.33
-  Text "'TOADS MISSILE RANGE, KNOWING", 29, 0.33
-  Text "THAT HE LIVES TO FIGHT", 22, 0.33
-  Text "ANOTHER DAY.", 12, 4
+  Text "VOLKMIRE BREATHES A SIGH OF", 0.33
+  Text "RELIEF AS HIS SPACESHIP", 0.33
+  Text "ACCELERATES OUT OF THE", 0.33
+  Text "'TOADS MISSILE RANGE, KNOWING", 0.33
+  Text "THAT HE LIVES TO FIGHT", 0.33
+  Text "ANOTHER DAY.", 4
 
   StartText 9
-  Text "DEJECTED, THE 'TOADS RETURN", 27, 0.33
-  Text "TO PSICONE, THEIR ONLY", 22, 0.33
-  Text "CONSOLATION BEING THAT HIS", 26, 0.33
-  Text "PARTNER IN CRIME, THE DARK", 26, 0.33
-  Text "QUEEN, WON'T BE CAUSING", 23, 0.33
-  Text "ANY MORE TROUBLE.", 17, 4
+  Text "DEJECTED, THE 'TOADS RETURN", 0.33
+  Text "TO PSICONE, THEIR ONLY", 0.33
+  Text "CONSOLATION BEING THAT HIS", 0.33
+  Text "PARTNER IN CRIME, THE DARK", 0.33
+  Text "QUEEN, WON'T BE CAUSING", 0.33
+  Text "ANY MORE TROUBLE.", 4
 
   StartText 16
-  Text "BUT WITH VOLKMIRE FREE, AND", 27, 0.33
-  Text "THE QUEEN WANTING REVENGE,", 26, 0.33
-  Text "IT WILL ONLY BE A MATTER OF", 27, 0.33
-  Text "TIME BEFORE THE DIRE", 20, 0.33
-  Text "DUO TRY AGAIN...", 16, 4
+  Text "BUT WITH VOLKMIRE FREE, AND", 0.33
+  Text "THE QUEEN WANTING REVENGE,", 0.33
+  Text "IT WILL ONLY BE A MATTER OF", 0.33
+  Text "TIME BEFORE THE DIRE", 0.33
+  Text "DUO TRY AGAIN...", 4
 
   StartText 22
-  Text "THE END?", 8, 5
+  Text "THE END?", 5
 
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
@@ -1941,36 +1941,36 @@ Ending Part 2 (Good Ending)
 GoodEnding:
   Picture EndingGood1Palette,EndingGood1Tiles,EndingGood1Tilemap
   StartText 20
-  Text "WE'VE CAUGHT UP! HURRY RASH,", 28, 0.33
-  Text "FIRE THE MISSILES! WE WON'T", 27, 0.33
-  Text "BE ABLE TO STAY WITH HIM", 24, 0.33
-  Text "MUCH LONGER!", 12, 4
+  Text "WE'VE CAUGHT UP! HURRY RASH,", 0.33
+  Text "FIRE THE MISSILES! WE WON'T", 0.33
+  Text "BE ABLE TO STAY WITH HIM", 0.33
+  Text "MUCH LONGER!", 4
   .db SCRIPT_FADEOUT
   Picture EndingGood2Palette,EndingGood2Tiles,EndingGood2Tilemap
   StartText 21
-  Text "ARRGGGHHHHHHH!", 14, 1
+  Text "ARRGGGHHHHHHH!", 1
   .db SCRIPT_FADEOUT
   
   .db SCRIPT_RESTORESCREEN
   StartText 2
-  Text "AND SO, THE SINISTER SILAS", 26, 0.33
-  Text "VOLKMIRE IS ONCE AGAIN", 22, 0.33
-  Text "THWARTED BY THE VICTORIOUS", 26, 0.33
-  Text "BATTLETOADS.", 12, 4
+  Text "AND SO, THE SINISTER SILAS", 0.33
+  Text "VOLKMIRE IS ONCE AGAIN", 0.33
+  Text "THWARTED BY THE VICTORIOUS", 0.33
+  Text "BATTLETOADS.", 4
   StartText 7
-  Text "VOLKMIRE'S BURNT OUT SHIP IS", 28, 0.33
-  Text "RETRIEVED FROM THE HIMALAYAS,", 29, 0.33
-  Text "BUT OF HIS BODY, THERE IS", 25, 0.33
-  Text "NO TRACE...", 11, 4
+  Text "VOLKMIRE'S BURNT OUT SHIP IS", 0.33
+  Text "RETRIEVED FROM THE HIMALAYAS,", 0.33
+  Text "BUT OF HIS BODY, THERE IS", 0.33
+  Text "NO TRACE...", 4
   StartText 12
-  Text "WHO KNOWS WHAT HAPPENED TO", 26, 0.33
-  Text "HIM, BUT YOU CAN BE SURE OF", 27, 0.33
-  Text "ONE THING - BOTH HE AND THE", 27, 0.33
-  Text "DARK QUEEN WILL REMEMBER THE", 28, 0.33
-  Text "DAY THEY TOOK ON THE", 20, 0.33
-  Text "BATTLETOADS - AND LOST!!", 24, 5
+  Text "WHO KNOWS WHAT HAPPENED TO", 0.33
+  Text "HIM, BUT YOU CAN BE SURE OF", 0.33
+  Text "ONE THING - BOTH HE AND THE", 0.33
+  Text "DARK QUEEN WILL REMEMBER THE", 0.33
+  Text "DAY THEY TOOK ON THE", 0.33
+  Text "BATTLETOADS - AND LOST!!", 5
   StartText 20
-  Text "THE END.", 8, 5
+  Text "THE END.", 5
   
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
@@ -1982,38 +1982,38 @@ Continue (in the Master System version these messages appear before continuing, 
 ContinueA:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "THINGS ARE LOOKING GOOD,", 24, 0.33
-  Text "'TOADS. GOOD FOR THE DARK", 25, 0.33
-  Text "QUEEN IF THAT'S YOUR BEST", 25, 0.33
-  Text "EFFORT! GET A GRIP GUYS -", 25, 0.33
-  Text "LET'S MOTIVATE!", 15, 4
+  Text "THINGS ARE LOOKING GOOD,", 0.33
+  Text "'TOADS. GOOD FOR THE DARK", 0.33
+  Text "QUEEN IF THAT'S YOUR BEST", 0.33
+  Text "EFFORT! GET A GRIP GUYS -", 0.33
+  Text "LET'S MOTIVATE!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 ContinueB:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "WHADYA MEAN, THE ACTION GOT", 27, 0.33
-  Text "TOO THICK HERE? I'LL GIVE", 25, 0.33
-  Text "YOU A THICK EAR IF YOU DON'T", 28, 0.33
-  Text "RESCUE MICHIKO AND ZITZ!", 24, 4
+  Text "WHADYA MEAN, THE ACTION GOT", 0.33
+  Text "TOO THICK HERE? I'LL GIVE", 0.33
+  Text "YOU A THICK EAR IF YOU DON'T", 0.33
+  Text "RESCUE MICHIKO AND ZITZ!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 ContinueC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "DID THE NASTY QUEEN NOT PLAY", 28, 0.33
-  Text "FAIR? AH, SHAME... NOW", 22, 0.33
-  Text "GET BACK IN THERE AND", 21, 0.33
-  Text "ROAST SOME PORK!", 16, 4
+  Text "DID THE NASTY QUEEN NOT PLAY", 0.33
+  Text "FAIR? AH, SHAME... NOW", 0.33
+  Text "GET BACK IN THERE AND", 0.33
+  Text "ROAST SOME PORK!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 ContinueD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "I CAN'T BELIEVE WHAT'S", 22, 0.33
-  Text "HAPPENING. EVEN I COULD'VE", 26, 0.33
-  Text "BEATEN THAT! C'MON 'TOADS,", 26, 0.33
-  Text "GET MAD, BAD 'N' CRAZY!!", 24, 4
+  Text "I CAN'T BELIEVE WHAT'S", 0.33
+  Text "HAPPENING. EVEN I COULD'VE", 0.33
+  Text "BEATEN THAT! C'MON 'TOADS,", 0.33
+  Text "GET MAD, BAD 'N' CRAZY!!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 
@@ -2024,76 +2024,76 @@ Game Over (not found in the original Master System version)
 GameOverDarkQueenA:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "YOU'RE NO MATCH FOR ME! I'M", 27, 0.33
-  Text "THE STRONGEST WOMAN IN", 22, 0.33
-  Text "THE UNIVERSE!!", 14, 3
+  Text "YOU'RE NO MATCH FOR ME! I'M", 0.33
+  Text "THE STRONGEST WOMAN IN", 0.33
+  Text "THE UNIVERSE!!", 3
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 GameOverDarkQueenB:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "YOU'VE GOT A LOT TO LEARN,", 26, 0.33
-  Text "BEFORE YOU BEAT ME. TRY", 23, 0.33
-  Text "AGAIN, 'TOADIES! HA-HA-HA-HA!", 29, 3
+  Text "YOU'VE GOT A LOT TO LEARN,", 0.33
+  Text "BEFORE YOU BEAT ME. TRY", 0.33
+  Text "AGAIN, 'TOADIES! HA-HA-HA-HA!", 3
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 GameOverDarkQueenC:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "IS THAT THE BEST YOUR SWAMP", 27, 0.33
-  Text "CRAWLERS CAN DO, TURKEY", 23, 0.33
-  Text "BRAINS? I FEEL SORRY FOR", 24, 0.33
-  Text "YOU, I REALLY DO!!", 18, 4
+  Text "IS THAT THE BEST YOUR SWAMP", 0.33
+  Text "CRAWLERS CAN DO, TURKEY", 0.33
+  Text "BRAINS? I FEEL SORRY FOR", 0.33
+  Text "YOU, I REALLY DO!!", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 GameOverDarkQueenD:
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
-  Text "AND ANOTHER 'TOAD BITES THE", 27, 0.33
-  Text "DUST! C'MON BEAKY, TAKE A", 25, 0.33
-  Text "PICTURE OF THE BEATEN", 21, 0.33
-  Text "BATTLEFAILURES FOR YOUR", 23, 0.33
-  Text "FREAKY FAMILY ALBUM!", 20, 5
+  Text "AND ANOTHER 'TOAD BITES THE", 0.33
+  Text "DUST! C'MON BEAKY, TAKE A", 0.33
+  Text "PICTURE OF THE BEATEN", 0.33
+  Text "BATTLEFAILURES FOR YOUR", 0.33
+  Text "FREAKY FAMILY ALBUM!", 5
   Clear 19
   StartText 19
-  Text "HA-HA-HA-HA!", 12, 1
+  Text "HA-HA-HA-HA!", 1
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 GameOverTBirdA:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "OUR LUCK'S FINALLY RUN OUT,", 27, 0.33
-  Text "'TOADS, AND WE'RE OUT OF THE", 28, 0.33
-  Text "GAME. HEAD BACK TO BASE AND", 27, 0.33
-  Text "WE'LL PLAN A REMATCH....", 24, 4
+  Text "OUR LUCK'S FINALLY RUN OUT,", 0.33
+  Text "'TOADS, AND WE'RE OUT OF THE", 0.33
+  Text "GAME. HEAD BACK TO BASE AND", 0.33
+  Text "WE'LL PLAN A REMATCH....", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 GameOverTBirdB:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "IT'S ALL OVER, I NEVER", 22, 0.33
-  Text "THOUGHT I'D SEE THE BATTLE", 26, 0.33
-  Text "'TOADS BEATEN. IT'S A SAD", 25, 0.33
-  Text "DAY FOR ALL 'TOADKIND...", 24, 4
+  Text "IT'S ALL OVER, I NEVER", 0.33
+  Text "THOUGHT I'D SEE THE BATTLE", 0.33
+  Text "'TOADS BEATEN. IT'S A SAD", 0.33
+  Text "DAY FOR ALL 'TOADKIND...", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 GameOverTBirdC:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "NO MORE CHANCES, 'TOADS.", 24, 0.33
-  Text "TIME'S UP AND WE'VE LOST BY", 27, 0.33
-  Text "A WASHOUT. WE'LL HAVE TO", 24, 0.33
-  Text "REGROUP AND TRY AGAIN...", 24, 4
+  Text "NO MORE CHANCES, 'TOADS.", 0.33
+  Text "TIME'S UP AND WE'VE LOST BY", 0.33
+  Text "A WASHOUT. WE'LL HAVE TO", 0.33
+  Text "REGROUP AND TRY AGAIN...", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 GameOverTBirdD:
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 18
-  Text "THAT'S IT, THE GAME'S OVER", 26, 0.33
-  Text "FOR US, FINITO, END OF THE", 26, 0.33
-  Text "LINE... WE'D BETTER RETURN", 26, 0.33
-  Text "TO PSICONE AND WORK OUT", 23, 0.33
-  Text "A NEW PLAN.", 11, 5
+  Text "THAT'S IT, THE GAME'S OVER", 0.33
+  Text "FOR US, FINITO, END OF THE", 0.33
+  Text "LINE... WE'D BETTER RETURN", 0.33
+  Text "TO PSICONE AND WORK OUT", 0.33
+  Text "A NEW PLAN.", 5
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 
