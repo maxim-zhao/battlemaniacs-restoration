@@ -448,8 +448,8 @@ _RAM_C832_ db
 
 .enum $C837 export
 _RAM_C837_Player2InputsEnabled db
-_RAM_C838_ db
-_RAM_C839_ db
+_RAM_C838_PauseFlag2 db ; set if the game has actually done something based on _RAM_C839_PauseFlag
+_RAM_C839_PauseFlag db ; set by the pause button handler
 .ende
 
 .enum $C83C export
@@ -744,9 +744,9 @@ _LABEL_69_DecompressToVRAMTrampoline:
 
 +:
 	push af
-	ld a, (_RAM_C839_)
+	ld a, (_RAM_C839_PauseFlag)
 	xor $01
-	ld (_RAM_C839_), a
+	ld (_RAM_C839_PauseFlag), a
 	pop af
 	retn
 
@@ -788,25 +788,25 @@ _DATA_101_:
 .db $10 $08 $04 $02 $01
 
 _LABEL_208_:
-	ld a, (_RAM_C839_)
+	ld a, (_RAM_C839_PauseFlag)
 	and a
 	ret z
+  ; It's paused
 	ld a, $01
-	ld (_RAM_C838_), a
+	ld (_RAM_C838_PauseFlag2), a
 	xor a
 	ld (_RAM_C85C_AudioEnabled), a
 	call _LABEL_229_MutePSG
--:
-	ld a, (_RAM_C839_)
+-:ld a, (_RAM_C839_PauseFlag)
 	and a
 	jr nz, -
 	xor a
-	ld (_RAM_C838_), a
+	ld (_RAM_C838_PauseFlag2), a
 	ld a, $01
 	ld (_RAM_C85C_AudioEnabled), a
 	ret
 
-_LABEL_229_MutePSG: ; semes to only be on startup
+_LABEL_229_MutePSG: ; on startup and pause
 	push bc
 	push hl
 	ld hl, _DATA_237_ZeroPSGVolumes

@@ -22,6 +22,7 @@ banks 32
 .unbackground $003b $0065 ; unused space
 .unbackground $0083 $00ff ; unused space
 .unbackground $0159 $01ff ; unused space
+.unbackground $0208 $0228 ; Pause flag check
 .unbackground $38C4 $3913 ; intro picture loaders
 .unbackground $6D73 $6DE9 ; title screen text strings
 ; gap: continue, game over text
@@ -66,6 +67,7 @@ banks 32
 ; PSGLib uses a .ramsection, so we do too...
 .ramsection "Variables" slot 3
 CurrentMusicBank  db
+CurrentMusicIndex db
 .ends
 
 ; Functions in the original game we want to use
@@ -91,6 +93,7 @@ CurrentMusicBank  db
 .define RAM_LevelNumber             $C792 ; 0, 1, ...
 .define RAM_CharacterDataPointer    $c8c6 ; Points to character data, the first byte of which tells me if it's Pimple (1) or Rash (2)
 .define RAM_Is2Player               $C771 ; 1 if 2-player
+.define RAM_PauseFlag               $c839 ; toggled by pause button
 
 ; Data locations from the original game we want to use
 .define DATA_FontPalette            $AC41
@@ -100,7 +103,7 @@ CurrentMusicBank  db
 ; Part 1: Audio
 ;
 ; We replace the whole music engine with PSGLib. This uses more space, but actually frees
-; up some CPU (so reducing slowdown in the orgiinal game, if there is any) and makes it
+; up some CPU (so reducing slowdown in the original game, if there is any) and makes it
 ; somewhat trivial to add in any new music as it can be produced using any tool capable
 ; of producing a VGM file.
 ;
@@ -146,6 +149,32 @@ AudioInit:
   ; what we replaced to get here
   jp $02BF
   ; above will ret
+.ends
+
+.orga $208
+.section "Pause handler hook" force
+  jp PauseHandler
+.ends
+
+.section "Pause handler" free
+PauseHandler:
+  ; Some of the original code...
+	ld a, (RAM_PauseFlag)
+	and a
+	ret z
+  ; Then we play some music intead
+  ld a, (CurrentMusicIndex)
+  push af
+    ld a, MUSIC_ROLLER_COASTER
+    call PlayMusicTrampoline
+    ; Back to the original code
+    ; Loop until pause flag is zero
+-:  ld a, (RAM_PauseFlag)
+    and a
+    jr nz, -
+  pop af
+  ; Restart previous music
+  jp PlayMusicTrampoline ; and ret
 .ends
 
 ; We need to place some trampolines in the first 16KB, so they can be 
@@ -302,6 +331,7 @@ _lookup:
 PlayMusic:
   ; We do a dumb if-then-else. This costs about 12 bytes per item and isn't very fast, but doing it by a lookup would be a pain as we have large indices.
   ; (We could use more sensible indices if we re-wrote all callers to use the new indices.)
+  ld (CurrentMusicIndex),a
   
 .macro HandleMusic args name, label
   cp name
