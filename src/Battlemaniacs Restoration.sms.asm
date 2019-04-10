@@ -86,12 +86,14 @@ CurrentMusicIndex db
 .export TextToVRAM,CheckForButton1,ResetScrollTile0AndTilemap,LoadPalettes,SkippableDelay,ScreenOn,ScreenOff,FadeOut
 
 ; RAM locations from the original game we want to use
+.define RAM_Character               $c400 ; Seems to be 1 = Pimple, 2 = Rash
 .define RAM_TilePalettePointer      $C7C7 ; pointer to palette for tiles, used by LoadPalettes
 .define RAM_SpritePalettePointer    $C769 ; pointer to palette for sprites and font tiles, used by LoadPalettes
 .define RAM_IntroButtonPressed      $C822 ; signal from intro to game to indicate if it was skipped by pressing a button, 1 if true, 0 otherwise
 .define RAM_GameState               $c779 ; 3 = continue screen?
 .define RAM_LevelNumber             $C792 ; 0, 1, ...
 .define RAM_CharacterDataPointer    $c8c6 ; Points to character data, the first byte of which tells me if it's Pimple (1) or Rash (2)
+.define RAM_Difficulty              $C765 ; 0-2
 .define RAM_Is2Player               $C771 ; 1 if 2-player
 .define RAM_PauseFlag               $c839 ; toggled by pause button
 
@@ -648,14 +650,27 @@ GameComplete:
   
   call ResetScrollTile0AndTilemap
   call ScreenOn
-  ld hl,Ending
-  call _ScriptLoop
   
+  ld a,(RAM_Difficulty)
+  or a
+  jr z,++ ; No ending for easy mode
+  
+  ld hl, Ending
+  call _ScriptLoop
+
+  ld a,(RAM_Difficulty)
+  dec a
+  ld hl, BadEnding
+  jr z, +
+  ld hl, GoodEnding
++:call _ScriptLoop
+  
+++:
   ld a,(RAM_Is2Player)
   or a
   jr nz,@2P
   ; 1 player
-  ld a,($c400)
+  ld a,(RAM_Character)
   dec a
   jr z,@Pimple
 @Rash:
@@ -1869,49 +1884,61 @@ Ending:
   Text "PUT YOUR FOOT DOWN PIMPLE,", 26, 0.33
   Text "HE'S GETTIN' AWAY!", 18, 2
   .db SCRIPT_FADEOUT
-
+  .db SCRIPT_END_BLANK
 
 /*************************************
-Ending Part 2 (Bad Ending) (This will probably be left unused)
+Ending Part 2 (Bad Ending)
 *************************************/
-/*
+
+BadEnding:
+  Picture EndingBad1Palette,EndingBad1Tiles,EndingBad1Tilemap
   StartText 20
   Text "WE'VE CAUGHT UP! HURRY RASH,", 28, 0.33
   Text "FIRE THE MISSILES! WE WON'T", 27, 0.33
   Text "BE ABLE TO STAY WITH HIM", 24, 0.33
   Text "MUCH LONGER!", 12, 4
-  Clear 20
+  .db SCRIPT_FADEOUT
+  Picture EndingBad2Palette,EndingBad2Tiles,EndingBad2Tilemap
   StartText 21
   Text "SO LONG, BATTLELOSERS!!", 23, 0.33
   Text "HA-HA-HA-HA!!", 13, 2
   .db SCRIPT_FADEOUT
 
-;Text 1:
-  Text "VOLKMIRE BREATHES A SIGH OF", 27
-  Text "RELIEF AS HIS SPACESHIP", 23
-  Text "ACCELERATES OUT OF THE", 22
-  Text "'TOADS MISSILE RANGE, KNOWING", 29
-  Text "THAT HE LIVES TO FIGHT", 22
-  Text "ANOTHER DAY.", 12
-;Text 2:
-  Text "DEJECTED, THE 'TOADS RETURN", 27
-  Text "TO PSICONE, THEIR ONLY", 22
-  Text "CONSOLATION BEING THAT HIS", 26
-  Text "PARTNER IN CRIME, THE DARK", 26
-  Text "QUEEN, WON'T BE CAUSING", 23
-  Text "ANY MORE TROUBLE.", 0.33
-;Text 3:
-  Text "BUT WITH VOLKMIRE FREE, AND", 27
-  Text "THE QUEEN WANTING REVENGE,", 26
-  Text "IT WILL ONLY BE A MATTER OF", 27
-  Text "TIME BEFORE THE DIRE", 20
-  Text "DUO TRY AGAIN...", 16
-;Text 4:
-  Text "THE END?", 8
-*/
+  .db SCRIPT_RESTORESCREEN
+  StartText 2
+  Text "VOLKMIRE BREATHES A SIGH OF", 27, 0.33
+  Text "RELIEF AS HIS SPACESHIP", 23, 0.33
+  Text "ACCELERATES OUT OF THE", 22, 0.33
+  Text "'TOADS MISSILE RANGE, KNOWING", 29, 0.33
+  Text "THAT HE LIVES TO FIGHT", 22, 0.33
+  Text "ANOTHER DAY.", 12, 4
+
+  StartText 9
+  Text "DEJECTED, THE 'TOADS RETURN", 27, 0.33
+  Text "TO PSICONE, THEIR ONLY", 22, 0.33
+  Text "CONSOLATION BEING THAT HIS", 26, 0.33
+  Text "PARTNER IN CRIME, THE DARK", 26, 0.33
+  Text "QUEEN, WON'T BE CAUSING", 23, 0.33
+  Text "ANY MORE TROUBLE.", 17, 4
+
+  StartText 16
+  Text "BUT WITH VOLKMIRE FREE, AND", 27, 0.33
+  Text "THE QUEEN WANTING REVENGE,", 26, 0.33
+  Text "IT WILL ONLY BE A MATTER OF", 27, 0.33
+  Text "TIME BEFORE THE DIRE", 20, 0.33
+  Text "DUO TRY AGAIN...", 16, 4
+
+  StartText 22
+  Text "THE END?", 8, 5
+
+  .db SCRIPT_FADEOUT
+  .db SCRIPT_END_BLANK
+
 /*************************************
 Ending Part 2 (Good Ending)
 *************************************/
+
+GoodEnding:
   Picture EndingGood1Palette,EndingGood1Tiles,EndingGood1Tilemap
   StartText 20
   Text "WE'VE CAUGHT UP! HURRY RASH,", 28, 0.33
@@ -2228,14 +2255,12 @@ EndingGood1Palette:
   NewSection
 EndingGood2Palette:
 .incbin "images\Ending Good 02.png.palette.bin"
-/*
   NewSection
 EndingBad1Palette:
 .incbin "images\Ending Bad 01.png.palette.bin"
   NewSection
 EndingBad2Palette:
 .incbin "images\Ending Bad 02.png.palette.bin"
-*/
 .ends
 
 ; Compressed data needs to be in slot 1, but we don't care what bank.
@@ -2545,6 +2570,14 @@ EndingGood1Tilemap: .incbin "images\Ending Good 01.png.tilemap.zx7"
 .section "Ending graphics Good 2" superfree
 EndingGood2Tiles:   .incbin "images\Ending Good 02.png.tiles.zx7"
 EndingGood2Tilemap: .incbin "images\Ending Good 02.png.tilemap.zx7"
+.ends
+.section "Ending graphics Bad 1" superfree
+EndingBad1Tiles:   .incbin "images\Ending Bad 01.png.tiles.zx7"
+EndingBad1Tilemap: .incbin "images\Ending Bad 01.png.tilemap.zx7"
+.ends
+.section "Ending graphics Bad 2" superfree
+EndingBad2Tiles:   .incbin "images\Ending Bad 02.png.tiles.zx7"
+EndingBad2Tilemap: .incbin "images\Ending Bad 02.png.tilemap.zx7"
 .ends
 
 
