@@ -2764,8 +2764,6 @@ CreditsEnd:
 .ends
 .section "Continue patch" free
 ContinuePatch:
-  ld a, MUSIC_T_BIRD
-  call PlayMusicTrampoline
   ld a,(PAGING_REGISTER_2)
   push af
     ld a,:Continue
