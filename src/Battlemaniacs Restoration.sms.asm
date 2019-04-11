@@ -554,15 +554,15 @@ Title:
 
 ; Post-title-timeout sequence - the story
 Intro:
-  ; Start off blank
-  ;call ResetScrollTile0AndTilemap
   ld hl,IntroScript
   jp _ScriptStart
-  
+
+; Continue screen  
 Continue:
   ld hl,ContinueLookup
   jp _TBird
-  
+
+; Game over
 GameOver:
   ld hl,GameOverLookup
   jp ++
@@ -570,9 +570,9 @@ GameOver:
 ; Inter-level sequence - randomly chosen from 4 items each time
 Intermission:
   ; Check if it's game over
-  ld a,(RAM_GameState)
+  ld a, (RAM_GameState)
   cp 3
-  ret z ; disable - we will re-enable it later
+  ret z ; We show the game over screen somewhere else (see above)
   
   ld a, MUSIC_T_BIRD
   call PlayMusicTrampoline
@@ -653,7 +653,8 @@ GameComplete:
   
   ld a,(RAM_Difficulty)
   or a
-  jr z,++ ; No ending for easy mode
+  ld hl, EasyModeEnding
+  jr z, +
   
   ld hl, Ending
   call _ScriptLoop
@@ -665,7 +666,6 @@ GameComplete:
   ld hl, GoodEnding
 +:call _ScriptLoop
   
-++:
   ld a,(RAM_Is2Player)
   or a
   jr nz,@2P
@@ -746,7 +746,7 @@ _IntroSkipped:
 _BlankRectTBird:
   push hl
     ; We set the write address
-    ld hl,$3800 + (18 * 32 + 2) * 2
+    ld hl,$7800 + (18 * 32 + 2) * 2
     di
     ld de,32*2
     ld c,$bf
@@ -755,7 +755,7 @@ _BlankRectTBird:
 --: out (c),l
     out (c),h
     push bc
-      ld b,28*2 ; columns
+      ld b,29*2 ; columns
 -:    out ($be),a
       push ix ; delay
       pop ix
@@ -1832,6 +1832,35 @@ Intermission9TBirdD:
   Text "AND MAKE A MOVIE ABOUT YOU", 0.33
   Text "GUYS! IT'LL MAKE ME... ER,", 0.33
   Text "US A FORTUNE!", 4
+  .db SCRIPT_FADEOUT
+  .db SCRIPT_END_BLANK
+  
+EasyModeEnding:
+  Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
+  StartText 19
+  Text "Were you expecting a fancy", 0.33
+  Text "ending sequence right now?", 0.33
+  Text "Well, bad news for you,", 0.33
+  Text "Battlejerks.", 4
+  Clear 19
+  StartText 19
+  Text "Your pathetic attempt at", 0.33
+  Text "beating the game in lil'", 0.33
+  Text "kid's fashion doesn't", 0.33
+  Text "deserve more than this!", 4
+  .db SCRIPT_FADEOUT
+  Picture TBirdPalette,TBirdTiles,TBirdTilemap
+  StartText 18
+  ;   12345678901234567890123456789012
+  Text "I'm afraid the Dark Queen is", 0.33
+  Text "right, 'Toads. You can't be", 0.33
+  Text "expected to be taken", 0.33
+  Text "seriously by playing the", 0.33
+  Text "game like a walk in the park.", 4
+  .db SCRIPT_BLANK_TBIRD
+  StartText 19
+  Text "Try again in a harder", 0.33
+  Text "difficulty level.", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
 
