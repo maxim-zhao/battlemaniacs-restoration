@@ -65,9 +65,11 @@ banks 32
 .define PAGING_REGISTER_2 $ffff
 
 ; PSGLib uses a .ramsection, so we do too...
+; The game's music engine used RAM from $c000 so luckily we can just let WLA DX allocate memory from $c000...
 .ramsection "Variables" slot 3
 CurrentMusicBank  db
 CurrentMusicIndex db
+AllowSkipping     db
 .ends
 
 ; Functions in the original game we want to use
@@ -83,7 +85,7 @@ CurrentMusicIndex db
 .define SetOutputLocation           $57e7 ; sets the output location
 .define PrintScore                  $582a ; prints a 6-byte byte-per-digit number from ix to the current output location
 
-.export TextToVRAM,CheckForButton1,ResetScrollTile0AndTilemap,LoadPalettes,SkippableDelay,ScreenOn,ScreenOff,FadeOut
+.export TextToVRAM,CheckForButton1,ResetScrollTile0AndTilemap,LoadPalettes,SkippableDelay,ScreenOn,ScreenOff,FadeOut,SetOutputLocation,PrintScore
 
 ; RAM locations from the original game we want to use
 .define RAM_Character               $c400 ; Seems to be 1 = Pimple, 2 = Rash
@@ -96,6 +98,8 @@ CurrentMusicIndex db
 .define RAM_Difficulty              $C765 ; 0-2
 .define RAM_Is2Player               $C771 ; 1 if 2-player
 .define RAM_PauseFlag               $c839 ; toggled by pause button
+
+.export RAM_Character, RAM_TilePalettePointer, RAM_SpritePalettePointer, RAM_IntroButtonPressed, RAM_GameState, RAM_LevelNumber, RAM_CharacterDataPointer, RAM_Difficulty, RAM_Is2Player, RAM_PauseFlag
 
 ; Data locations from the original game we want to use
 .define DATA_FontPalette            $AC41
@@ -542,6 +546,7 @@ LevelMusicLookup:
   SCRIPT_TILEMAP db
   SCRIPT_RESTORESCREEN db
   SCRIPT_BLANK_TBIRD db
+  SCRIPT_NO_SKIPPING db
 .ende
 
 ; Pre-title sequence and title screen
@@ -574,12 +579,18 @@ Intermission:
   cp 3
   ret z ; We show the game over screen somewhere else (see above)
   
-  ld a, MUSIC_T_BIRD
-  call PlayMusicTrampoline
-
   ; ELse look up a random text based on the level
 +:ld a,(RAM_LevelNumber) ; 0..11
-  add a,a ; Multiply by 16 - fits in 8 bits
+  ; We skip the last intermission on easy mode
+  cp 11
+  jr nz,+
+  ld e,a
+  ld a,(RAM_Difficulty)
+  or a
+  ret z
+  ld a,e
+
++:add a,a ; Multiply by 16 - fits in 8 bits
   add a,a
   add a,a
   add a,a
@@ -588,6 +599,10 @@ Intermission:
   ld hl,IntermissionsLookup
   add hl,de
 ++:
+  push hl
+    ld a, MUSIC_T_BIRD
+    call PlayMusicTrampoline
+  pop hl
   push hl
     ; get a random number (0,2,4,6) to add on
     ld a,r
@@ -628,7 +643,7 @@ _NoIntermission:
   
 GameModeScreen:
   ld hl,GameModeScreenScript
-  jp _ScriptLoop ; and ret
+  jp _ScriptStart ; and ret
 
 GameOverScreen:
   ld hl,GameOverPimple
@@ -637,35 +652,44 @@ GameOverScreen:
   cp 1
   jr z,+
   ld hl,GameOverRash
-+:call _ScriptLoop
++:call _ScriptStart
   ld hl,GameOverText
   jp _ScriptLoop
   
 GameComplete:
+  call ScreenOff
+  
   ld ix,$3000 + 32 * 4
   call LoadFont
-
-  ld a, MUSIC_TITLE ; TODO change to ending music when it exists
-  call PlayMusicTrampoline
-  
-  call ResetScrollTile0AndTilemap
-  call ScreenOn
   
   ld a,(RAM_Difficulty)
   or a
+  jr nz,+
+  ; Easy mode
+  ld a, MUSIC_T_BIRD
+  call PlayMusicTrampoline
   ld hl, EasyModeEnding
-  jr z, +
-  
+  call _ScriptStart
+  ; Then start the ending music
+  ld a, MUSIC_TITLE ; TODO replace with ending music when it exists
+  call PlayMusicTrampoline
+  jr _GameComplete
+
++:; Not easy mode
+  ld a, MUSIC_TITLE ; TODO replace with ending music when it exists
+  call PlayMusicTrampoline
+
   ld hl, Ending
-  call _ScriptLoop
+  call _ScriptStart
 
   ld a,(RAM_Difficulty)
   dec a
   ld hl, BadEnding
   jr z, +
   ld hl, GoodEnding
-+:call _ScriptLoop
++:call _ScriptStart
   
+_GameComplete:
   ld a,(RAM_Is2Player)
   or a
   jr nz,@2P
@@ -695,7 +719,11 @@ _ScriptStart:
   push hl
     call ResetScrollTile0AndTilemap
     call ScreenOn
+    ; Allow skipping by default
+    ld a,1
+    ld (AllowSkipping),a
   pop hl
+  ; fall through
 
 _ScriptLoop:
   ld a,(hl)
@@ -711,7 +739,7 @@ _ScriptLoop:
   cp SCRIPT_WAIT
   jp z,_Wait
   cp SCRIPT_BLANK_TEXT
-  jp z,_blank
+  jr z,_blank
   cp SCRIPT_FADEOUT
   jp z,_FadeOut
   cp SCRIPT_TILEMAP
@@ -719,7 +747,9 @@ _ScriptLoop:
   cp SCRIPT_RESTORESCREEN
   jp z,_RestoreScreenToBlank
   cp SCRIPT_BLANK_TBIRD
-  jp z,_BlankRectTBird
+  jr z,_BlankRectTBird
+  cp SCRIPT_NO_SKIPPING
+  jr z,_DisableSkipping
   ; else it's text
   ; location is next, we need to put it in bc
   ld c,(hl)
@@ -733,6 +763,9 @@ _ScriptLoop:
   push ix
   pop hl
   ; check for key press
+  ld a,(AllowSkipping)
+  or a
+  jr z, _ScriptLoop
   ; TODO: this means that pressing a button during text makes the script be entirely skipped, but at other times it does nothing
   call CheckForButton1
   jr z, _ScriptLoop ; loop if not pressed
@@ -742,6 +775,11 @@ _IntroSkipped:
   ld a, 1
   ld (RAM_IntroButtonPressed), a
   ret
+  
+_DisableSkipping:
+  xor a
+  ld (AllowSkipping),a
+  jp _ScriptLoop
   
 _BlankRectTBird:
   push hl
@@ -1836,6 +1874,7 @@ Intermission9TBirdD:
   .db SCRIPT_END_BLANK
   
 EasyModeEnding:
+  .db SCRIPT_NO_SKIPPING
   Picture DarkQueenPalette,DarkQueenTiles,DarkQueenTilemap
   StartText 19
   Text "Were you expecting a fancy", 0.33
@@ -1859,7 +1898,7 @@ EasyModeEnding:
   Text "game like a walk in the park.", 4
   .db SCRIPT_BLANK_TBIRD
   StartText 19
-  Text "Try again in a harder", 0.33
+  Text "Try again on a harder", 0.33
   Text "difficulty level.", 4
   .db SCRIPT_FADEOUT
   .db SCRIPT_END_BLANK
@@ -1869,7 +1908,7 @@ Ending Part 1
 ************************************/
 
 Ending:
-  ; TODO make this unskippable?
+  .db SCRIPT_NO_SKIPPING
   Picture TBirdPalette,TBirdTiles,TBirdTilemap
   StartText 20
   Text "ER...", 2
@@ -1920,6 +1959,7 @@ Ending Part 2 (Bad Ending)
 *************************************/
 
 BadEnding:
+  .db SCRIPT_NO_SKIPPING
   Picture EndingBad1Palette,EndingBad1Tiles,EndingBad1Tilemap
   StartText 20
   Text "WE'VE CAUGHT UP! HURRY RASH,", 0.33
@@ -1968,6 +2008,7 @@ Ending Part 2 (Good Ending)
 *************************************/
 
 GoodEnding:
+  .db SCRIPT_NO_SKIPPING
   Picture EndingGood1Palette,EndingGood1Tiles,EndingGood1Tilemap
   StartText 20
   Text "WE'VE CAUGHT UP! HURRY RASH,", 0.33
