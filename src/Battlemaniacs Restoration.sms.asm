@@ -380,6 +380,9 @@ StopMusic:
 MusicTitle:
 .incbin "vgms/music/Battlemaniacs - 01 - Title.psg"
 .ends
+.section "Music data to be discarded" superfree
+.incbin "vgms/music/Battlemaniacs - 01 - Title.psg"
+.ends
 .section "Music data 2" superfree
 MusicRagnarokCanyon:
 .incbin "vgms/music/Battlemaniacs - 02 - Ragnarok Canyon.psg"
