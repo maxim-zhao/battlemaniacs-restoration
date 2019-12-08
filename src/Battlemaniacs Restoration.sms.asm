@@ -171,7 +171,7 @@ PauseHandler:
   ; Then we play some music intead
   ld a, (CurrentMusicIndex)
   push af
-    ld a, MUSIC_ROLLER_COASTER
+    ld a, MUSIC_PAUSE
     call PlayMusicTrampoline
     ; Back to the original code
     ; Loop until pause flag is zero
@@ -333,6 +333,7 @@ _lookup:
 .define MUSIC_ROLLER_COASTER $04
 .define MUSIC_BONUS_STAGE_2 $05
 .define MUSIC_T_BIRD $06
+.define MUSIC_PAUSE $07
 
 PlayMusic:
   ; We do a dumb if-then-else. This costs about 12 bytes per item and isn't very fast, but doing it by a lookup would be a pain as we have large indices.
@@ -358,6 +359,7 @@ PlayMusic:
   HandleMusic MUSIC_ROLLER_COASTER  MusicRollerCoaster
   HandleMusic MUSIC_BONUS_STAGE_2   MusicBonusStage2
   HandleMusic MUSIC_T_BIRD          MusicTBird
+  HandleMusic MUSIC_PAUSE           MusicPause
   ; Any other index
   jp StopMusic ; and ret
 
@@ -415,6 +417,10 @@ MusicBonusStage2:
 .section "Music data 10" superfree
 MusicTBird:
 .incbin "vgms/music/T. Bird v1.psg"
+.ends
+.section "Music data 11" superfree
+MusicPause:
+.incbin "vgms/music/Pause.psg"
 .ends
 
 .section "SFX data" superfree
