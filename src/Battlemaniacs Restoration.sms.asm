@@ -334,6 +334,7 @@ _lookup:
 .define MUSIC_BONUS_STAGE_2 $05
 .define MUSIC_T_BIRD $06
 .define MUSIC_PAUSE $07
+.define MUSIC_VICTORY $08
 
 PlayMusic:
   ; We do a dumb if-then-else. This costs about 12 bytes per item and isn't very fast, but doing it by a lookup would be a pain as we have large indices.
@@ -360,6 +361,7 @@ PlayMusic:
   HandleMusic MUSIC_BONUS_STAGE_2   MusicBonusStage2
   HandleMusic MUSIC_T_BIRD          MusicTBird
   HandleMusic MUSIC_PAUSE           MusicPause
+  HandleMusic MUSIC_VICTORY         MusicVictory
   ; Any other index
   jp StopMusic ; and ret
 
@@ -421,6 +423,10 @@ MusicTBird:
 .section "Music data 11" superfree
 MusicPause:
 .incbin "vgms/music/Pause.psg"
+.ends
+.section "Music data 12" superfree
+MusicVictory:
+.incbin "vgms/music/Victory v1.psg"
 .ends
 
 .section "SFX data" superfree
@@ -677,12 +683,12 @@ GameComplete:
   ld hl, EasyModeEnding
   call _ScriptStart
   ; Then start the ending music
-  ld a, MUSIC_TITLE ; TODO replace with ending music when it exists
+  ld a, MUSIC_VICTORY
   call PlayMusicTrampoline
   jr _GameComplete
 
 +:; Not easy mode
-  ld a, MUSIC_TITLE ; TODO replace with ending music when it exists
+  ld a, MUSIC_VICTORY
   call PlayMusicTrampoline
 
   ld hl, Ending
